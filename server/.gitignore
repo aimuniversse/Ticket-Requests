@@ -1,2 +1,8 @@
-server/booking/.gitingore
-.venv
+venv/
+.venv/
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.sqlite3/

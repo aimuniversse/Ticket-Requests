@@ -1,0 +1,262 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.brand-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.2);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-text strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.brand-text small {
+  color: #64748b;
+  font-size: 0.72rem;
+}
+
+.desktop-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link,
+.mobile-link {
+  position: relative;
+  color: #334155;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.nav-link::after,
+.mobile-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #2563eb, #f97316);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link.active,
+.mobile-link:hover,
+.mobile-link.active {
+  color: #2563eb;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after,
+.mobile-link:hover::after,
+.mobile-link.active::after {
+  transform: scaleX(1);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.icon-button,
+.lang-selector,
+.mobile-menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.icon-button:hover,
+.lang-selector:hover,
+.mobile-menu-toggle:hover {
+  transform: translateY(-2px);
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+}
+
+.lang-selector {
+  gap: 0.45rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.92rem;
+}
+
+.user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.92rem;
+}
+
+.secondary-btn,
+.ghost-btn,
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.secondary-btn {
+  padding: 0.7rem 1rem;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.ghost-btn {
+  padding: 0.7rem 1rem;
+  color: #0f172a;
+  background: transparent;
+  border: 1px solid #dbeafe;
+}
+
+.primary-btn {
+  padding: 0.8rem 1.1rem;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #fff;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.2);
+}
+
+.secondary-btn:hover,
+.ghost-btn:hover,
+.primary-btn:hover {
+  transform: translateY(-2px);
+}
+
+.mobile-menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+}
+
+.mobile-drawer {
+  display: none;
+  padding: 0 1.25rem 1rem;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.mobile-drawer.open {
+  display: block;
+}
+
+.mobile-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.mobile-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 1180px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .header-actions .user-pill,
+  .header-actions .secondary-btn,
+  .header-actions .ghost-btn,
+  .header-actions .primary-btn {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    padding: 0.85rem 1rem;
+  }
+
+  .brand-text small {
+    display: none;
+  }
+
+  .header-actions .lang-selector,
+  .header-actions .icon-button:nth-of-type(2) {
+    display: none;
+  }
+
+  .mobile-drawer {
+    padding: 0 1rem 1rem;
+  }
+}

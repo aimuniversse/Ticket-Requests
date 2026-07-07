@@ -10,17 +10,17 @@ import './Footer.css'
 const companyLinks =[]
 const serviceLinks = [
   'Bus Ticket Booking',
-  'Bus Rental',
-  'Corporate Travel',
-  'School Trips',
-  'Holiday Packages',
+  // 'Bus Rental',
+  // 'Corporate Travel',
+  // 'School Trips',
+  // 'Holiday Packages',
 ]
 const supportLinks = [
   'Help Center',
   'FAQs',
   'Contact Us',
-  'Cancellation Policy',
-  'Refund Policy',
+  // 'Cancellation Policy',
+  // 'Refund Policy',
 ]
 const socialLinks = [
   { label: 'Facebook', icon: <FaFacebookF /> },

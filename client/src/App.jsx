@@ -9,30 +9,34 @@ function App() {
       <main className="app-main" id="home">
         <section className="hero-section">
           <div className="hero-copy">
-            <p className="hero-eyebrow">Premium Bus Rental & Ticket Booking</p>
-            <h1>Travel in comfort with BusRent.</h1>
+            <p className="hero-eyebrow">Premium Bus Ticket Booking</p>
+            <h1>Travel in comfort with Bus Booking.</h1>
             <p>
               Reserve seats, charter buses, and plan seamless group journeys with a
               premium experience built for modern travelers.
             </p>
             <div className="hero-actions">
               <a className="primary-btn" href="#book-now">
-                Book Your Trip
+                Book Your Ticket
               </a>
-              <a className="ghost-btn" href="#routes">
+              {/* <a className="ghost-btn" href="#routes">
                 Explore Routes
-              </a>
+              </a> */}
             </div>
           </div>
-          <div className="hero-card" aria-label="featured deal">
+          <a
+            className="hero-card"
+            href="https://demo.tickmybus.com/"
+            aria-label="featured deal"
+          >
             <h2>Today’s Featured Deal</h2>
             <p>Save up to 25% on premium intercity routes this week.</p>
             <ul>
               <li>Flexible ticket changes</li>
-              <li>Airport transfers</li>
+              <li>All Operatores Support</li>
               <li>Corporate travel support</li>
             </ul>
-          </div>
+          </a>
         </section>
       </main>
       <Footer />

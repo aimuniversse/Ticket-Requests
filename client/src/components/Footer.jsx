@@ -5,7 +5,7 @@ import {
   FaTwitter,
   FaYoutube,
 } from 'react-icons/fa'
-import './Footer.css'
+import '../styles/Footer.css'
 
 const companyLinks =[]
 const serviceLinks = [

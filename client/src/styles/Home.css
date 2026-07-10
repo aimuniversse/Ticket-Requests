@@ -1,0 +1,109 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding: 3.5rem 1.25rem 4rem;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+}
+
+.hero-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-copy h1 {
+  font-size: clamp(2.2rem, 4vw, 3.7rem);
+  line-height: 1.05;
+  margin: 0.3rem 0 1rem;
+  color: #0f172a;
+}
+
+.hero-copy p {
+  color: #475569;
+  font-size: 1.05rem;
+  margin-bottom: 1.2rem;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.hero-card {
+  display: block;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(135, 209, 227, 0.95) 0%, rgba(245, 88, 88, 0.95) 100%), url('./assets/logoc.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.08);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.14);
+}
+
+.hero-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
+}
+
+.hero-card h2 {
+  margin: 0 0 0.7rem;
+  color: #0f172a;
+}
+
+.hero-card p,
+.hero-card li {
+  color: #0c0c0c;
+}
+
+.hero-card ul {
+  margin: 1rem 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+@media (max-width: 900px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-main {
+    padding: 2rem 1rem 2.4rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+}

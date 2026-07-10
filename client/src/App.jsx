@@ -1,43 +1,21 @@
-import Header from './Header'
-import Footer from './Footer'
-import './App.css'
+import { Routes, Route } from "react-router-dom";
+
+import Home from "./components/Home";
+import OperatorLogin from "./pages/OperatorLogin";
+import OperatorRegister from "./pages/OperatorRegister";
+import OperatorDashboard from "./pages/operator/OperatorDashboard";
+import TicketRequestForm from "./components/TicketRequest/TicketRequestForm";
 
 function App() {
   return (
-    <div className="app-shell">
-      <Header />
-      <main className="app-main" id="home">
-        <section className="hero-section">
-          <div className="hero-copy">
-            <p className="hero-eyebrow">Premium Bus Rental & Ticket Booking</p>
-            <h1>Travel in comfort with BusRent.</h1>
-            <p>
-              Reserve seats, charter buses, and plan seamless group journeys with a
-              premium experience built for modern travelers.
-            </p>
-            <div className="hero-actions">
-              <a className="primary-btn" href="#book-now">
-                Book Your Trip
-              </a>
-              <a className="ghost-btn" href="#routes">
-                Explore Routes
-              </a>
-            </div>
-          </div>
-          <div className="hero-card" aria-label="featured deal">
-            <h2>Today’s Featured Deal</h2>
-            <p>Save up to 25% on premium intercity routes this week.</p>
-            <ul>
-              <li>Flexible ticket changes</li>
-              <li>Airport transfers</li>
-              <li>Corporate travel support</li>
-            </ul>
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
-  )
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/operator-login" element={<OperatorLogin />} />
+      <Route path="/operator-register" element={<OperatorRegister />} />
+      <Route path="/operator/dashboard" element={<OperatorDashboard />} />
+      <Route path="ticket-request" element={<TicketRequestForm />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

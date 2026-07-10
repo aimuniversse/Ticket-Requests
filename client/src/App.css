@@ -51,11 +51,28 @@
 }
 
 .hero-card {
+  display: block;
   padding: 1.5rem;
   border-radius: 24px;
-  background: #fff;
+  background: linear-gradient(135deg, rgba(135, 209, 227, 0.95) 0%, rgba(245, 88, 88, 0.95) 100%), url('./assets/logoc.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right bottom;
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
   border: 1px solid rgba(37, 99, 235, 0.08);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.14);
+}
+
+.hero-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
 }
 
 .hero-card h2 {
@@ -65,7 +82,7 @@
 
 .hero-card p,
 .hero-card li {
-  color: #475569;
+  color: #0c0c0c;
 }
 
 .hero-card ul {

@@ -82,13 +82,20 @@
   margin: 0 0 0.85rem;
   color: #fff;
   font-size: 1rem;
+ 
 }
 
 .footer-brand {
   display: flex;
-  align-items: center;
-  gap: 0.9rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.footer-logo {
+  max-width: 100%;
+  height: auto !important;
 }
 
 .brand-icon-footer {
@@ -99,12 +106,15 @@
   border-radius: 14px;
   background: rgba(37, 99, 235, 0.2);
   font-size: 1.2rem;
+  
+  
 }
 
 .footer-brand p {
-  margin-top: 0.25rem;
+  margin: 0;
   color: #cbd5e1;
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .footer-links {

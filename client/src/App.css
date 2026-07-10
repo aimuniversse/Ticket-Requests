@@ -2,12 +2,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  
 }
 
 .app-main {
   flex: 1;
   padding: 3.5rem 1.25rem 4rem;
   background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+  
 }
 
 .hero-section {
@@ -29,7 +31,7 @@
 .hero-copy p {
   color: #475569;
   font-size: 1.05rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 7.2rem;
 }
 
 .hero-eyebrow {
@@ -42,6 +44,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.72rem;
+ 
 }
 
 .hero-actions {
@@ -90,6 +93,8 @@
   padding-left: 1.1rem;
   display: grid;
   gap: 0.6rem;
+  
+
 }
 
 @media (max-width: 900px) {

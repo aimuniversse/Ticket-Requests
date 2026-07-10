@@ -5,13 +5,8 @@ import {
   FaTwitter,
   FaYoutube,
 } from 'react-icons/fa'
-<<<<<<< HEAD:client/src/components/Footer.jsx
-import '../styles/Footer.css'
-=======
-import './Footer.css'
-import logoImage from './assets/logoc.png'
->>>>>>> f256a3c2e0e651e2083e29ec6167f6e3700f041e:client/src/Footer.jsx
-
+import "../styles/Footer.css";
+import logoImage from "../assets/logoc.png";
 const companyLinks =[]
 const serviceLinks = [
   { label: 'Bus Ticket Booking', href: 'https://demo.tickmybus.com/' },

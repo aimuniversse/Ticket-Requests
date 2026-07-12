@@ -18,8 +18,15 @@ class CustomerRequests(models.Model):
         ("CANCELLED", "Cancelled"),
     )
 
+    request_id=models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False,
+        blank=True
+    )
+
     name = models.CharField(
-        max_length=100
+        max_length=100,
     )
     phone_number = models.CharField(
         max_length=15
@@ -39,6 +46,13 @@ class CustomerRequests(models.Model):
     expected_price = models.DecimalField(
         max_digits=10,
         decimal_places=2
+    )
+    assigned_operator = models.ForeignKey(
+        "operators.Operator",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="assigned_requests"
     )
     status = models.CharField(
         max_length=20,

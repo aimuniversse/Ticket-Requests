@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaBars,
   FaBus,
@@ -9,9 +10,9 @@ import {
 import "../styles/Header.css";
 
 const navItems = [
-  "Home",
-  "About Us",
-  "Contact",
+  { label: "Home", to: "/" },
+  { label: "About Us", to: "/about" },
+  { label: "Contact", to: "#contact" },
 ];
 
 function Header() {
@@ -42,16 +43,28 @@ function Header() {
           <ul className="nav-links">
 
             {navItems.map((item) => (
-              <li key={item}>
-                <a
-                  href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  className={`nav-link ${
-                    activeItem === item ? "active" : ""
-                  }`}
-                  onClick={() => setActiveItem(item)}
-                >
-                  {item}
-                </a>
+              <li key={item.label}>
+                {item.to.startsWith("#") ? (
+                  <a
+                    href={item.to}
+                    className={`nav-link ${
+                      activeItem === item.label ? "active" : ""
+                    }`}
+                    onClick={() => setActiveItem(item.label)}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={item.to}
+                    className={`nav-link ${
+                      activeItem === item.label ? "active" : ""
+                    }`}
+                    onClick={() => setActiveItem(item.label)}
+                  >
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
 
@@ -95,16 +108,29 @@ function Header() {
           <ul className="mobile-links">
 
             {navItems.map((item) => (
-              <li key={item}>
-                <a
-                  href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  onClick={() => {
-                    setActiveItem(item);
-                    setMobileOpen(false);
-                  }}
-                >
-                  {item}
-                </a>
+              <li key={item.label}>
+                {item.to.startsWith("#") ? (
+                  <a
+                    href={item.to}
+                    onClick={() => {
+                      setActiveItem(item.label);
+                      setMobileOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={item.to}
+                    className="nav-link"
+                    onClick={() => {
+                      setActiveItem(item.label);
+                      setMobileOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
 

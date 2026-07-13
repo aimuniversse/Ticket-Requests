@@ -81,10 +81,10 @@ function Header() {
             Operator Login
           </a>
 
-          <a href="/admin-login" className="admin-btn">
+          {/* <a href="/admin-login" className="admin-btn">
             <FaUserShield />
             Admin Login
-          </a>
+          </a> */}
 
         </div>
 

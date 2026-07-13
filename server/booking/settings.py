@@ -26,36 +26,6 @@ DEBUG = env("DEBUG")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
-<<<<<<< HEAD:booking/settings.py
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # Third-party apps
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
-    "corsheaders",
-    # Local apps
-    "customer",
-    "authentication",
-]
-
-MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
-ROOT_URLCONF = "booking.urls"
-=======
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -90,7 +60,6 @@ REST_FRAMEWORK = {
 }
 
 ROOT_URLCONF = 'booking.urls'
->>>>>>> 9ce6eb57a7bac59762c875a2365aa3e7397d11a4:server/booking/settings.py
 
 TEMPLATES = [
     {
@@ -154,50 +123,8 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-<<<<<<< HEAD:booking/settings.py
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
-    "DEFAULT_RENDERER_CLASSES": (
-        "rest_framework.renderers.JSONRenderer",
-    ),
-    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
-    "NON_FIELD_ERRORS_KEY": "error",
-}
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=env("JWT_ACCESS_TOKEN_LIFETIME_MINUTES")
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        days=env("JWT_REFRESH_TOKEN_LIFETIME_DAYS")
-    ),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": True,
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "AUTH_TOKEN_CLASSES": (
-        "rest_framework_simplejwt.tokens.AccessToken",
-    ),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "JTI_CLAIM": "jti",
-}
-
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
-CORS_ALLOW_CREDENTIALS = True
-=======
 STATIC_URL = 'static/'
 AUTH_USER_MODEL ="accounts.User"
 AUTHENTICATION_BACKENDS=[
     "accounts.backend.PhoneNumberBackend",
 ]
->>>>>>> 9ce6eb57a7bac59762c875a2365aa3e7397d11a4:server/booking/settings.py

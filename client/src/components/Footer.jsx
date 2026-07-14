@@ -32,7 +32,7 @@ const socialLinks = [
 
 function Footer() {
   return (
-    <footer className="site-footer">
+    <footer id="contact" className="site-footer">
       <div className="footer-newsletter">
         <div>
           <p className="eyebrow">Travel smarter</p>
@@ -45,6 +45,7 @@ function Footer() {
           </label>
           <input id="newsletter-email" type="email" placeholder="Enter your email" />
           <button type="submit">Subscribe</button>
+          
         </form>
       </div>
 

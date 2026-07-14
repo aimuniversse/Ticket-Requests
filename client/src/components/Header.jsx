@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaBars,
-  FaBus,
   FaTimes,
   FaUserShield,
   FaUserTie,
 } from "react-icons/fa";
+import logoImage from "../assets/logo.jpeg";
 import "../styles/Header.css";
 
 const navItems = [
@@ -27,12 +27,12 @@ function Header() {
 
         <a className="brand" href="/">
           <span className="brand-icon">
-            <FaBus />
+            <img src={logoImage} alt="Tick My Bus" />
           </span>
 
           <span className="brand-text">
-            <strong>ANBU TRANSPORT</strong>
-            <small>Operator Portal</small>
+            <strong>Tick My Bus</strong>
+            <small>Bus Booking</small>
           </span>
         </a>
 

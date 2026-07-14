@@ -7,7 +7,7 @@ import '../styles/Home.css'
 function App() {
   return (
     <div className="app-shell">
-      <Header />
+      <Header /> 
       <main className="app-main" id="home">
         <section className="hero-section">
           <div className="hero-copy">

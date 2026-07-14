@@ -1,0 +1,159 @@
+.request-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #d32f2f;
+  transition: all 0.3s ease;
+}
+
+.request-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.request-header h3 {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.request-header small {
+  color: #888;
+  font-size: 13px;
+}
+
+.time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 8px 14px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.request-body {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.info svg {
+  color: #d32f2f;
+  font-size: 18px;
+}
+
+.info span {
+  color: #777;
+  font-size: 13px;
+  min-width: 120px;
+}
+
+.info strong {
+  margin-left: auto;
+  color: #222;
+  font-size: 15px;
+}
+
+.locked-box {
+  background: #fff5f5;
+  border: 1px solid #ffd6d6;
+  color: #c62828;
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.request-footer {
+  display: flex;
+  gap: 15px;
+}
+
+.accept-btn,
+.reject-btn {
+  flex: 1;
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.accept-btn {
+  background: #2e7d32;
+  color: #fff;
+}
+
+.accept-btn:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
+}
+
+.reject-btn {
+  background: #d32f2f;
+  color: #fff;
+}
+
+.reject-btn:hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .request-card {
+    padding: 20px;
+  }
+
+  .request-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .time {
+    width: fit-content;
+  }
+
+  .info {
+    flex-wrap: wrap;
+  }
+
+  .info strong {
+    margin-left: 0;
+    width: 100%;
+    padding-left: 33px;
+  }
+
+  .request-footer {
+    flex-direction: column;
+  }
+
+  .accept-btn,
+  .reject-btn {
+    width: 100%;
+  }
+}

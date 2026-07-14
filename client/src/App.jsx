@@ -3,8 +3,20 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import OperatorLogin from "./pages/OperatorLogin";
 import OperatorRegister from "./pages/OperatorRegister";
-import OperatorDashboard from "./pages/operator/OperatorDashboard";
+import OperatorDashboard from "./pages/operator/OperatorDashboardNew";
 import TicketRequestForm from "./components/TicketRequest/TicketRequestForm";
+
+//Operator
+import RequestCard from "./pages/operator/RequestCard";
+import AcceptQuoteModal from "./pages/operator/AcceptQuoteModal";
+import CustomerDetailsUnlock from "./pages/operator/CustomerDetailsUnlock";
+import ActiveRequests from "./pages/operator/ActiveRequests";
+import AcceptedRequests from "./pages/operator/AcceptedRequests";
+import Wallet from "./pages/operator/Wallet";
+import Transactions from "./pages/operator/Transactions";
+import Notifications from "./pages/operator/Notifications";
+import Profile from "./pages/operator/Profile";
+import Settings from "./pages/operator/Settings";
 
 function App() {
   return (
@@ -14,6 +26,17 @@ function App() {
       <Route path="/operator-register" element={<OperatorRegister />} />
       <Route path="/operator/dashboard" element={<OperatorDashboard />} />
       <Route path="ticket-request" element={<TicketRequestForm />} />
+
+      <Route path="/operator/request-card" element={<RequestCard />} />
+      <Route path="/operator/accept-quote" element={<AcceptQuoteModal />} />
+      <Route path="/operator/customer-details-unlock" element={<CustomerDetailsUnlock />} />
+        <Route path="/operator/active-requests" element={<ActiveRequests />} />
+        <Route path="/operator/accepted-requests" element={<AcceptedRequests />} />
+        <Route path="/operator/wallet" element={<Wallet />} />
+        <Route path="/operator/transactions" element={<Transactions />} />
+        <Route path="/operator/notifications" element={<Notifications />} />
+        <Route path="/operator/profile" element={<Profile />} />
+        <Route path="/operator/settings" element={<Settings />} />
     </Routes>
   );
 }

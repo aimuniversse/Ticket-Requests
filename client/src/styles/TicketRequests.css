@@ -18,14 +18,16 @@ Wrapper
 ========================== */
 
 .ticket-wrapper{
-
     width:100%;
+    max-width:1260px;
     min-height:100vh;
-
-    padding:60px 20px;
-
+    margin:0 auto;
+    padding:30px 16px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
     background:linear-gradient(180deg,#fff,#f8f9fc);
-
 }
 
 /* ==========================
@@ -33,25 +35,16 @@ Header
 ========================== */
 
 .ticket-header{
-
-    max-width:1100px;
-
+    max-width:960px;
     margin:auto;
-
     text-align:center;
-
-    margin-bottom:40px;
-
+    margin-bottom:24px;
 }
 
 .ticket-header h1{
-
-    font-size:40px;
-
+    font-size:34px;
     color:#d62828;
-
     font-weight:700;
-
 }
 
 .ticket-header p{
@@ -69,47 +62,226 @@ Form
 ========================== */
 
 .ticket-form{
-
-    max-width:1100px;
-
+    max-width:1000px;
     margin:auto;
-
 }
 
-/* ==========================
-Cards
-========================== */
-
-.form-card{
-
+.form-panel{
     background:white;
-
-    border-radius:18px;
-
+    border-radius:24px;
     padding:30px;
+    margin:auto;
+    box-shadow:0 20px 50px rgba(0,0,0,.08);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    min-height:720px;
+}
 
+.form-head{
     margin-bottom:25px;
-
-    box-shadow:0 15px 40px rgba(0,0,0,.08);
-
-    transition:.35s;
-
 }
 
-.form-card:hover{
-
-    transform:translateY(-5px);
-
-}
-
-.form-card h2{
-
+.form-head h2{
+    font-size:32px;
     color:#d62828;
+    margin-bottom:10px;
+}
 
-    margin-bottom:25px;
+.form-head p{
+    color:#555;
+    font-size:16px;
+}
 
-    font-size:22px;
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(220px,1fr));
+    gap:16px;
+    align-items:start;
+}
 
+.full-width{
+    grid-column:1/4;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label{
+    margin-bottom:10px;
+    font-weight:600;
+    color:#333;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea{
+    width:100%;
+    border:1px solid #ddd;
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:15px;
+    outline:none;
+    transition:.3s;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus{
+    border-color:#d62828;
+    box-shadow:0 0 12px rgba(214,40,40,.15);
+}
+
+.ticket-counter{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 14px;
+    border:1px solid #ddd;
+    border-radius:14px;
+    background:#fafafa;
+}
+
+.ticket-counter button{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:#d62828;
+    color:#fff;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.ticket-counter strong{
+    font-size:18px;
+}
+
+.captcha-box.compact{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.captcha-question{
+    min-width:120px;
+    padding:12px 14px;
+    border-radius:14px;
+    background:#d62828;
+    color:#fff;
+    text-align:center;
+    font-weight:700;
+}
+
+.form-actions{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-end;
+    gap:16px;
+    margin-top:auto;
+    padding-top:18px;
+    border-top:1px solid #f0f0f0;
+}
+
+.agree-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:14px;
+    color:#555;
+}
+
+.agree-box input{
+    width:18px;
+    height:18px;
+    accent-color:#d62828;
+}
+
+.submit-btn.full-width{
+    flex:1;
+    min-width:240px;
+}
+
+.submit-btn{
+    width:100%;
+    height:60px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,#d62828,#ff4d4d);
+    color:#fff;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.35s;
+    box-shadow:0 15px 30px rgba(214,40,40,.30);
+}
+
+.submit-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 20px 40px rgba(214,40,40,.40);
+}
+
+.submit-btn:active{
+    transform:scale(.98);
+}
+
+@media (max-width: 1100px) {
+    .ticket-wrapper {
+        padding:28px 14px 42px;
+    }
+    .ticket-header h1 {
+        font-size:32px;
+    }
+    .form-grid {
+        grid-template-columns:1fr;
+    }
+    .form-panel {
+        padding:22px;
+        max-width:840px;
+        width:100%;
+        min-height:auto;
+    }
+    .form-actions {
+        margin-top:24px;
+        border-top:none;
+        padding-top:0;
+    }
+    .submit-btn.full-width {
+        min-width:100%;
+    }
+}
+
+@media (max-width: 900px) {
+    .ticket-wrapper {
+        padding:26px 14px 40px;
+    }
+    .ticket-header h1 {
+        font-size:30px;
+    }
+    .form-head h2 {
+        font-size:26px;
+    }
+    .captcha-box.compact {
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .ticket-wrapper {
+        padding:30px 12px;
+    }
+    .ticket-header h1 {
+        font-size:28px;
+    }
+    .form-head h2 {
+        font-size:26px;
+    }
 }
 
 /* ==========================

@@ -4,19 +4,17 @@ import api from "../../api/axios";
 const TicketRequestForm = () => {
 
   const [formData, setFormData] = useState({
-    from: "",
-    to: "",
-    journeyDate: "",
-    returnDate: "",
-    adults: 1,
-    children: 0,
-    busType: "",
+    name: "",
+    phone_number: "",
+    from_location: "",
+    to_location: "",
+    journey_date: "",
+    total_tickets: 1,
+    bus_type: "",
     boardingPoint: "",
     dropPoint: "",
-    budget: "",
+    expected_price: "",
     notes: "",
-    fullName: "",
-    phone: "",
     email: "",
     captcha: "",
     agree: false,
@@ -44,10 +42,24 @@ const TicketRequestForm = () => {
   }
 
   try {
-    const response = await api.post(
-      "customer/request/",
-      formData
-    );
+    const payload = {
+      name: formData.name,
+      phone_number: formData.phone_number,
+      from_location: formData.from_location,
+      to_location: formData.to_location,
+      journey_date: formData.journey_date,
+      total_tickets: Number(formData.total_tickets) || 1,
+      bus_type: formData.bus_type || "",
+      expected_price: formData.expected_price ? String(formData.expected_price) : "",
+    };
+
+    if (!payload.name || !payload.phone_number || !payload.from_location || !payload.to_location || !payload.journey_date || !payload.bus_type || !payload.expected_price) {
+      alert("Please fill in all required fields before submitting.");
+      return;
+    }
+
+    console.debug("API Payload:", payload);
+    const response = await api.post("customer/request/", payload);
 
     console.log("Response :", response.data);
 
@@ -55,19 +67,17 @@ const TicketRequestForm = () => {
 
     // Reset Form
     setFormData({
-      from: "",
-      to: "",
-      journeyDate: "",
-      returnDate: "",
-      adults: 1,
-      children: 0,
-      busType: "",
+      name: "",
+      phone_number: "",
+      from_location: "",
+      to_location: "",
+      journey_date: "",
+      total_tickets: 1,
+      bus_type: "",
       boardingPoint: "",
       dropPoint: "",
-      budget: "",
+      expected_price: "",
       notes: "",
-      fullName: "",
-      phone: "",
       email: "",
       captcha: "",
       agree: false,
@@ -93,46 +103,16 @@ const TicketRequestForm = () => {
     }));
   };
 
-  const increaseAdult = () => {
+  // total_tickets handlers
+  const increaseTickets = () => {
+    setFormData((prev) => ({ ...prev, total_tickets: Number(prev.total_tickets) + 1 }));
+  };
+
+  const decreaseTickets = () => {
     setFormData((prev) => ({
       ...prev,
-      adults: prev.adults + 1,
+      total_tickets: Math.max(1, Number(prev.total_tickets) - 1),
     }));
-  };
-
-  const decreaseAdult = () => {
-
-    if (formData.adults > 1) {
-
-      setFormData((prev) => ({
-        ...prev,
-        adults: prev.adults - 1,
-      }));
-
-    }
-
-  };
-
-  const increaseChild = () => {
-
-    setFormData((prev) => ({
-      ...prev,
-      children: prev.children + 1,
-    }));
-
-  };
-
-  const decreaseChild = () => {
-
-    if (formData.children > 0) {
-
-      setFormData((prev) => ({
-        ...prev,
-        children: prev.children - 1,
-      }));
-
-    }
-
   };
 
   return (
@@ -153,340 +133,108 @@ const TicketRequestForm = () => {
 
       </div>
 
-      <form
-        className="ticket-form"
-        onSubmit={handleSubmit}
-      >
+      <form className="ticket-form" onSubmit={handleSubmit}>
+        <div className="form-card form-panel">
+          <div className="form-head full-width">
+            <h2>Quick Ticket Request</h2>
+            <p>Submit the request in one view for both desktop and mobile.</p>
+          </div>
 
-        {/* Journey */}
-
-        <div className="form-card">
-
-          <h2>Journey Details</h2>
-
-          <div className="grid-two">
-
+          <div className="form-grid">
             <div className="input-group">
-
-              <label>From</label>
-
+              <label>From Location</label>
               <input
                 type="text"
-                name="from"
-                value={formData.from}
+                name="from_location"
+                value={formData.from_location}
                 onChange={handleChange}
                 placeholder="Enter departure city"
+                required
               />
-
             </div>
 
             <div className="input-group">
-
-              <label>To</label>
-
+              <label>To Location</label>
               <input
                 type="text"
-                name="to"
-                value={formData.to}
+                name="to_location"
+                value={formData.to_location}
                 onChange={handleChange}
                 placeholder="Enter destination city"
+                required
               />
-
             </div>
 
             <div className="input-group">
-
               <label>Journey Date</label>
-
               <input
                 type="date"
-                name="journeyDate"
-                value={formData.journeyDate}
+                name="journey_date"
+                value={formData.journey_date}
                 onChange={handleChange}
+                required
               />
-
             </div>
 
             <div className="input-group">
-
-              <label>Return Date</label>
-
-              <input
-                type="date"
-                name="returnDate"
-                value={formData.returnDate}
-                onChange={handleChange}
-              />
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Passenger */}
-
-        <div className="form-card">
-
-          <h2>Passenger Details</h2>
-
-          <div className="counter-wrapper">
-
-            <div className="counter-box">
-
-              <span>Adults</span>
-
-              <div className="counter">
-
-                <button
-                  type="button"
-                  onClick={decreaseAdult}
-                >
-                  -
-                </button>
-
-                <strong>{formData.adults}</strong>
-
-                <button
-                  type="button"
-                  onClick={increaseAdult}
-                >
-                  +
-                </button>
-
+              <label>Total Tickets</label>
+              <div className="ticket-counter">
+                <button type="button" onClick={decreaseTickets}>-</button>
+                <strong>{formData.total_tickets}</strong>
+                <button type="button" onClick={increaseTickets}>+</button>
               </div>
-
-            </div>
-
-            <div className="counter-box">
-
-              <span>Children</span>
-
-              <div className="counter">
-
-                <button
-                  type="button"
-                  onClick={decreaseChild}
-                >
-                  -
-                </button>
-
-                <strong>{formData.children}</strong>
-
-                <button
-                  type="button"
-                  onClick={increaseChild}
-                >
-                  +
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-                {/* Bus Preference */}
-
-        <div className="form-card">
-
-          <h2>Bus Preference</h2>
-
-          <div className="bus-grid">
-
-            <label className="bus-card">
-
-              <input
-                type="radio"
-                name="busType"
-                value="AC Sleeper"
-                checked={formData.busType === "AC Sleeper"}
-                onChange={handleChange}
-              />
-
-              <span>🛏️ AC Sleeper</span>
-
-            </label>
-
-            <label className="bus-card">
-
-              <input
-                type="radio"
-                name="busType"
-                value="AC Seater"
-                checked={formData.busType === "AC Seater"}
-                onChange={handleChange}
-              />
-
-              <span>💺 AC Seater</span>
-
-            </label>
-
-            <label className="bus-card">
-
-              <input
-                type="radio"
-                name="busType"
-                value="Non AC"
-                checked={formData.busType === "Non AC"}
-                onChange={handleChange}
-              />
-
-              <span>❄️ Non AC</span>
-
-            </label>
-
-            <label className="bus-card">
-
-              <input
-                type="radio"
-                name="busType"
-                value="Volvo"
-                checked={formData.busType === "Volvo"}
-                onChange={handleChange}
-              />
-
-              <span>🚌 Volvo</span>
-
-            </label>
-
-          </div>
-
-        </div>
-
-
-
-        {/* Boarding */}
-
-        <div className="form-card">
-
-          <h2>Boarding Details</h2>
-
-          <div className="grid-two">
-
-            <div className="input-group">
-
-              <label>Preferred Boarding Point</label>
-
-              <input
-                type="text"
-                name="boardingPoint"
-                value={formData.boardingPoint}
-                onChange={handleChange}
-                placeholder="Boarding location"
-              />
-
             </div>
 
             <div className="input-group">
-
-              <label>Preferred Drop Point</label>
-
-              <input
-                type="text"
-                name="dropPoint"
-                value={formData.dropPoint}
-                onChange={handleChange}
-                placeholder="Drop location"
-              />
-
+              <label>Bus Type</label>
+              <select name="bus_type" value={formData.bus_type} onChange={handleChange} required>
+                <option value="">Select bus type</option>
+                <option value="AC_SLEEPER">AC_SLEEPER</option>
+                <option value="NON_AC_SLEEPER">NON_AC_SLEEPER</option>
+                <option value="AC_SEATER">AC_SEATER</option>
+                <option value="NON_AC_SEATER">NON_AC_SEATER</option>
+                <option value="SEMI_SLEEPER">SEMI_SLEEPER</option>
+              </select>
             </div>
 
-          </div>
-
-        </div>
-
-
-
-        {/* Budget */}
-
-        <div className="form-card">
-
-          <h2>Expected Budget</h2>
-
-          <div className="input-group">
-
-            <label>Budget (₹)</label>
-
-            <input
-              type="number"
-              name="budget"
-              value={formData.budget}
-              onChange={handleChange}
-              placeholder="Enter expected ticket price"
-            />
-
-          </div>
-
-        </div>
-
-
-
-        {/* Notes */}
-
-        <div className="form-card">
-
-          <h2>Special Notes</h2>
-
-          <textarea
-
-            name="notes"
-
-            rows="5"
-
-            value={formData.notes}
-
-            onChange={handleChange}
-
-            placeholder="Anything you want the operator to know?"
-
-          />
-
-        </div>
-
-
-
-        {/* Contact */}
-
-        <div className="form-card">
-
-          <h2>Contact Details</h2>
-
-          <div className="grid-two">
+            <div className="input-group">
+              <label>Expected Price (₹)</label>
+              <input
+                type="number"
+                name="expected_price"
+                value={formData.expected_price}
+                onChange={handleChange}
+                placeholder="Enter expected ticket price"
+                required
+              />
+            </div>
 
             <div className="input-group">
-
-              <label>Full Name</label>
-
+              <label>Name</label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="Your Name"
+                required
               />
-
             </div>
 
             <div className="input-group">
-
               <label>Phone Number</label>
-
               <input
                 type="tel"
-                name="phone"
-                value={formData.phone}
+                name="phone_number"
+                value={formData.phone_number}
                 onChange={handleChange}
                 placeholder="Phone Number"
+                required
               />
-
             </div>
 
-            <div className="input-group grid-full">
-
+            <div className="input-group">
               <label>Email Address</label>
-
               <input
                 type="email"
                 name="email"
@@ -494,83 +242,72 @@ const TicketRequestForm = () => {
                 onChange={handleChange}
                 placeholder="Email Address"
               />
-
             </div>
 
-          </div>
-
-        </div>
-
-
-
-        {/* Captcha */}
-
-        <div className="form-card">
-
-          <h2>Security Verification</h2>
-
-          <div className="captcha-box">
-
-            <div className="captcha-question">
-
-              {captcha.question} = ?
-
+            <div className="input-group">
+              <label>Boarding Point</label>
+              <input
+                type="text"
+                name="boardingPoint"
+                value={formData.boardingPoint}
+                onChange={handleChange}
+                placeholder="Preferred boarding point"
+              />
             </div>
 
-            <input
-              type="number"
-              name="captcha"
-              value={formData.captcha}
-              onChange={handleChange}
-              placeholder="Enter Answer"
-            />
+            <div className="input-group">
+              <label>Drop Point</label>
+              <input
+                type="text"
+                name="dropPoint"
+                value={formData.dropPoint}
+                onChange={handleChange}
+                placeholder="Preferred drop point"
+              />
+            </div>
 
+            <div className="input-group full-width">
+              <label>Special Notes</label>
+              <textarea
+                name="notes"
+                rows="3"
+                value={formData.notes}
+                onChange={handleChange}
+                placeholder="Anything you want the operator to know?"
+              />
+            </div>
+
+            <div className="input-group full-width">
+              <label>Security Verification</label>
+              <div className="captcha-box compact">
+                <div className="captcha-question">{captcha.question} = ?</div>
+                <input
+                  type="number"
+                  name="captcha"
+                  value={formData.captcha}
+                  onChange={handleChange}
+                  placeholder="Answer"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
+          <div className="form-actions">
+            <label className="agree-box">
+              <input
+                type="checkbox"
+                name="agree"
+                checked={formData.agree}
+                onChange={handleChange}
+              />
+              <span>I agree to the Terms & Conditions.</span>
+            </label>
+            <button type="submit" className="submit-btn full-width">
+              Submit Ticket Price Request
+            </button>
+          </div>
         </div>
-
-
-
-        {/* Terms */}
-
-        <div className="agree-box">
-
-          <input
-
-            type="checkbox"
-
-            name="agree"
-
-            checked={formData.agree}
-
-            onChange={handleChange}
-
-          />
-
-          <label>
-
-            I agree to the Terms & Conditions.
-
-          </label>
-
-        </div>
-
-
-
-        {/* Submit */}
-
-        <button
-
-          type="submit"
-
-          className="submit-btn"
-
-        >
-
-          Submit Ticket Price Request
-
-        </button>
-
       </form>
 
     </section>

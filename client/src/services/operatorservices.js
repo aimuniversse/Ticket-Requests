@@ -1,7 +1,11 @@
 import API from "../api/axios";
 
-export const getDashboard=()=>{
+export const getAssignedRequests = () => API.get("auth/requests/assigned/");
 
-return API.get("/operator/dashboard/");
+export const getOperatorProfile = () => {
+  const storedUser = localStorage.getItem("user");
 
-}
+  return Promise.resolve({
+    data: storedUser ? JSON.parse(storedUser) : null,
+  });
+};

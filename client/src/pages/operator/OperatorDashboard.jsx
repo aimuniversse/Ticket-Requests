@@ -1,5 +1,12 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "../../styles/OperatorDashboard.css";
+import RequestCard from "./RequestCard";
+import AcceptQuoteModal from "./AcceptQuoteModal";
+import CustomerDetailsUnlock from "./CustomerDetailsUnlock";
+import ActiveRequests from "./ActiveRequests";
+import AcceptedRequests from "./AcceptedRequests";
+
 import {
   FaBus,
   FaHome,
@@ -16,6 +23,7 @@ import {
 } from "react-icons/fa";
 
 const OperatorDashboard = () => {
+  const location = useLocation();
 
   // Dashboard summary (Backend will replace this)
   const [dashboard] = useState({
@@ -45,54 +53,74 @@ const OperatorDashboard = () => {
 
         <ul>
 
-          <li className="active">
-            <FaHome />
-            Dashboard
+          <li className={location.pathname === "/operator/dashboard" ? "active" : ""}>
+            <Link to="/operator/dashboard">
+              <FaHome />
+              Dashboard
+            </Link>
           </li>
 
-          <li>
-            <FaTicketAlt />
-            Ticket Requests
+          <li className={location.pathname === "/operator/request-card" ? "active" : ""}>
+            <Link to="/operator/request-card">
+              <FaTicketAlt />
+              Ticket Requests
+            </Link>
           </li>
 
-          <li>
-            <FaClock />
-            Active Requests
+          <li className={location.pathname === "/operator/active-requests" ? "active" : ""}>
+            <Link to="/operator/active-requests">
+              <FaClock />
+              Active Requests
+            </Link>
           </li>
 
-          <li>
-            <FaCheckCircle />
-            Accepted Requests
+          <li className={location.pathname === "/operator/accepted-requests" ? "active" : ""}>
+            <Link to="/operator/accepted-requests">
+              <FaCheckCircle />
+              Accepted Requests
+            </Link>
           </li>
 
-          <li>
-            <FaWallet />
-            Wallet
+          <li className={location.pathname === "/operator/wallet" ? "active" : ""}>
+            <Link to="/operator/wallet">
+              <FaWallet />
+              Wallet
+            </Link>
           </li>
 
-          <li>
-            <FaMoneyBillWave />
-            Transactions
+          <li className={location.pathname === "/operator/transactions" ? "active" : ""}>
+            <Link to="/operator/transactions">
+              <FaMoneyBillWave />
+              Transactions
+            </Link>
           </li>
 
-          <li>
-            <FaBell />
-            Notifications
+          <li className={location.pathname === "/operator/notifications" ? "active" : ""}>
+            <Link to="/operator/notifications">
+              <FaBell />
+              Notifications
+            </Link>
           </li>
 
-          <li>
-            <FaUserCircle />
-            Profile
+          <li className={location.pathname === "/operator/profile" ? "active" : ""}>
+            <Link to="/operator/profile">
+              <FaUserCircle />
+              Profile
+            </Link>
           </li>
 
-          <li>
-            <FaCog />
-            Settings
+          <li className={location.pathname === "/operator/settings" ? "active" : ""}>
+            <Link to="/operator/settings">
+              <FaCog />
+              Settings
+            </Link>
           </li>
 
           <li className="logout">
-            <FaSignOutAlt />
-            Logout
+            <Link to="/operator-login">
+              <FaSignOutAlt />
+              Logout
+            </Link>
           </li>
 
         </ul>

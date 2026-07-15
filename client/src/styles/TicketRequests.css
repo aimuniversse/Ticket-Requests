@@ -7,10 +7,14 @@
     padding:0;
     box-sizing:border-box;
     font-family:"Poppins",sans-serif;
+    /* background: linear-gradient(180deg, rgba(245, 237, 237, 0.92) 0%, rgba(246, 245, 245, 0.92) 100%), url("../assets/logo.jpeg"); */
+  /* background:url("../assets/route-bg.png"); */
+
 }
 
 body{
     background:#f5f7fb;
+    
 }
 
 /* ==========================
@@ -38,7 +42,7 @@ Header
     max-width:960px;
     margin:auto;
     text-align:center;
-    margin-bottom:24px;
+    margin-bottom:2px;
 }
 
 .ticket-header h1{
@@ -49,7 +53,7 @@ Header
 
 .ticket-header p{
 
-    margin-top:15px;
+    margin-top:1px;
 
     color:#666;
 
@@ -63,12 +67,13 @@ Form
 
 .ticket-form{
     max-width:1000px;
-    margin:auto;
+    margin: auto;
+    
 }
 
 .form-panel{
     background:white;
-    border-radius:24px;
+    border-radius:0px;
     padding:30px;
     margin:auto;
     box-shadow:0 20px 50px rgba(0,0,0,.08);
@@ -79,13 +84,14 @@ Form
 }
 
 .form-head{
-    margin-bottom:25px;
+    /* margin-bottom:2px; */
+    margin-top: -40px;
 }
 
 .form-head h2{
-    font-size:32px;
+    font-size:28px;
     color:#d62828;
-    margin-bottom:10px;
+    margin-bottom:1px;
 }
 
 .form-head p{
@@ -96,12 +102,12 @@ Form
 .form-grid{
     display:grid;
     grid-template-columns:repeat(3,minmax(220px,1fr));
-    gap:16px;
+    gap:12px;
     align-items:start;
 }
 
 .full-width{
-    grid-column:1/4;
+    grid-column:1/0;
 }
 
 .input-group{
@@ -120,7 +126,7 @@ Form
 .input-group textarea{
     width:100%;
     border:1px solid #ddd;
-    border-radius:14px;
+    border-radius:0px;
     padding:14px 16px;
     font-size:15px;
     outline:none;
@@ -141,7 +147,7 @@ Form
     gap:12px;
     padding:10px 14px;
     border:1px solid #ddd;
-    border-radius:14px;
+    border-radius:0px;
     background:#fafafa;
 }
 
@@ -149,7 +155,7 @@ Form
     width:40px;
     height:40px;
     border:none;
-    border-radius:50%;
+    border-radius:0%;
     background:#d62828;
     color:#fff;
     font-size:18px;
@@ -170,7 +176,7 @@ Form
 .captcha-question{
     min-width:120px;
     padding:12px 14px;
-    border-radius:14px;
+    border-radius:0px;
     background:#d62828;
     color:#fff;
     text-align:center;
@@ -211,7 +217,7 @@ Form
     width:100%;
     height:60px;
     border:none;
-    border-radius:18px;
+    border-radius:0px;
     background:linear-gradient(135deg,#d62828,#ff4d4d);
     color:#fff;
     font-size:18px;
@@ -294,13 +300,13 @@ Grid
 
     grid-template-columns:repeat(2,1fr);
 
-    gap:20px;
+    gap:-2px;
 
 }
 
 .grid-full{
 
-    grid-column:1/3;
+    grid-column:1/4;
 
 }
 
@@ -318,7 +324,7 @@ Inputs
 
 .input-group label{
 
-    margin-bottom:8px;
+    margin-bottom:0px;
 
     font-weight:500;
 
@@ -332,7 +338,7 @@ Inputs
 
     border:1px solid #ddd;
 
-    border-radius:12px;
+    border-radius:0px;
 
     padding:0 18px;
 
@@ -362,7 +368,7 @@ textarea{
 
     border:1px solid #ddd;
 
-    border-radius:12px;
+    border-radius:0px;
 
     padding:18px;
 
@@ -388,7 +394,7 @@ Passenger Counter
 
     display:flex;
 
-    gap:30px;
+    /* gap:30px; */
 
     flex-wrap:wrap;
 
@@ -404,7 +410,7 @@ Passenger Counter
 
     padding:20px;
 
-    border-radius:15px;
+    border-radius:0px;
 
     border:1px solid #eee;
 
@@ -438,7 +444,7 @@ Passenger Counter
 
     border:none;
 
-    border-radius:50%;
+    border-radius:0%;
 
     background:#d62828;
 
@@ -470,7 +476,8 @@ Passenger Counter
 .bus-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:20px;
+    gap:2px;
+    /* margin-bottom: 10005px; */
 }
 
 .bus-card{
@@ -492,7 +499,7 @@ Passenger Counter
 
     border:2px solid #e5e5e5;
 
-    border-radius:15px;
+    border-radius:0px;
 
     background:#fff;
 
@@ -535,23 +542,24 @@ CAPTCHA
 
     display:flex;
 
-    gap:20px;
+    gap:0px;
 
     align-items:center;
 
     flex-wrap:wrap;
+    margin-top: -10px; 
 
 }
 
 .captcha-question{
 
-    min-width:160px;
+    min-width:16px;
 
     text-align:center;
 
     padding:15px 20px;
 
-    border-radius:12px;
+    border-radius:0px;
 
     background:#d62828;
 
@@ -575,7 +583,7 @@ CAPTCHA
 
     border:1px solid #ddd;
 
-    border-radius:12px;
+    border-radius:0px;
 
     padding:0 18px;
 
@@ -606,7 +614,7 @@ TERMS
 
     gap:12px;
 
-    margin:25px 0;
+    /* margin:25px 0; */
 
 }
 
@@ -641,7 +649,7 @@ SUBMIT BUTTON
 
     border:none;
 
-    border-radius:15px;
+    border-radius:0px;
 
     background:linear-gradient(135deg,#d62828,#ff4d4d);
 
@@ -688,7 +696,7 @@ SCROLLBAR
 
     background:#d62828;
 
-    border-radius:20px;
+    border-radius:0px;
 
 }
 

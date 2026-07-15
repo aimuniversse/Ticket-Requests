@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { getAdminData } from "../../services/adminService";
+// import { getAdminData } from "../../services/adminService";
 import "../../styles/Admin.css";
 
 const SIDEBAR_LINKS = [
@@ -110,27 +110,27 @@ function Admin() {
     setApprovals((prev) => prev.filter((item) => item.id !== requestId));
   };
 
-  useEffect(() => {
-    getAdminData()
-      .then((data) => {
-        setOperators(data.operators || []);
-        setCustomers(data.customers || []);
-        setApprovals(data.approvals || []);
-        setWallets(data.wallets || []);
-        setWalletHistory(data.walletHistory || []);
-        setTranscripts(data.transcripts || []);
-        setTickets(data.tickets || []);
-      })
-      .catch(() => {
-        setOperators([]);
-        setCustomers([]);
-        setApprovals([]);
-        setWallets([]);
-        setWalletHistory([]);
-        setTranscripts([]);
-        setTickets([]);
-      });
-  }, []);
+//   useEffect(() => {
+//     getAdminData()
+//       .then((data) => {
+//         setOperators(data.operators || []);
+//         setCustomers(data.customers || []);
+//         setApprovals(data.approvals || []);
+//         setWallets(data.wallets || []);
+//         setWalletHistory(data.walletHistory || []);
+//         setTranscripts(data.transcripts || []);
+//         setTickets(data.tickets || []);
+//       })
+//       .catch(() => {
+//         setOperators([]);
+//         setCustomers([]);
+//         setApprovals([]);
+//         setWallets([]);
+//         setWalletHistory([]);
+//         setTranscripts([]);
+//         setTickets([]);
+//       });
+//   }, []);
 
   const filteredUsers = useMemo(() => {
     const activeList =
@@ -273,8 +273,8 @@ function Admin() {
                 <thead>
                   <tr>
                     <th>User</th>
-                    <th>ID</th>
-                    <th>Email</th>
+                    <th>FROM</th>
+                    <th>TO</th>
                     <th>Mobile</th>
                     <th>Status</th>
                     <th>Action</th>

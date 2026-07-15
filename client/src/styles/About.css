@@ -8,6 +8,7 @@
 .about-main {
   flex: 1;
   width: max(1120px, 100%);
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.92) 0%, rgba(238, 244, 255, 0.92) 100%), url("../assets/logo1.png");
   margin: 0 auto;
   padding: 3rem 1.5rem;
 }

@@ -55,6 +55,29 @@ class ApproveOperatorAPIView(APIView):
         )
 
 
+class RejectOperatorAPIView(APIView):
+    def post(self, request, operator_id):
+        if not request.user.is_authenticated or request.user.role != "admin":
+            return Response(
+                {"detail": "Only admins can reject operators."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        operator = get_object_or_404(Operator, id=operator_id)
+        user = operator.user
+        rejection_reason = request.data.get("rejection_reason", "")
+        
+        user.approval_status = "rejected"
+        user.rejection_reason = rejection_reason
+        user.is_active = False
+        user.save(update_fields=["approval_status", "rejection_reason", "is_active"])
+
+        return Response(
+            {"message": "Operator rejected successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+
 class AssignedRequestsAPIView(APIView):
     def get(self, request):
         if not request.user.is_authenticated:

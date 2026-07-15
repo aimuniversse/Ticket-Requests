@@ -298,7 +298,7 @@
 .admin-table td {
   text-align: left;
   padding: 1rem 1.15rem;
-  border-bottom: 1px solid #f1f5f9;
+  /* border-bottom: 1px solid #f1f5f9; */
 }
 
 .admin-table th {

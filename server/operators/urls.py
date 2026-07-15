@@ -3,6 +3,7 @@ from .views import (
     OperatorRegistrationAPIView,
     PendingOperatorListAPIView,
     ApproveOperatorAPIView,
+    RejectOperatorAPIView,
     AssignedRequestsAPIView,
 )
 
@@ -22,6 +23,11 @@ urlpatterns = [
         "admin/operators/<int:operator_id>/approve/",
         ApproveOperatorAPIView.as_view(),
         name="approve-operator",
+    ),
+    path(
+        "admin/operators/<int:operator_id>/reject/",
+        RejectOperatorAPIView.as_view(),
+        name="reject-operator",
     ),
     path(
         "requests/assigned/",

@@ -4,6 +4,8 @@ from .views import (
     PendingOperatorListAPIView,
     ApproveOperatorAPIView,
     RejectOperatorAPIView,
+    AdminOverviewAPIView,
+    RejectOperatorAPIView,
     AssignedRequestsAPIView,
     AvailableRequestsAPIView,
 )
@@ -15,6 +17,8 @@ urlpatterns = [
         OperatorRegistrationAPIView.as_view(),
         name="operator-register",
     ),
+    path("admin/operators/<int:operator_id>/reject/", RejectOperatorAPIView.as_view(), name="reject-operator"),
+    path("admin/overview/", AdminOverviewAPIView.as_view(), name="admin-overview"),
     path(
         "admin/operators/pending/",
         PendingOperatorListAPIView.as_view(),

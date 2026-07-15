@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 // import { getAdminData } from "../../services/adminService";
@@ -54,6 +56,7 @@ const ADMIN_LABELS = {
 };
 
 function Admin() {
+  const navigate = useNavigate();
   const [activeUserTab, setActiveUserTab] = useState("operators");
   const [userSearch, setUserSearch] = useState("");
   const [walletSearch, setWalletSearch] = useState("");
@@ -108,6 +111,13 @@ function Admin() {
 
   const handleRejectRequest = (requestId) => {
     setApprovals((prev) => prev.filter((item) => item.id !== requestId));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    navigate("/operator-login");
   };
 
 //   useEffect(() => {
@@ -180,6 +190,9 @@ function Admin() {
               </button>
             ))}
           </nav>
+          <button type="button" className="sidebar-link logout-btn" onClick={handleLogout}>
+            <FaSignOutAlt /> Logout
+          </button>
         </aside>
 
         <main className="admin-main">

@@ -1,11 +1,22 @@
 from rest_framework import serializers
+from datetime import timedelta
+from django.utils import timezone
 from .models import CustomerRequests
 
 class CustomerRequestSerilaizers(serializers.ModelSerializer):
 
     class Meta :
         model = CustomerRequests
-        fields= "__all__"
+        fields = [
+            "id", "request_id", "public_token", "name", "phone_number",
+            "from_location", "to_location", "journey_date", "total_tickets",
+            "bus_type", "expected_price", "status", "created_at", "expires_at",
+        ]
+        read_only_fields = ["id", "request_id", "public_token", "status", "created_at", "expires_at"]
+
+    def create(self, validated_data):
+        validated_data["expires_at"] = timezone.now() + timedelta(minutes=5)
+        return super().create(validated_data)
 
     def validate_phone_number(self,value):
         if not value.isdigit():
@@ -32,5 +43,4 @@ class CustomerRequestSerilaizers(serializers.ModelSerializer):
             )
 
         return value
-    
     

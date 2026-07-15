@@ -70,6 +70,7 @@ const OperatorLogin = () => {
       });
 
       const { access, refresh, user } = response.data || {};
+      const role = (user?.role || response.data?.role || "").toString().toLowerCase();
 
       if (access) {
         localStorage.setItem("accessToken", access);
@@ -83,6 +84,13 @@ const OperatorLogin = () => {
         localStorage.setItem("user", JSON.stringify(user));
       }
 
+      if (role === "admin") {
+        localStorage.setItem("userRole", "admin");
+        navigate("/admin/dashboard");
+        return;
+      }
+
+      localStorage.setItem("userRole", role || "operator");
       navigate("/operator/dashboard");
     } catch (error) {
       const apiError = error.response?.data;
@@ -144,7 +152,7 @@ const OperatorLogin = () => {
                 <input
                   type="tel"
                   name="phone_number"
-                  placeholder="Enter phone number"
+                  placeholder="Enter your registered phone number"
                   value={formData.phone_number}
                   onChange={handleChange}
                 />

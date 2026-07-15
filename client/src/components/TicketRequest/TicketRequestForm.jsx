@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/TicketRequests.css";
 import api from "../../api/axios";
 const TicketRequestForm = () => {
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -63,6 +65,10 @@ const TicketRequestForm = () => {
 
     console.log("Response :", response.data);
 
+    if (response.data?.public_token) {
+      navigate(`/ticket-request/status/${response.data.public_token}`);
+      return;
+    }
     alert("Ticket Request Submitted Successfully!");
 
     // Reset Form

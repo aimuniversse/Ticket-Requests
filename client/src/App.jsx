@@ -6,6 +6,7 @@ import OperatorLogin from "./pages/OperatorLogin";
 import OperatorRegister from "./pages/OperatorRegister";
 import OperatorDashboard from "./pages/operator/OperatorDashboardNew";
 import TicketRequestForm from "./components/TicketRequest/TicketRequestForm";
+import CustomerRequestStatus from "./pages/CustomerRequestStatus";
 
 //Operator
 import RequestCard from "./pages/operator/RequestCard";
@@ -32,6 +33,7 @@ function App() {
       <Route path="/operator-register" element={<OperatorRegister />} />
       <Route path="/operator/dashboard" element={<OperatorDashboard />} />
       <Route path="/ticket-request" element={<TicketRequestForm />} />
+      <Route path="/ticket-request/status/:token" element={<CustomerRequestStatus />} />
 
       <Route path="/operator/request-card" element={<RequestCard />} />
       <Route path="/operator/accept-quote" element={<AcceptQuoteModal />} />

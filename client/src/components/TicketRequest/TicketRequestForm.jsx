@@ -178,8 +178,18 @@ const TicketRequestForm = () => {
                 name="journey_date"
                 value={formData.journey_date}
                 onChange={handleChange}
-                required
+                required                 
               />
+            </div>
+            <div className="input-group">
+              <label>Journey Time</label>
+              <input
+            type="time"
+                name="journey_time"
+                value={formData.journey_time}
+                onChange={handleChange}
+                required
+                 />
             </div>
 
             <div className="input-group">
@@ -239,7 +249,7 @@ const TicketRequestForm = () => {
               />
             </div>
 
-            <div className="input-group">
+            {/* <div className="input-group">
               <label>Email Address</label>
               <input
                 type="email"
@@ -248,9 +258,9 @@ const TicketRequestForm = () => {
                 onChange={handleChange}
                 placeholder="Email Address"
               />
-            </div>
+            </div> */}
 
-            <div className="input-group">
+            {/* <div className="input-group">
               <label>Boarding Point</label>
               <input
                 type="text"
@@ -281,7 +291,7 @@ const TicketRequestForm = () => {
                 onChange={handleChange}
                 placeholder="Anything you want the operator to know?"
               />
-            </div>
+            </div> */}
 
             <div className="input-group full-width">
               <label>Security Verification</label>

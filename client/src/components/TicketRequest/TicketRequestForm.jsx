@@ -295,9 +295,6 @@ const TicketRequestForm = () => {
             <div className="input-group full-width">
              
               <label>Security Verification</label>
-<<<<<<< HEAD
-              <TurnstileCaptcha setToken={setCaptchaToken} />
-=======
               
               <div className="captcha-box compact">
                 <div className="captcha-question">{captcha.question} = ?</div>
@@ -312,7 +309,6 @@ const TicketRequestForm = () => {
               </div>
                
 
->>>>>>> 01f5e69d3205969ad72e915d8ad09e2f7e48f47a
             </div>
           {/* </div> */}
 

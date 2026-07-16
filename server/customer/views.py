@@ -17,31 +17,26 @@ class CustomerRequestCreateView(CreateAPIView):
     queryset = CustomerRequests.objects.all()
     serializer_class = CustomerRequestSerilaizers
 
-    # def create(self, request, *args, **kwargs):
-    #     # Cloudflare challenges cannot be completed reliably on local HTTP hosts.
-    #     # Keep verification mandatory outside Django's development mode.
-    #     if settings.DEBUG:
-    #         return super().create(request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        token = request.data.get("turnstile_token")
 
-    #     token = request.data.get("turnstile_token")
+        response = requests.post(
+            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            data={
+                "secret": settings.TURNSTILE_SECRET_KEY,
+                "response": token,
+            },
+        )
 
-    #     response = requests.post(
-    #         "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    #         data={
-    #             "secret": settings.TURNSTILE_SECRET_KEY,
-    #             "response": token,
-    #         },
-    #     )
+        result = response.json()
 
-    #     result = response.json()
+        if not result.get("success"):
+            return Response(
+                {"error": "Captcha verification failed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    #     if not result.get("success"):
-    #         return Response(
-    #             {"error": "Captcha verification failed."},
-    #             status=status.HTTP_400_BAD_REQUEST,
-    #         )
-
-    #     return super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
 
 class AssignRequestAPIView(APIView):

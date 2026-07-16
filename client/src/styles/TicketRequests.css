@@ -14,6 +14,7 @@
 
 body{
     background:#f5f7fb;
+    background: linear-gradient(180deg, rgba(245, 237, 237, 0.92) 0%, rgba(246, 245, 245, 0.92) 100%), url("../assets/logo.jpeg");
     
 }
 
@@ -26,12 +27,14 @@ Wrapper
     max-width:1260px;
     min-height:100vh;
     margin:0 auto;
-    padding:30px 16px 40px;
+    padding:5px 16px 40px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     background:linear-gradient(180deg,#fff,#f8f9fc);
+        background: linear-gradient(180deg, rgba(245, 237, 237, 0.92) 0%, rgba(246, 245, 245, 0.92) 100%), url("../assets/logo.jpeg");
+
 }
 
 /* ==========================
@@ -80,7 +83,7 @@ Form
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    min-height:720px;
+    min-height:420px;
 }
 
 .form-head{
@@ -102,7 +105,7 @@ Form
 .form-grid{
     display:grid;
     grid-template-columns:repeat(3,minmax(220px,1fr));
-    gap:12px;
+    gap:5px;
     align-items:start;
 }
 
@@ -113,6 +116,7 @@ Form
 .input-group{
     display:flex;
     flex-direction:column;
+    padding-bottom: 0px;
 }
 
 .input-group label{
@@ -127,10 +131,12 @@ Form
     width:100%;
     border:1px solid #ddd;
     border-radius:0px;
-    padding:14px 16px;
+    padding:1px 16px; 
     font-size:15px;
     outline:none;
     transition:.3s;
+    
+    
 }
 
 .input-group input:focus,
@@ -144,8 +150,8 @@ Form
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:12px;
-    padding:10px 14px;
+    /* gap:1px; */
+    padding:1px 14px;
     border:1px solid #ddd;
     border-radius:0px;
     background:#fafafa;
@@ -168,14 +174,14 @@ Form
 
 .captcha-box.compact{
     display:flex;
-    gap:12px;
+    gap:1px;
     align-items:center;
     flex-wrap:wrap;
 }
 
 .captcha-question{
     min-width:120px;
-    padding:12px 14px;
+    padding:1px 14px;
     border-radius:0px;
     background:#d62828;
     color:#fff;
@@ -186,26 +192,29 @@ Form
 .form-actions{
     display:flex;
     flex-direction:column;
-    align-items:flex-start;
+    align-items:flex-end;
     justify-content:flex-end;
-    gap:16px;
-    margin-top:auto;
-    padding-top:18px;
+    gap:12px;
+    margin-top:50px;
+    padding-top:1px;
     border-top:1px solid #f0f0f0;
+    margin-right: 25px;
 }
 
 .agree-box{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:1px;
     font-size:14px;
     color:#555;
+    
 }
 
 .agree-box input{
     width:18px;
     height:18px;
     accent-color:#d62828;
+    
 }
 
 .submit-btn.full-width{
@@ -253,12 +262,12 @@ Form
         min-height:auto;
     }
     .form-actions {
-        margin-top:24px;
+        margin-top:2px;
         border-top:none;
         padding-top:0;
     }
     .submit-btn.full-width {
-        min-width:100%;
+        min-width:10%;
     }
 }
 
@@ -334,7 +343,7 @@ Inputs
 
 .input-group input{
 
-    height:55px;
+    height:40px;
 
     border:1px solid #ddd;
 
@@ -348,7 +357,7 @@ Inputs
 
     transition:.3s;
 
-}
+}From Location
 
 .input-group input:focus{
 
@@ -370,7 +379,7 @@ textarea{
 
     border-radius:0px;
 
-    padding:18px;
+    padding:1px;
 
     resize:none;
 
@@ -408,7 +417,7 @@ Passenger Counter
 
     background:#fafafa;
 
-    padding:20px;
+    padding:1px;
 
     border-radius:0px;
 
@@ -557,7 +566,7 @@ CAPTCHA
 
     text-align:center;
 
-    padding:15px 20px;
+    padding:1px 20px;
 
     border-radius:0px;
 
@@ -612,10 +621,10 @@ TERMS
 
     align-items:center;
 
-    gap:12px;
+    gap:1px;
 
-    /* margin:25px 0; */
-
+     /* margin:0px 0;  */
+  
 }
 
 .agree-box input{
@@ -643,9 +652,9 @@ SUBMIT BUTTON
 
 .submit-btn{
 
-    width:100%;
+    width:10%;
 
-    height:60px;
+    height:10px;
 
     border:none;
 
@@ -655,7 +664,7 @@ SUBMIT BUTTON
 
     color:#fff;
 
-    font-size:18px;
+    font-size:12px;
 
     font-weight:600;
 
@@ -664,6 +673,7 @@ SUBMIT BUTTON
     transition:.35s;
 
     box-shadow:0 15px 30px rgba(214,40,40,.30);
+   margin-right: 10px;
 
 }
 
@@ -686,7 +696,7 @@ SUBMIT BUTTON
 SCROLLBAR
 ==================================== */
 
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
 
     width:8px;
 
@@ -704,7 +714,7 @@ SCROLLBAR
 
     background:#eee;
 
-}
+} */
 
 
 /* ====================================
@@ -809,7 +819,7 @@ font-size:20px;
 
 flex-direction:column;
 
-gap:15px;
+gap:1px;
 
 }
 
@@ -860,7 +870,7 @@ font-size:13px;
 
 .input-group input{
 
-height:50px;
+height:10px;
 
 font-size:14px;
 
@@ -874,21 +884,21 @@ font-size:14px;
 
 .counter button{
 
-width:40px;
+width:20px;
 
-height:40px;
+height:20px;
 
 }
 
 .counter strong{
 
-font-size:20px;
+font-size:2px;
 
 }
 
 .submit-btn{
 
-font-size:16px;
+font-size:1px;
 
 }
 
@@ -899,3 +909,4 @@ grid-template-columns:1fr;
 }
 
 }
+

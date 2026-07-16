@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import aboutImage from "../assets/about.jpeg";
+import logoImage from "../assets/logo.jpeg";
 import "../styles/About.css";
 
 function About() {
@@ -16,6 +17,9 @@ function About() {
             <img src={aboutImage} alt={imageAlt} className="about-image" />
           </div>
           <div className="about-copy">
+            <span className="brand-icon">
+                        <img src={logoImage} alt="Tick My Bus" />
+                      </span>
             <h1 className="section-label">About </h1>
             <h2>Your Trusted Bus Booking Partner</h2>
             <p>

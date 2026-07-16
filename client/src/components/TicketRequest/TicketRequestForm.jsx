@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/TicketRequests.css";
+import logoImage from "../../assets/logo.jpeg";
 import api from "../../api/axios";
 import TurnstileCaptcha from "../Security/TurnstileCaptcha";
 const TicketRequestForm = () => {
@@ -121,9 +122,12 @@ const TicketRequestForm = () => {
     <section className="ticket-wrapper">
 
       <div className="ticket-header">
+        <span className="brand-icon">
+         <img src={logoImage} alt="Tick My Bus" />
+        </span>
 
-        <h1>Request Best Ticket Price</h1>
-
+        <h1>Request Best Ticket Price</h1>     
+         
         <p>
 
           Submit your travel request.
@@ -136,10 +140,10 @@ const TicketRequestForm = () => {
 
       <form className="ticket-form" onSubmit={handleSubmit}>
         <div className="form-card form-panel">
-          <div className="form-head full-width">
+          {/* <div className="form-head full-width">
             <h2>Quick Ticket Request</h2>
             <p>Submit the request in one view for both desktop and mobile.</p>
-          </div>
+          </div> */}
 
           <div className="form-grid">
             <div className="input-group">
@@ -173,8 +177,18 @@ const TicketRequestForm = () => {
                 name="journey_date"
                 value={formData.journey_date}
                 onChange={handleChange}
-                required
+                required                 
               />
+            </div>
+            <div className="input-group">
+              <label>Journey Time</label>
+              <input
+            type="time"
+                name="journey_time"
+                value={formData.journey_time}
+                onChange={handleChange}
+                required
+                 />
             </div>
 
             <div className="input-group">
@@ -234,7 +248,7 @@ const TicketRequestForm = () => {
               />
             </div>
 
-            <div className="input-group">
+            {/* <div className="input-group">
               <label>Email Address</label>
               <input
                 type="email"
@@ -243,9 +257,9 @@ const TicketRequestForm = () => {
                 onChange={handleChange}
                 placeholder="Email Address"
               />
-            </div>
+            </div> */}
 
-            <div className="input-group">
+            {/* <div className="input-group">
               <label>Boarding Point</label>
               <input
                 type="text"
@@ -276,13 +290,31 @@ const TicketRequestForm = () => {
                 onChange={handleChange}
                 placeholder="Anything you want the operator to know?"
               />
-            </div>
+            </div> */}
 
             <div className="input-group full-width">
+             
               <label>Security Verification</label>
+<<<<<<< HEAD
               <TurnstileCaptcha setToken={setCaptchaToken} />
+=======
+              
+              <div className="captcha-box compact">
+                <div className="captcha-question">{captcha.question} = ?</div>
+                <input
+                  type="number"
+                  name="captcha"
+                  value={formData.captcha}
+                  onChange={handleChange}
+                  placeholder="Answer"
+                  required
+                />
+              </div>
+               
+
+>>>>>>> 01f5e69d3205969ad72e915d8ad09e2f7e48f47a
             </div>
-          </div>
+          {/* </div> */}
 
           <div className="form-actions">
             <label className="agree-box">
@@ -298,6 +330,7 @@ const TicketRequestForm = () => {
               Submit Ticket Price Request
             </button>
           </div>
+        </div>
         </div>
       </form>
 

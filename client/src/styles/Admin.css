@@ -62,7 +62,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: auto;
-  /* color: #dc2626; */
+   color: #dc2626; 
   font-weight: 700;
   border-top: 1px solid #f1f5f9;
   padding-top: 1rem;
@@ -70,7 +70,7 @@
 
 .logout-btn:hover {
   background: #fef2f2;
-  /* color: #b91c1c; */
+  color: #b91c1c; 
 }
 
 .admin-main {
@@ -359,7 +359,7 @@
 .badge-blocked,
 .badge-open {
   background: #fee2e2;
-  /* color: #991b1b; */
+  color: #991b1b; 
 }
 
 .badge-review {
@@ -374,7 +374,7 @@
 
 .badge-high {
   background: #fee2e2;
-  /* color: #991b1b; */
+  color: #991b1b; 
 }
 
 .badge-medium {

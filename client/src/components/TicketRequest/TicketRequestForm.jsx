@@ -141,10 +141,10 @@ const TicketRequestForm = () => {
 
       <form className="ticket-form" onSubmit={handleSubmit}>
         <div className="form-card form-panel">
-          <div className="form-head full-width">
+          {/* <div className="form-head full-width">
             <h2>Quick Ticket Request</h2>
             <p>Submit the request in one view for both desktop and mobile.</p>
-          </div>
+          </div> */}
 
           <div className="form-grid">
             <div className="input-group">

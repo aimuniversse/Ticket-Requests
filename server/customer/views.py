@@ -1,3 +1,5 @@
+import requests
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.utils import timezone
@@ -14,6 +16,27 @@ from operators.models import Operator
 class CustomerRequestCreateView(CreateAPIView):
     queryset = CustomerRequests.objects.all()
     serializer_class = CustomerRequestSerilaizers
+
+    def create(self, request, *args, **kwargs):
+        token = request.data.get("turnstile_token")
+
+        response = requests.post(
+            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            data={
+                "secret": settings.TURNSTILE_SECRET_KEY,
+                "response": token,
+            },
+        )
+
+        result = response.json()
+
+        if not result.get("success"):
+            return Response(
+                {"error": "Captcha verification failed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return super().create(request, *args, **kwargs)
 
 
 class AssignRequestAPIView(APIView):

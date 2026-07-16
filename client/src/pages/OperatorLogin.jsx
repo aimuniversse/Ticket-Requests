@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorLogin.css";
+import tickMyBusLogo from "../assets/logoc.png";
 
 const OperatorLogin = () => {
   const navigate = useNavigate();
@@ -115,14 +116,13 @@ const OperatorLogin = () => {
   return (
     <div className="operator-login-page">
       <div className="login-container">
-        {/* Left Section */}
         <div className="login-left">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/3448/3448339.png"
-            alt="Bus"
-          />
+          <div className="operator-brand">
+            <img src={tickMyBusLogo} alt="TickMyBus" />
+            <span>TickMyBus</span>
+          </div>
 
-          <h1>Operator Portal</h1>
+          <h1>Operator portal</h1>
 
           <p>
             Manage ticket requests,
@@ -139,11 +139,10 @@ const OperatorLogin = () => {
           </div>
         </div>
 
-        {/* Right Section */}
         <div className="login-right">
           <div className="login-card">
             <h2>Welcome Back</h2>
-            <p>Login to your admin or operator account</p>
+            <p>Sign in to manage your bus ticket requests.</p>
 
             <form onSubmit={handleSubmit}>
               <div className="input-group">
@@ -209,12 +208,6 @@ const OperatorLogin = () => {
               </div>
             </form>
 
-            <div className="divider">OR</div>
-
-            <p className="register-link">
-              Don&apos;t have an account?
-              <Link to="/operator-register">Register Here</Link>
-            </p>
           </div>
         </div>
       </div>

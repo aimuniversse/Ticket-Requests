@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorRegister.css";
+import tickMyBusLogo from "../assets/logoc.png";
 
 const OperatorRegister = () => {
   const navigate = useNavigate();
@@ -160,16 +161,13 @@ const OperatorRegister = () => {
 
       <div className="register-container">
 
-        {/* Left Section */}
-
         <div className="register-left">
+          <div className="operator-brand">
+            <img src={tickMyBusLogo} alt="TickMyBus" />
+            <span>TickMyBus</span>
+          </div>
 
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/3448/3448339.png"
-            alt="Bus"
-          />
-
-          <h1>Become a Verified Operator</h1>
+          <h1>Grow with TickMyBus</h1>
 
           <p>
             Join our transport network and receive
@@ -189,8 +187,6 @@ const OperatorRegister = () => {
           </div>
 
         </div>
-
-        {/* Right Section */}
 
         <div className="register-right">
 

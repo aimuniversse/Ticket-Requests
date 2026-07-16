@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/TicketRequests.css";
 import logoImage from "../../assets/logo.jpeg";
 import api from "../../api/axios";
+import TurnstileCaptcha from "../Security/TurnstileCaptcha";
 const TicketRequestForm = () => {
   const navigate = useNavigate();
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -19,22 +21,14 @@ const TicketRequestForm = () => {
     expected_price: "",
     notes: "",
     email: "",
-    captcha: "",
     agree: false,
-  });
-
-  const [captcha] = useState(() => {
-    const a = Math.floor(Math.random() * 10) + 1;
-    const b = Math.floor(Math.random() * 10) + 1;
-    return { question: `${a} + ${b}`, answer: a + b };
   });
 
  const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Captcha Validation
-  if (Number(formData.captcha) !== captcha.answer) {
-    alert("Invalid captcha");
+  if (!captchaToken) {
+    alert("Please complete the security verification.");
     return;
   }
 
@@ -54,6 +48,7 @@ const TicketRequestForm = () => {
       total_tickets: Number(formData.total_tickets) || 1,
       bus_type: formData.bus_type || "",
       expected_price: formData.expected_price ? String(formData.expected_price) : "",
+      turnstile_token: captchaToken,
     };
 
     if (!payload.name || !payload.phone_number || !payload.from_location || !payload.to_location || !payload.journey_date || !payload.bus_type || !payload.expected_price) {
@@ -86,9 +81,9 @@ const TicketRequestForm = () => {
       expected_price: "",
       notes: "",
       email: "",
-      captcha: "",
       agree: false,
     });
+    setCaptchaToken("");
 
   } catch (error) {
     console.error(error.response?.data || error);
@@ -300,6 +295,9 @@ const TicketRequestForm = () => {
             <div className="input-group full-width">
              
               <label>Security Verification</label>
+<<<<<<< HEAD
+              <TurnstileCaptcha setToken={setCaptchaToken} />
+=======
               
               <div className="captcha-box compact">
                 <div className="captcha-question">{captcha.question} = ?</div>
@@ -314,6 +312,7 @@ const TicketRequestForm = () => {
               </div>
                
 
+>>>>>>> 01f5e69d3205969ad72e915d8ad09e2f7e48f47a
             </div>
           {/* </div> */}
 

@@ -1,5 +1,4 @@
 <<<<<<< HEAD
-=======
 # from datetime import timedelta
 # from pathlib import Path
 
@@ -131,7 +130,8 @@
 #     "accounts.backend.PhoneNumberBackend",
 # ]
 
->>>>>>> c2d73228fb0311c69eab1bb2bd7da0378b5e7f1a
+=======
+>>>>>>> ac5e7532a4f570cbb352a9e592a0db2112174d39
 """
 Django settings for booking project.
 

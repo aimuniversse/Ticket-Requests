@@ -2,18 +2,16 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import LoginSerilaizer
+from rest_framework_simplejwt.views import TokenRefreshView
+from .serializers import LoginSerilaizer, ForgotPasswordSerializer, ResetPasswordSerializer
+from operators.serializers import RegistraionOperatorSerilaizers
+from accounts.models import User
 
 # Create your views here.
 
 
 class LoginApiView(APIView):
-    # Login must be reachable even if the browser has retained an expired JWT.
-    authentication_classes = []
-    permission_classes = [AllowAny]
-
     def post(self,request):
         serializer=LoginSerilaizer(data=request.data,context={'request':request})
         serializer.is_valid(raise_exception=True)
@@ -36,3 +34,55 @@ class LoginApiView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class ForgotPasswordApiView(APIView):
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(
+            {"message": "Password reset email sent successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+
+class ResetPasswordConfirmApiView(APIView):
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(
+            {"message": "Password reset successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+
+class RegisterApiView(APIView):
+    def post(self, request):
+        serializer = RegistraionOperatorSerilaizers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(
+                {"message": "Operator registration successful. Waiting for admin approval."},
+                status=status.HTTP_201_CREATED,
+            )
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutApiView(APIView):
+    def post(self, request):
+        return response.Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+
+
+class MeApiView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return response.Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        return response.Response({
+            "id": request.user.id,
+            "phone_number": request.user.phone_number,
+            "email": request.user.email,
+            "role": request.user.role,
+            "approval_status": request.user.approval_status,
+        }, status=status.HTTP_200_OK)

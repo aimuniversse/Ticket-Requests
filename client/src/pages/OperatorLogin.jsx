@@ -68,7 +68,7 @@ const OperatorLogin = () => {
       const response = await API.post("auth/login/", {
         phone_number: formData.phone_number.trim(),
         password: formData.password,
-      });
+      }, { skipAuth: true });
 
       const { access, refresh, user } = response.data || {};
       const role = (user?.role || response.data?.role || "").toString().toLowerCase();

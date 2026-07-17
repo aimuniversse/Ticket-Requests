@@ -60,6 +60,7 @@
 .login-btn:disabled { opacity: .7; cursor: wait; }
 .register-text { margin-top: 20px; color: #66758a; font-size: 12px; text-align: center; }
 .register-text a { margin-left: 5px; }
+.password-flow { min-height: 430px; }.success-message { display: block; margin: 0 0 14px; padding: 10px; border-radius: 8px; color: #166534; background: #f0fdf4; font-size: 12px; }.success-message a { color: #1167c2; font-weight: 700; }
 
 @media (max-width: 720px) {
   .operator-login-page { padding: 16px; }

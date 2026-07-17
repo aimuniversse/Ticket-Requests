@@ -461,6 +461,10 @@
   color: #64748b;
 }
 
+.wallet-credit-form { display: grid; grid-template-columns: minmax(200px, 1.4fr) minmax(110px, .5fr) minmax(180px, 1fr) auto; align-items: end; gap: 1rem; margin-top: 1.25rem; }
+.wallet-credit-form label { display: grid; gap: .4rem; color: #475569; font-size: .82rem; font-weight: 700; }
+.wallet-credit-form input, .wallet-credit-form select { width: 100%; padding: .72rem; border: 1px solid #dbe3ef; border-radius: 9px; color: #1e293b; background: #fff; font: inherit; }
+
 @media (max-width: 1180px) {
   .dashboard-overview {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -515,4 +519,5 @@
   .admin-table {
     min-width: 100%;
   }
+  .wallet-credit-form { grid-template-columns: 1fr; }
 }

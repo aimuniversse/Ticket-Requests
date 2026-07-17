@@ -4,6 +4,8 @@ import Home from "./components/Home";
 import About from "./pages/About";
 import OperatorLogin from "./pages/OperatorLogin";
 import OperatorRegister from "./pages/OperatorRegister";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import OperatorDashboard from "./pages/operator/OperatorDashboardNew";
 import TicketRequestForm from "./components/TicketRequest/TicketRequestForm";
 import CustomerRequestStatus from "./pages/CustomerRequestStatus";
@@ -31,6 +33,8 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/operator-login" element={<OperatorLogin />} />
       <Route path="/operator-register" element={<OperatorRegister />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
       <Route path="/operator/dashboard" element={<OperatorDashboard />} />
       <Route path="/ticket-request" element={<TicketRequestForm />} />
       <Route path="/ticket-request/status/:token" element={<CustomerRequestStatus />} />

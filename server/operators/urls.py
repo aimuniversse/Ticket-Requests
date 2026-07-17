@@ -4,21 +4,16 @@ from .views import (
     PendingOperatorListAPIView,
     ApproveOperatorAPIView,
     RejectOperatorAPIView,
-    AdminOverviewAPIView,
-    RejectOperatorAPIView,
+    ActivateOperatorAPIView,
+    DeactivateOperatorAPIView,
     AssignedRequestsAPIView,
-    AvailableRequestsAPIView,
+    AddCreditAPIView,
+    WalletAPIView,
+    WalletHistoryAPIView,
 )
 
 
 urlpatterns = [
-    path(
-        "register/",
-        OperatorRegistrationAPIView.as_view(),
-        name="operator-register",
-    ),
-    path("admin/operators/<int:operator_id>/reject/", RejectOperatorAPIView.as_view(), name="reject-operator"),
-    path("admin/overview/", AdminOverviewAPIView.as_view(), name="admin-overview"),
     path(
         "admin/operators/pending/",
         PendingOperatorListAPIView.as_view(),
@@ -35,9 +30,33 @@ urlpatterns = [
         name="reject-operator",
     ),
     path(
+        "admin/operators/<int:operator_id>/activate/",
+        ActivateOperatorAPIView.as_view(),
+        name="activate-operator",
+    ),
+    path(
+        "admin/operators/<int:operator_id>/deactivate/",
+        DeactivateOperatorAPIView.as_view(),
+        name="deactivate-operator",
+    ),
+    path(
         "requests/assigned/",
         AssignedRequestsAPIView.as_view(),
         name="assigned-requests",
     ),
-    path("requests/available/", AvailableRequestsAPIView.as_view(), name="available-requests"),
+    path(
+        "wallet/add-credit/",
+        AddCreditAPIView.as_view(),
+        name="add-credit",
+    ),
+    path(
+        "wallet/",
+        WalletAPIView.as_view(),
+        name="wallet",
+    ),
+    path(
+        "wallet/history/",
+        WalletHistoryAPIView.as_view(),
+        name="wallet-history",
+    ),
 ]

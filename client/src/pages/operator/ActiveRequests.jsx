@@ -17,14 +17,14 @@ const ActiveRequests = () => {
   const [acceptingId, setAcceptingId] = useState(null);
   const loadRequests = async (showLoader = false) => {
     if (showLoader) setLoading(true);
-    try { const response = await API.get("auth/requests/available/"); setRequests(response.data || []); setError(""); }
+    try { const response = await API.get("customer/"); setRequests(response.data || []); setError(""); }
     catch { setError("Unable to load active requests."); }
     finally { setLoading(false); }
   };
   useEffect(() => { loadRequests(true); const timer = window.setInterval(loadRequests, 10000); return () => window.clearInterval(timer); }, []);
   const handleAccept = async (item) => {
     setAcceptingId(item.id);
-    try { await API.post(`customer/requests/${item.id}/assign/`); await loadRequests(); }
+    try { await API.post(`customer/leads/${item.id}/accept/`); await loadRequests(); }
     catch (err) { setError(err.response?.data?.detail || "This request is no longer available."); await loadRequests(); }
     finally { setAcceptingId(null); }
   };

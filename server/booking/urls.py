@@ -16,10 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from operators.views import ApproveOperatorAPIView, OperatorListAPIView, RejectOperatorAPIView, ActivateOperatorAPIView, DeactivateOperatorAPIView, WalletAPIView, WalletHistoryAPIView
+from customer.views import LeadListAPIView, MyLeadsAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/customer/', include('customer.urls')),
     path('api/auth/', include('accounts.urls')),
     path('api/auth/', include('operators.urls')),
+    path('api/operators/', OperatorListAPIView.as_view(), name='operator-list'),
+    path('api/operators/<int:operator_id>/approve/', ApproveOperatorAPIView.as_view(), name='approve-operator-alt'),
+    path('api/operators/<int:operator_id>/reject/', RejectOperatorAPIView.as_view(), name='reject-operator-alt'),
+    path('api/operators/<int:operator_id>/activate/', ActivateOperatorAPIView.as_view(), name='activate-operator-alt'),
+    path('api/operators/<int:operator_id>/deactivate/', DeactivateOperatorAPIView.as_view(), name='deactivate-operator-alt'),
+    path('api/leads/', LeadListAPIView.as_view(), name='lead-list-alt'),
+    path('api/leads/my-leads/', MyLeadsAPIView.as_view(), name='my-leads-alt'),
+    path('api/wallet/', WalletAPIView.as_view(), name='wallet-alt'),
+    path('api/wallet/history/', WalletHistoryAPIView.as_view(), name='wallet-history-alt'),
 ]

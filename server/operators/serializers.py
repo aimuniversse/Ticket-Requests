@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Operator,OperatorService
+from .models import Operator, OperatorService, Wallet, Transaction
 from accounts.models import User
 from django.db import transaction
 
@@ -82,4 +82,27 @@ class PendingOpeartorSerializer(serializers.ModelSerializer):
             "phone_number",
             "email",
             "approval_status",
-        ] 
+        ]
+
+
+class AddCreditSerializer(serializers.Serializer):
+    operator_ids = serializers.ListField(child=serializers.IntegerField(), required=True)
+    credits = serializers.IntegerField(min_value=1)
+    description = serializers.CharField(required=False, allow_blank=True, default="Admin credit added")
+
+    def validate_operator_ids(self, value):
+        if not value:
+            raise serializers.ValidationError("At least one operator must be selected")
+        return value
+
+
+class WalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = ["current_balance", "updated_at"]
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ["transaction_type", "credits", "balance_after_transaction", "description", "created_at"]

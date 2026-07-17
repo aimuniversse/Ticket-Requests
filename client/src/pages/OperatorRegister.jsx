@@ -129,7 +129,8 @@ const OperatorRegister = () => {
         services: formData.services,
       };
 
-      const response = await API.post("auth/register/", payload);
+      // Registration is public; do not attach a stale operator/admin token.
+      const response = await API.post("auth/register/", payload, { skipAuth: true });
 
       if (response.data?.message) {
         alert(response.data.message);

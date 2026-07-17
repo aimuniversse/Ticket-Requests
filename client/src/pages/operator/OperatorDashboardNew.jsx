@@ -6,6 +6,7 @@ import {
   FaBars,
   FaBell,
   FaBus,
+  FaChevronDown,
   FaCheckCircle,
   FaClock,
   FaCog,
@@ -18,7 +19,6 @@ import {
   FaSignOutAlt,
   FaSyncAlt,
   FaTicketAlt,
-  FaTimes,
   FaUserCircle,
   FaWallet,
 } from "react-icons/fa";
@@ -31,15 +31,16 @@ import Settings from "./Settings";
 import Transactions from "./Transactions";
 import Wallet from "./Wallet";
 
-const navItems = [
-  { id: "overview", label: "Overview", icon: FaHome },
+const requestLinks = [
   { id: "active", label: "Active Requests", icon: FaClock },
   { id: "accepted", label: "Accepted Requests", icon: FaCheckCircle },
   { id: "details", label: "Customer Details", icon: FaInfoCircle },
+];
+
+const accountLinks = [
   { id: "wallet", label: "Wallet", icon: FaWallet },
   { id: "transactions", label: "Transactions", icon: FaMoneyBillWave },
   { id: "notifications", label: "Notifications", icon: FaBell },
-  { id: "profile", label: "Profile", icon: FaUserCircle },
   { id: "settings", label: "Settings", icon: FaCog },
 ];
 
@@ -49,7 +50,8 @@ const OperatorDashboardNew = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [user, setUser] = useState(null);
 
   const fetchAssignedRequests = async () => {
@@ -100,6 +102,12 @@ const OperatorDashboardNew = () => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     navigate("/operator-login");
+  };
+
+  const selectSection = (section) => {
+    setActiveSection(section);
+    setMenuOpen(false);
+    setOpenDropdown(null);
   };
 
   const renderOverview = () => (
@@ -249,54 +257,37 @@ const OperatorDashboardNew = () => {
     </section>
   );
 
+  const renderDropdown = (label, id, links) => (
+    <div className={`top-nav-dropdown ${openDropdown === id ? "is-open" : ""}`}>
+      <button type="button" className="top-nav-link" onClick={() => setOpenDropdown(openDropdown === id ? null : id)}>{label}<FaChevronDown /></button>
+      <div className="top-nav-menu">
+        {links.map(({ id: section, label: itemLabel, icon: Icon }) => <button type="button" key={section} onClick={() => selectSection(section)}><Icon /> {itemLabel}</button>)}
+      </div>
+    </div>
+  );
+
   return (
-    <div className={`dashboard ${sidebarOpen ? "sidebar-open" : ""}`}>
-      <aside className="sidebar">
-        <div className="logo">
-          <FaBus />
-          <h2>TicketMyBus</h2>
-        </div>
-
-        <ul>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <li key={item.id} className={activeSection === item.id ? "active" : ""}>
-                <button type="button" onClick={() => { setActiveSection(item.id); setSidebarOpen(false); }}>
-                  <Icon />
-                  <span>{item.label}</span>
-                </button>
-              </li>
-            );
-          })}
-
-          <li className="logout">
-            <button type="button" onClick={handleLogout}>
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
-          </li>
-        </ul>
-      </aside>
-
-      <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
-
-      <main className="main">
-        <div className="topbar">
-          <div className="left">
-            <button type="button" className="menu-btn" onClick={() => setSidebarOpen((open) => !open)}>
-              {sidebarOpen ? <FaTimes /> : <FaBars />}
-            </button>
-            <h2>Operator Dashboard</h2>
-          </div>
-
-          <div className="right">
-            <div className="topbar-pill">
-              <FaUserCircle />
-              <span>{user?.email || "Operator"}</span>
+    <div className="dashboard">
+      <header className="operator-header">
+        <div className="operator-header__inner">
+          <button type="button" className="mobile-menu-btn" aria-label="Open navigation" onClick={() => setMenuOpen(!menuOpen)}><FaBars /></button>
+          <button type="button" className="brand" onClick={() => selectSection("overview")}><span><FaBus /></span><strong>TicketMyBus</strong></button>
+          <nav className={`top-nav ${menuOpen ? "is-open" : ""}`}>
+            <button type="button" className={`top-nav-link ${activeSection === "overview" ? "active" : ""}`} onClick={() => selectSection("overview")}><FaHome /> Overview</button>
+            {renderDropdown("Requests", "requests", requestLinks)}
+            {renderDropdown("Operations", "operations", accountLinks)}
+          </nav>
+          <div className="header-actions">
+            <button type="button" className="notification-btn" aria-label="Notifications" onClick={() => selectSection("notifications")}><FaBell /></button>
+            <div className={`profile-menu ${openDropdown === "profile" ? "is-open" : ""}`}>
+              <button type="button" className="profile-trigger" onClick={() => setOpenDropdown(openDropdown === "profile" ? null : "profile")}><FaUserCircle /><span><strong>{user?.name || "Operator"}</strong><small>{user?.email || "Operator account"}</small></span><FaChevronDown /></button>
+              <div className="profile-popover"><button type="button" onClick={() => selectSection("profile")}><FaUserCircle /> My profile</button><button type="button" onClick={() => selectSection("settings")}><FaCog /> Settings</button><button type="button" className="logout-button" onClick={handleLogout}><FaSignOutAlt /> Logout</button></div>
             </div>
           </div>
         </div>
+      </header>
+
+      <main className="main">
 
         {activeSection === "overview" && renderOverview()}
         {activeSection === "active" && <ActiveRequests />}

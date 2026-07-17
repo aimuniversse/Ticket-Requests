@@ -30,10 +30,10 @@ function Header() {
             <img src={logoImage} alt="Tick My Bus" />
           </span>
 
-          <span className="brand-text">
+          {/* <span className="brand-text">
             <strong>Tick My Bus</strong>
             <small>Bus Booking</small>
-          </span>
+          </span> */}
         </a>
 
         {/* Desktop Navigation */}

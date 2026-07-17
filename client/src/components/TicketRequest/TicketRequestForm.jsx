@@ -1,11 +1,51 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/TicketRequests.css";
 import api from "../../api/axios";
 import TurnstileCaptcha from "../Security/TurnstileCaptcha";
+import Header from "../Header";
+
+const CITY_NAMES = [
+  // Andhra Pradesh, Telangana, Karnataka, Kerala and Tamil Nadu
+  "Adoni", "Anantapur", "Chittoor", "Guntur", "Kadapa", "Kakinada", "Kurnool", "Nellore", "Ongole", "Rajahmundry", "Tirupati", "Vijayawada", "Visakhapatnam", "Vizianagaram",
+  "Hyderabad", "Karimnagar", "Khammam", "Mahbubnagar", "Nalgonda", "Nizamabad", "Ramagundam", "Secunderabad", "Siddipet", "Suryapet", "Warangal",
+  "Ballari", "Bengaluru", "Belagavi", "Bidar", "Chikkamagaluru", "Davanagere", "Gadag", "Hubballi", "Kalaburagi", "Kolar", "Mandya", "Mangaluru", "Mysuru", "Raichur", "Shivamogga", "Tumakuru", "Udupi", "Vijayapura",
+  "Alappuzha", "Ernakulam", "Kannur", "Kasaragod", "Kochi", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad",
+  "Ariyalur", "Chengalpattu", "Chennai", "Chidambaram", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Hosur", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Kumbakonam", "Madurai", "Mayiladuthurai", "Nagapattinam", "Nagercoil", "Namakkal", "Ooty", "Perambalur", "Pollachi", "Pudukkottai", "Ramanathapuram", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupattur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
+
+  // Western and central India
+  "Ahmedabad", "Amreli", "Anand", "Bhavnagar", "Bhuj", "Gandhinagar", "Godhra", "Jamnagar", "Junagadh", "Mehsana", "Morbi", "Nadiad", "Navsari", "Palanpur", "Patan", "Porbandar", "Rajkot", "Surat", "Surendranagar", "Vadodara", "Valsad",
+  "Akola", "Amravati", "Aurangabad", "Baramati", "Bhandara", "Chandrapur", "Dhule", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai", "Nagpur", "Nanded", "Nashik", "Navi Mumbai", "Osmanabad", "Parbhani", "Pune", "Ratnagiri", "Sangli", "Satara", "Solapur", "Thane", "Wardha", "Yavatmal",
+  "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Dewas", "Gwalior", "Indore", "Jabalpur", "Khandwa", "Mandsaur", "Morena", "Ratlam", "Rewa", "Sagar", "Satna", "Shivpuri", "Ujjain", "Vidisha",
+  "Ahmednagar", "Ambikapur", "Bhilai", "Bilaspur", "Dhamtari", "Durg", "Jagdalpur", "Korba", "Raigarh", "Raipur", "Rajnandgaon",
+  "Panaji", "Margao", "Mapusa", "Vasco da Gama",
+
+  // North and east India
+  "Ajmer", "Alwar", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Chittorgarh", "Jaipur", "Jaisalmer", "Jodhpur", "Kota", "Pali", "Sikar", "Sri Ganganagar", "Udaipur",
+  "Agra", "Aligarh", "Allahabad", "Ayodhya", "Bareilly", "Basti", "Deoria", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Ghaziabad", "Gonda", "Gorakhpur", "Greater Noida", "Hapur", "Jhansi", "Kanpur", "Lucknow", "Mathura", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Noida", "Prayagraj", "Raebareli", "Saharanpur", "Sitapur", "Sultanpur", "Varanasi",
+  "Dehradun", "Haldwani", "Haridwar", "Kashipur", "Nainital", "Roorkee", "Rudrapur",
+  "Ambala", "Bhiwani", "Faridabad", "Gurugram", "Hisar", "Karnal", "Kurukshetra", "Panipat", "Panchkula", "Rewari", "Rohtak", "Sonipat", "Yamunanagar",
+  "Chandigarh", "Delhi", "New Delhi", "Faridkot", "Firozpur", "Jalandhar", "Ludhiana", "Mohali", "Pathankot", "Patiala", "Sangrur",
+  "Amritsar", "Barnala", "Bathinda", "Hoshiarpur", "Kapurthala", "Moga", "Muktsar",
+  "Shimla", "Dharamshala", "Mandi", "Solan", "Una",
+  "Jammu", "Kathua", "Srinagar", "Udhampur", "Anantnag", "Baramulla", "Leh", "Kargil",
+  "Patna", "Arrah", "Begusarai", "Bettiah", "Bhagalpur", "Bihar Sharif", "Darbhanga", "Gaya", "Hajipur", "Katihar", "Madhubani", "Motihari", "Muzaffarpur", "Purnia", "Saharsa", "Samastipur", "Sasaram", "Siwan",
+  "Bokaro", "Deoghar", "Dhanbad", "Hazaribagh", "Jamshedpur", "Ramgarh", "Ranchi", "Giridih",
+  "Bhubaneswar", "Balasore", "Baripada", "Berhampur", "Cuttack", "Jharsuguda", "Puri", "Rourkela", "Sambalpur",
+  "Kolkata", "Asansol", "Bardhaman", "Durgapur", "Haldia", "Howrah", "Kharagpur", "Malda", "Siliguri",
+  "Gangtok", "Darjeeling", "Jalpaiguri", "Cooch Behar",
+  "Agartala", "Aizawl", "Imphal", "Kohima", "Shillong", "Itanagar", "Naharlagun", "Pasighat", "Dibrugarh", "Guwahati", "Jorhat", "Nagaon", "Silchar", "Tezpur",
+
+  // Union territories
+  "Puducherry", "Karaikal", "Mahe", "Yanam", "Port Blair", "Daman", "Diu", "Kavaratti", "Silvassa"
+].sort((firstCity, secondCity) => firstCity.localeCompare(secondCity));
+
 const TicketRequestForm = () => {
   const navigate = useNavigate();
   const [captchaToken, setCaptchaToken] = useState("");
+  const [openCityField, setOpenCityField] = useState(null);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+  const closeCityDropdownTimer = useRef(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -34,6 +74,14 @@ const TicketRequestForm = () => {
   // Terms Validation
   if (!formData.agree) {
     alert("Please accept Terms & Conditions");
+    return;
+  }
+
+  if (
+    formData.from_location.trim().toLocaleLowerCase() ===
+    formData.to_location.trim().toLocaleLowerCase()
+  ) {
+    alert("From and To locations must be different.");
     return;
   }
 
@@ -106,6 +154,107 @@ const TicketRequestForm = () => {
     }));
   };
 
+  const getCitySuggestions = (field) => {
+    const searchText = formData[field].trim().toLocaleLowerCase();
+    const otherField = field === "from_location" ? "to_location" : "from_location";
+    const selectedOtherCity = formData[otherField].trim().toLocaleLowerCase();
+
+    return CITY_NAMES.filter((city) =>
+      city.toLocaleLowerCase().startsWith(searchText) &&
+      city.toLocaleLowerCase() !== selectedOtherCity
+    );
+  };
+
+  const selectCity = (field, city) => {
+    setFormData((prev) => ({ ...prev, [field]: city }));
+    setOpenCityField(null);
+    setActiveSuggestion(-1);
+  };
+
+  const handleCityChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setOpenCityField(name);
+    setActiveSuggestion(-1);
+  };
+
+  const handleCityKeyDown = (e, field) => {
+    const suggestions = getCitySuggestions(field);
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setOpenCityField(field);
+      setActiveSuggestion((current) => Math.min(current + 1, suggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveSuggestion((current) => Math.max(current - 1, 0));
+    } else if (e.key === "Enter" && activeSuggestion >= 0) {
+      e.preventDefault();
+      selectCity(field, suggestions[activeSuggestion]);
+    } else if (e.key === "Escape") {
+      setOpenCityField(null);
+      setActiveSuggestion(-1);
+    }
+  };
+
+  const renderCityAutocomplete = (field, label, placeholder) => {
+    const suggestions = getCitySuggestions(field);
+    const isOpen = openCityField === field;
+    const listId = `${field}-suggestions`;
+
+    return (
+      <div className="input-group city-autocomplete">
+        <label htmlFor={field}>{label}</label>
+        <input
+          id={field}
+          type="text"
+          name={field}
+          value={formData[field]}
+          onChange={handleCityChange}
+          onFocus={() => {
+            clearTimeout(closeCityDropdownTimer.current);
+            setOpenCityField(field);
+            setActiveSuggestion(-1);
+          }}
+          onBlur={() => {
+            closeCityDropdownTimer.current = setTimeout(() => setOpenCityField(null), 150);
+          }}
+          onKeyDown={(e) => handleCityKeyDown(e, field)}
+          placeholder={placeholder}
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-controls={listId}
+          aria-activedescendant={activeSuggestion >= 0 ? `${field}-option-${activeSuggestion}` : undefined}
+          autoComplete="off"
+          required
+        />
+        {isOpen && suggestions.length > 0 && (
+          <ul id={listId} className="city-suggestions" role="listbox">
+            {suggestions.map((city, index) => (
+              <li
+                id={`${field}-option-${index}`}
+                key={city}
+                className={index === activeSuggestion ? "is-active" : ""}
+                role="option"
+                aria-selected={index === activeSuggestion}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => selectCity(field, city)}
+              >
+                {city}
+              </li>
+            ))}
+          </ul>
+        )}
+        {isOpen && formData[field] && suggestions.length === 0 && (
+          <div className="city-suggestions city-suggestions-empty" role="status">
+            No matching cities
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // total_tickets handlers
   const increaseTickets = () => {
     setFormData((prev) => ({ ...prev, total_tickets: Number(prev.total_tickets) + 1 }));
@@ -119,53 +268,42 @@ const TicketRequestForm = () => {
   };
 
   return (
-
+     
     <section className="ticket-wrapper">
-
-      <div className="ticket-header">
-        <h1>Request Best Ticket Price</h1>     
-         
-        <p>
-
-          Submit your travel request.
-
-          Operators will review it and respond within 5 minutes.
-
-        </p>
-
-      </div>
+      <Header />
+      
+      <div className="ticket-page-layout">
+        <aside className="journey-promo" aria-label="Ticket booking benefits">
+          <h2>Your Journey <span>Starts Here</span></h2>
+          <p>Book your bus tickets in just a few simple steps.</p>
+          <ul>
+            <li><span>✦</span> Best Prices Guaranteed</li>
+            <li><span>✓</span> Secure &amp; Easy Booking</li>
+            <li><span>◉</span> 24/7 Customer Support</li>
+            <li><span>⌖</span> Live Tracking</li>
+          </ul>
+        </aside>
+        <div className="ticket-booking-area">
 
       <form className="ticket-form" onSubmit={handleSubmit}>
         <div className="form-card form-panel">
+          <div className="form-card-intro">
+            <span className="form-card-icon">✦</span>
+            <div>
+              <strong>Ticket Booking</strong>
+              <p>Fill in your travel details. It only takes a minute.</p>
+            </div>
+            <span className="secure-badge">● Secure Booking</span>
+          </div>
           {/* <div className="form-head full-width">
             <h2>Quick Ticket Request</h2>
             <p>Submit the request in one view for both desktop and mobile.</p>
           </div> */}
 
           <div className="form-grid">
-            <div className="input-group">
-              <label>From Location</label>
-              <input
-                type="text"
-                name="from_location"
-                value={formData.from_location}
-                onChange={handleChange}
-                placeholder="Enter departure city"
-                required
-              />
-            </div>
+            {renderCityAutocomplete("from_location", "From Location", "Enter departure city")}
 
-            <div className="input-group">
-              <label>To Location</label>
-              <input
-                type="text"
-                name="to_location"
-                value={formData.to_location}
-                onChange={handleChange}
-                placeholder="Enter destination city"
-                required
-              />
-            </div>
+            {renderCityAutocomplete("to_location", "To Location", "Enter destination city")}
 
             <div className="input-group">
               <label>Journey Date</label>
@@ -235,57 +373,12 @@ const TicketRequestForm = () => {
                 required
               />
             </div>
-
-            {/* <div className="input-group">
-              <label>Email Address</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email Address"
-              />
-            </div> */}
-
-            {/* <div className="input-group">
-              <label>Boarding Point</label>
-              <input
-                type="text"
-                name="boardingPoint"
-                value={formData.boardingPoint}
-                onChange={handleChange}
-                placeholder="Preferred boarding point"
-              />
-            </div>
-
-            <div className="input-group">
-              <label>Drop Point</label>
-              <input
-                type="text"
-                name="dropPoint"
-                value={formData.dropPoint}
-                onChange={handleChange}
-                placeholder="Preferred drop point"
-              />
-            </div>
-
-            <div className="input-group full-width">
-              <label>Special Notes</label>
-              <textarea
-                name="notes"
-                rows="3"
-                value={formData.notes}
-                onChange={handleChange}
-                placeholder="Anything you want the operator to know?"
-              />
-            </div> */}
-
             <div className="input-group full-width">
              
               <label>Security Verification</label>
               <TurnstileCaptcha setToken={setCaptchaToken} />
             </div>
-          {/* </div> */}
+          </div>
 
           <div className="form-actions">
             <label className="agree-box">
@@ -302,8 +395,17 @@ const TicketRequestForm = () => {
             </button>
           </div>
         </div>
-        </div>
+        
       </form>
+        </div>
+      </div>
+
+      <div className="booking-benefits" aria-label="Booking benefits">
+        <div><span>⌁</span><p><strong>Zero Booking Fee</strong>No hidden charges</p></div>
+        <div><span>▣</span><p><strong>Instant Confirmation</strong>Get ticket in seconds</p></div>
+        <div><span>▤</span><p><strong>Multiple Payment Options</strong>UPI, card, and net banking</p></div>
+        <div><span>✦</span><p><strong>Trusted by Millions</strong>Safe and reliable booking</p></div>
+      </div>
 
     </section>
 

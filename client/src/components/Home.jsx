@@ -23,7 +23,7 @@ function App() {
               </Link>
             </div>
           </div>
-          <a
+          {/* <a
             className="hero-card"
             href="https://demo.tickmybus.com/"
             aria-label="featured deal"
@@ -35,7 +35,7 @@ function App() {
               <li>All Operatores Support</li>
               <li>Corporate travel support</li>
             </ul>
-          </a>
+          </a> */}
         </section>
       </main>
       <Footer />

@@ -12,7 +12,7 @@
   overflow: hidden;
   padding: 0 32px 34px;
   background:
-    linear-gradient(125deg, rgba(24, 25, 25, 0.96), rgba(224, 239, 252, 0.9)),
+    linear-gradient(125deg, rgba(151, 156, 156, 0.96), rgba(224, 239, 252, 0.9)),
     url("../assets/back.png") center bottom / cover no-repeat;
   color: #10244a;
   font-family: "Inter", sans-serif;
@@ -60,7 +60,7 @@
 
 .journey-promo h2 span {
   display: block;
-  color: #738fc0;
+  color: #0f0f10;
 }
 
 .journey-promo > p {

@@ -7,7 +7,7 @@
 .app-main {
   flex: 1;
   padding: 3.5rem 1.25rem 4rem;
-  background: linear-gradient(180deg, rgba(248, 251, 255, 0.92) 0%, rgba(238, 244, 255, 0.92) 100%), url("../assets/route-bg.png");
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.92) 0%, rgba(175, 79, 79, 0.92) 100%), url("../assets/route-bg.png");
   background-size: cover;
   background-position: center;
 }

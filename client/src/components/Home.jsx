@@ -21,10 +21,6 @@ function App() {
               <Link className="primary-btn" to="/ticket-request">
               Book Your Ticket
               </Link>
-
-              {/* <a className="ghost-btn" href="#routes">
-                Explore Routes
-              </a> */}
             </div>
           </div>
           <a

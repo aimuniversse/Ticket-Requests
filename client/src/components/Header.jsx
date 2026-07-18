@@ -29,11 +29,6 @@ function Header() {
           <span className="brand-icon">
             <img src={logoImage} alt="Tick My Bus" />
           </span>
-
-          {/* <span className="brand-text">
-            <strong>Tick My Bus</strong>
-            <small>Bus Booking</small>
-          </span> */}
         </a>
 
         {/* Desktop Navigation */}
@@ -74,19 +69,13 @@ function Header() {
 
         {/* Right Buttons */}
 
-        <div className="header-actions">
+        {/* <div className="header-actions">
 
           <a href="/operator-login" className="operator-btn">
             <FaUserTie />
             Operator Login
           </a>
-
-          {/* <a href="/admin-login" className="admin-btn">
-            <FaUserShield />
-            Admin Login
-          </a> */}
-
-        </div>
+        </div> */}
 
         {/* Mobile Button */}
 

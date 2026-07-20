@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 # Create your models here.
 
@@ -12,18 +14,21 @@ class CustomerRequests(models.Model):
     )
 
     STATUS_CHOICES = (
+        ("PENDING", "Pending"),
         ("NEW", "New"),
         ("ASSIGNED", "Assigned"),
         ("ACCEPTED", "Accepted"),
         ("COMPLETED", "Completed"),
         ("CANCELLED", "Cancelled"),
+        ("EXPIRED", "Expired"),
     )
 
-    request_id=models.CharField(
+    request_id = models.CharField(
         max_length=20,
         unique=True,
         editable=False,
-        blank=True
+        blank=True,
+        null=True,
     )
 
     name = models.CharField(
@@ -59,14 +64,31 @@ class CustomerRequests(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="NEW"
+        default="PENDING"
     )
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+    expires_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
     updated_at = models.DateTimeField(
         auto_now=True
     )
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        updated_fields = []
+        if is_new and not self.request_id:
+            self.request_id = f"REQ-{self.id:05d}"
+            updated_fields.append("request_id")
+        if is_new and not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=5)
+            updated_fields.append("expires_at")
+        if updated_fields:
+            super().save(update_fields=updated_fields)
 
     def __str__(self):
         return f"{self.name} - {self.from_location} to {self.to_location}"

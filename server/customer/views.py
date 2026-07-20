@@ -16,11 +16,12 @@ class CustomerRequestCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        instance.request_id = f"REQ-{instance.id:05d}"
-        instance.save(update_fields=["request_id", "updated_at"])
+        if not instance.request_id:
+            instance.request_id = f"REQ-{instance.id:05d}"
+            instance.save(update_fields=["request_id", "updated_at"])
 
 
-class CustomerRequestDetailView(APIView):
+class CustomerRequestDetailView(APIView):          
     def get(self, request, request_id):
         if not request.user.is_authenticated:
             return Response(

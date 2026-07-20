@@ -1,179 +1,77 @@
-import { useState } from "react";
-import {
-  FaUserCircle,
-  FaEnvelope,
-  FaPhone,
-  FaBus,
-  FaMapMarkerAlt,
-  FaEdit,
-  FaSave,
-} from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaUserCircle, FaEnvelope, FaPhone, FaIdBadge } from "react-icons/fa";
 
 import "../../styles/Profile.css";
 
 const Profile = () => {
-
-  // Backend API will populate this
   const [profile, setProfile] = useState({
-    operatorName: "",
-    companyName: "",
+    name: "",
     email: "",
-    phone: "",
-    address: "",
+    phone_number: "",
+    role: "Operator",
   });
 
-  const handleChange = (e) => {
-
-    const { name, value } = e.target;
-
-    setProfile((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSave = () => {
-
-    console.log(profile);
-
-    // API Call
-
-  };
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setProfile({
+          name: user.name || user.operatorName || "",
+          email: user.email || "",
+          phone_number: user.phone_number || user.phone || "",
+          role: user.role || "Operator",
+        });
+      } catch {
+        // ignore malformed storage data
+      }
+    }
+  }, []);
 
   return (
-
     <div className="profile-page">
-
       <div className="profile-header">
-
-        <FaUserCircle className="profile-avatar"/>
-
-        <div>
-
-          <h1>Operator Profile</h1>
-
-          <p>
-
-            Manage your company and contact information.
-
-          </p>
-
+        <div className="profile-avatar-wrapper">
+          <FaUserCircle className="profile-avatar" />
         </div>
-
+        <div>
+          <h1>Operator Profile</h1>
+          <p>Profile details captured at registration are shown here.</p>
+        </div>
       </div>
 
       <div className="profile-card">
+        <div className="profile-grid">
+          <div className="profile-field">
+            <span className="field-label">
+              <FaIdBadge /> Name
+            </span>
+            <strong>{profile.name || "Not available"}</strong>
+          </div>
 
-        <div className="input-group">
+          <div className="profile-field">
+            <span className="field-label">
+              <FaEnvelope /> Email
+            </span>
+            <strong>{profile.email || "Not available"}</strong>
+          </div>
 
-          <label>
+          <div className="profile-field">
+            <span className="field-label">
+              <FaPhone /> Phone
+            </span>
+            <strong>{profile.phone_number || "Not available"}</strong>
+          </div>
 
-            <FaUserCircle />
-
-            Operator Name
-
-          </label>
-
-          <input
-            type="text"
-            name="operatorName"
-            value={profile.operatorName}
-            onChange={handleChange}
-          />
-
+          <div className="profile-field">
+            <span className="field-label">
+              <FaUserCircle /> Role
+            </span>
+            <strong>{profile.role || "Operator"}</strong>
+          </div>
         </div>
-
-        <div className="input-group">
-
-          <label>
-
-            <FaBus />
-
-            Company Name
-
-          </label>
-
-          <input
-            type="text"
-            name="companyName"
-            value={profile.companyName}
-            onChange={handleChange}
-          />
-
-        </div>
-
-        <div className="input-group">
-
-          <label>
-
-            <FaEnvelope />
-
-            Email
-
-          </label>
-
-          <input
-            type="email"
-            name="email"
-            value={profile.email}
-            onChange={handleChange}
-          />
-
-        </div>
-
-        <div className="input-group">
-
-          <label>
-
-            <FaPhone />
-
-            Phone Number
-
-          </label>
-
-          <input
-            type="tel"
-            name="phone"
-            value={profile.phone}
-            onChange={handleChange}
-          />
-
-        </div>
-
-        <div className="input-group">
-
-          <label>
-
-            <FaMapMarkerAlt />
-
-            Address
-
-          </label>
-
-          <textarea
-            rows="4"
-            name="address"
-            value={profile.address}
-            onChange={handleChange}
-          />
-
-        </div>
-
-        <button
-          className="save-btn"
-          onClick={handleSave}
-        >
-
-          <FaSave />
-
-          Save Changes
-
-        </button>
-
       </div>
-
     </div>
-
   );
 
 };

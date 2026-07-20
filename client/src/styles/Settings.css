@@ -172,6 +172,45 @@ background:#b71c1c;
 
 }
 
+body.dark-mode {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+body.dark-mode .settings-page {
+  background: transparent;
+}
+
+body.dark-mode .settings-header h1,
+body.dark-mode .settings-header p,
+body.dark-mode .settings-card,
+body.dark-mode .toggle-item div,
+body.dark-mode .input-group label {
+  color: #e2e8f0;
+}
+
+body.dark-mode .settings-card {
+  background: #111827;
+  border-color: #334155;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, .35);
+}
+
+body.dark-mode .toggle-item {
+  border-bottom-color: #334155;
+}
+
+body.dark-mode .input-group input,
+body.dark-mode .input-group select {
+  background: #1f2937;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+body.dark-mode .input-group input:focus,
+body.dark-mode .input-group select:focus {
+  border-color: #f97316;
+}
+
 @media(max-width:768px){
 
 .settings-card{

@@ -19,7 +19,7 @@
 }
 
 /* Header remains full width even though the ticket page has side padding. */
-.ticket-wrapper > .site-header {
+.ticket-wrapper>.site-header {
   width: 100vw;
   margin-right: calc(50% - 50vw);
   margin-left: calc(50% - 50vw);
@@ -63,10 +63,10 @@
   color: #2d5aa6;
 }
 
-.journey-promo > p {
+.journey-promo>p {
   max-width: 195px;
   margin: 12px 0 22px;
-  color: #263757;
+  color: #ced3dd;
   font-size: 0.8rem;
   line-height: 1.6;
 }
@@ -83,7 +83,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #263757;
+  color: #e8eaee;
   font-size: 0.73rem;
   font-weight: 500;
 }
@@ -277,7 +277,7 @@
   color: #0a0909;
   font-size: 1rem;
   cursor: pointer;
-  
+
 }
 
 .ticket-counter strong {
@@ -361,7 +361,7 @@
   box-shadow: 0 8px 20px rgba(50, 84, 134, 0.1);
 }
 
-.booking-benefits > div {
+.booking-benefits>div {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -369,12 +369,13 @@
   padding: 9px 11px;
   border-right: 1px solid #e0e8f2;
 }
+
 /* head */
-.booking-benefits > div:last-child {
+.booking-benefits>div:last-child {
   border-right: 0;
 }
 
-.booking-benefits > div > span {
+.booking-benefits>div>span {
   color: #533fca;
   font-size: 1.2rem;
 }
@@ -441,11 +442,11 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .booking-benefits > div:nth-child(2) {
+  .booking-benefits>div:nth-child(2) {
     border-right: 0;
   }
 
-  .booking-benefits > div:nth-child(-n + 2) {
+  .booking-benefits>div:nth-child(-n + 2) {
     border-bottom: 1px solid #e0e8f2;
   }
 

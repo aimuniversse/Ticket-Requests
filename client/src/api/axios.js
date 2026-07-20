@@ -7,8 +7,19 @@ const api = axios.create({
   },
 });
 
+const getStoredToken = () => {
+  if (typeof window === "undefined") return null;
+
+  return (
+    localStorage.getItem("accessToken") ||
+    localStorage.getItem("access") ||
+    localStorage.getItem("token") ||
+    null
+  );
+};
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = getStoredToken();
 
   if (token && !config.skipAuth) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -19,7 +30,17 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => Promise.reject(err)
+  (err) => {
+    if (err?.response?.status === 401 && typeof window !== "undefined" && window.location.pathname.startsWith("/operator")) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("access");
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      window.location.assign("/operator-login");
+    }
+
+    return Promise.reject(err);
+  }
 );
 
 export default api;

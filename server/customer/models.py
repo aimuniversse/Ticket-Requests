@@ -77,6 +77,17 @@ class CustomerRequests(models.Model):
         auto_now=True
     )
 
+    def refresh_status(self):
+        if self.status in {"ACCEPTED", "COMPLETED", "CANCELLED", "EXPIRED"}:
+            return self.status
+
+        if self.expires_at and timezone.now() >= self.expires_at and self.status != "EXPIRED":
+            self.status = "EXPIRED"
+            self.save(update_fields=["status", "updated_at"])
+            return self.status
+
+        return self.status
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)

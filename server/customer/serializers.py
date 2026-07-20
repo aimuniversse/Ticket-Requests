@@ -6,11 +6,14 @@ def mask_phone_number(phone_number):
     if not phone_number:
         return ""
     if len(phone_number) <= 4:
-        return "*" * len(phone_number)
+        return phone_number
+    if len(phone_number) >= 10:
+        return "*****" + phone_number[-4:]
     return "*" * (len(phone_number) - 4) + phone_number[-4:]
 
 
 class CustomerRequestSerilaizers(serializers.ModelSerializer):
+    contact_unlocked = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomerRequests
@@ -44,30 +47,43 @@ class CustomerRequestSerilaizers(serializers.ModelSerializer):
 
         return value
 
+    def get_contact_unlocked(self, instance):
+        request = self.context.get("request")
+        if not request or not getattr(request.user, "is_authenticated", False):
+            return False
+
+        if request.user.role == "admin":
+            return True
+
+        if instance.assigned_operator and instance.assigned_operator.user_id == request.user.id:
+            return True
+
+        return False
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         request = self.context.get("request")
 
+        instance.refresh_status()
+
         if not request or not getattr(request.user, "is_authenticated", False):
             representation["phone_number"] = mask_phone_number(instance.phone_number)
             representation["name"] = "Hidden"
+            representation["contact_unlocked"] = False
             return representation
-
-        if instance.status == "ACCEPTED" and request.user.role == "operator":
-            if instance.assigned_operator and instance.assigned_operator.user_id == request.user.id:
-                representation["phone_number"] = instance.phone_number
-                representation["name"] = instance.name
-                return representation
 
         if request.user.role == "admin":
             representation["phone_number"] = instance.phone_number
             representation["name"] = instance.name
+            representation["contact_unlocked"] = True
         elif instance.assigned_operator and instance.assigned_operator.user_id == request.user.id:
             representation["phone_number"] = instance.phone_number
             representation["name"] = instance.name
+            representation["contact_unlocked"] = True
         else:
             representation["phone_number"] = mask_phone_number(instance.phone_number)
             representation["name"] = "Hidden"
+            representation["contact_unlocked"] = False
 
         return representation
     

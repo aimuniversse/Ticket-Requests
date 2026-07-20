@@ -116,22 +116,33 @@ class AssignedRequestsAPIView(APIView):
         operator = get_object_or_404(Operator, user=request.user)
         requests = CustomerRequests.objects.filter(assigned_operator=operator).order_by("-created_at")
 
-        data = [
-            {
-                "id": item.id,
-                "name": item.name,
-                "status": item.status,
-                "assigned_operator_id": item.assigned_operator.id if item.assigned_operator else None,
-                "phone_number": item.phone_number
-                if request.user.role == "admin"
-                or (
-                    item.assigned_operator is not None
-                    and item.assigned_operator.user_id == request.user.id
-                )
-                else mask_phone_number(item.phone_number),
-            }
-            for item in requests
-        ]
+        data = []
+        for item in requests:
+            item.refresh_status()
+            contact_unlocked = request.user.role == "admin" or (
+                item.assigned_operator is not None
+                and item.assigned_operator.user_id == request.user.id
+            )
+            data.append(
+                {
+                    "id": item.id,
+                    "name": item.name if contact_unlocked else "Hidden",
+                    "status": item.status,
+                    "assigned_operator_id": item.assigned_operator.id if item.assigned_operator else None,
+                    "phone_number": item.phone_number if contact_unlocked else mask_phone_number(item.phone_number),
+                    "contact_unlocked": contact_unlocked,
+                    "from_location": item.from_location,
+                    "to_location": item.to_location,
+                    "journey_date": item.journey_date,
+                    "journey_time": item.journey_time,
+                    "total_tickets": item.total_tickets,
+                    "bus_type": item.bus_type,
+                    "expected_price": item.expected_price,
+                    "request_id": item.request_id,
+                    "expires_at": item.expires_at,
+                    "created_at": item.created_at,
+                }
+            )
 
         return Response(data, status=status.HTTP_200_OK)
 

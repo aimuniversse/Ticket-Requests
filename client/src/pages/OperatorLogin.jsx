@@ -75,6 +75,8 @@ const OperatorLogin = () => {
 
       if (access) {
         localStorage.setItem("accessToken", access);
+        localStorage.setItem("access", access);
+        localStorage.setItem("token", access);
       }
 
       if (refresh) {

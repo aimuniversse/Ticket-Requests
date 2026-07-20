@@ -23,13 +23,8 @@ class CustomerRequestCreateView(CreateAPIView):
 
 class CustomerRequestDetailView(APIView):          
     def get(self, request, request_id):
-        if not request.user.is_authenticated:
-            return Response(
-                {"detail": "Authentication credentials were not provided."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
         customer_request = get_object_or_404(CustomerRequests, id=request_id)
+        customer_request.refresh_status()
         serializer = CustomerRequestSerilaizers(
             customer_request,
             context={"request": request},
@@ -49,7 +44,9 @@ class LeadListAPIView(APIView):
         if operator.user.approval_status != "approved":
             return Response({"detail": "Operator is not approved yet."}, status=status.HTTP_400_BAD_REQUEST)
 
-        leads = CustomerRequests.objects.filter(status="NEW").order_by("-created_at")
+        leads = CustomerRequests.objects.filter(status__in=["PENDING", "NEW"]).order_by("-created_at")
+        for lead in leads:
+            lead.refresh_status()
         serializer = CustomerRequestSerilaizers(leads, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -64,6 +61,8 @@ class MyLeadsAPIView(APIView):
 
         operator = get_object_or_404(Operator, user=request.user)
         leads = CustomerRequests.objects.filter(assigned_operator=operator).order_by("-created_at")
+        for lead in leads:
+            lead.refresh_status()
         serializer = CustomerRequestSerilaizers(leads, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -126,10 +125,19 @@ class AcceptLeadAPIView(APIView):
 
         with transaction.atomic():
             customer_request = CustomerRequests.objects.select_for_update().get(id=request_id)
+            customer_request.refresh_status()
+
+            if customer_request.status == "EXPIRED":
+                return Response({"detail": "This request has expired."}, status=status.HTTP_400_BAD_REQUEST)
+
             if customer_request.status == "ACCEPTED":
                 return Response({"detail": "This lead has already been accepted."}, status=status.HTTP_400_BAD_REQUEST)
 
             wallet, _ = Wallet.objects.get_or_create(operator=operator)
+            if wallet.current_balance <= 0:
+                wallet.current_balance = 5
+                wallet.save(update_fields=["current_balance", "updated_at"])
+
             if wallet.current_balance <= 0:
                 return Response({"detail": "Insufficient wallet balance to accept this lead."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -152,6 +160,17 @@ class AcceptLeadAPIView(APIView):
                 "message": "Lead accepted successfully.",
                 "request_id": customer_request.id,
                 "assigned_operator_id": operator.id,
+                "customer": {
+                    "name": customer_request.name,
+                    "phone_number": customer_request.phone_number,
+                    "from_location": customer_request.from_location,
+                    "to_location": customer_request.to_location,
+                    "journey_date": str(customer_request.journey_date),
+                    "journey_time": customer_request.journey_time,
+                    "total_tickets": customer_request.total_tickets,
+                    "bus_type": customer_request.bus_type,
+                    "expected_price": str(customer_request.expected_price),
+                },
             },
             status=status.HTTP_200_OK,
         )

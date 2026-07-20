@@ -268,7 +268,7 @@ const OperatorDashboardNew = () => {
         {activeSection === "overview" && renderOverview()}
         {activeSection === "active" && <ActiveRequests />}
         {activeSection === "accepted" && <AcceptedRequests />}
-        {activeSection === "details" && <CustomerDetailsUnlock unlocked={false} customer={{ name: "Sample Customer", phone: "9876543210", email: "customer@example.com", bookingCode: "TB-1001" }} />}
+        {activeSection === "details" && <CustomerDetailsUnlock />}
         {activeSection === "wallet" && <Wallet />}
         {activeSection === "notifications" && <Notifications notifications={[]} />}
         {activeSection === "profile" && <Profile />}

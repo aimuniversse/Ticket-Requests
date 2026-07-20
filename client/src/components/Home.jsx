@@ -21,13 +21,9 @@ function App() {
               <Link className="primary-btn" to="/ticket-request">
               Book Your Ticket
               </Link>
-
-              {/* <a className="ghost-btn" href="#routes">
-                Explore Routes
-              </a> */}
             </div>
           </div>
-          <a
+          {/* <a
             className="hero-card"
             href="https://demo.tickmybus.com/"
             aria-label="featured deal"
@@ -39,7 +35,7 @@ function App() {
               <li>All Operatores Support</li>
               <li>Corporate travel support</li>
             </ul>
-          </a>
+          </a> */}
         </section>
       </main>
       <Footer />

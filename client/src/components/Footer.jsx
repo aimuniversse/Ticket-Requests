@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   FaFacebookF,
   FaInstagram,
@@ -8,13 +9,15 @@ import {
 import "../styles/Footer.css";
 import logoImage from "../assets/logoc.png";
 const companyLinks =[]
+
 const serviceLinks = [
   { label: 'Bus Ticket Booking', href: 'https://demo.tickmybus.com/' },
-  // { label: 'Bus Rental', href: '#' },
+  
   // { label: 'Corporate Travel', href: '#' },
   // { label: 'School Trips', href: '#' },
   // { label: 'Holiday Packages', href: '#' },
 ]
+const operatorLink = { label: 'Operator Login', to: '/operator-login' }
 const supportLinks = [
   'Help Center',
   'FAQs',
@@ -74,6 +77,9 @@ function Footer() {
                 <a href={link.href}>{link.label}</a>
               </li>
             ))}
+            <li>
+              <Link to={operatorLink.to}>{operatorLink.label}</Link>
+            </li>
           </ul>
         </div>
 

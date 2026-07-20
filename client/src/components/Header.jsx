@@ -127,7 +127,7 @@ function Header() {
 
         </nav>
 
-        <div className="mobile-actions">
+        {/* <div className="mobile-actions">
 
           <a href="/operator-login" className="operator-btn">
             Operator Login
@@ -137,7 +137,7 @@ function Header() {
             Admin Login
           </a>
 
-        </div>
+        </div> */}
 
       </div>
     </header>

@@ -297,12 +297,12 @@ const TicketRequestForm = () => {
           </div> */}
 
           <div className="form-grid">
-            {renderCityAutocomplete("from_location", "From Location", "Enter departure city")}
+            {renderCityAutocomplete("from_location", "From ", "Enter departure city")}
 
-            {renderCityAutocomplete("to_location", "To Location", "Enter destination city")}
+            {renderCityAutocomplete("to_location", "To ", "Enter destination city")}
 
             <div className="input-group">
-              <label>Journey Date</label>
+              <label>Date OF Journey </label>
               <input
                 type="date"
                 name="journey_date"
@@ -330,7 +330,9 @@ const TicketRequestForm = () => {
                 <option value="NON_AC_SLEEPER">NON_AC_SLEEPER</option>
                 <option value="AC_SEATER">AC_SEATER</option>
                 <option value="NON_AC_SEATER">NON_AC_SEATER</option>
-                <option value="SEMI_SLEEPER">SEMI_SLEEPER</option>
+                <option value="SEMI_SLEEPER">UPPER SINGLE_SLEEPER</option>
+                 <option value="SEMI_SLEEPER">LOWER SINGLE_SLEEPER</option>
+                  <option value="SEMI_SLEEPER">FEMALE_SLEEPER</option>
               </select>
             </div>
 
@@ -395,12 +397,7 @@ const TicketRequestForm = () => {
         </div>
       </div>
 
-      <div className="booking-benefits" aria-label="Booking benefits">
-        <div><span>⌁</span><p><strong>Zero Booking Fee</strong>No hidden charges</p></div>
-        <div><span>▣</span><p><strong>Instant Confirmation</strong>Get ticket in seconds</p></div>
-        <div><span>▤</span><p><strong>Multiple Payment Options</strong>UPI, card, and net banking</p></div>
-        <div><span>✦</span><p><strong>Trusted by Millions</strong>Safe and reliable booking</p></div>
-      </div>
+     
 
     </section>
 

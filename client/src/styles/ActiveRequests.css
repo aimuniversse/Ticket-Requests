@@ -66,19 +66,20 @@
 
 /* ── Mobile: Card layout replaces table ── */
 @media(max-width:760px){
-  .requests-page{padding:0 0 16px}
-  .requests-page__header{flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:16px}
+  .requests-page{padding:0 0 12px}
+  .requests-page__header{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:10px}
   .requests-page__tools{width:100%;justify-content:space-between}
-  .live-indicator{font-size:.75rem}
+  .live-indicator{font-size:.7rem}
 
-  .request-table-card__bar{flex-direction:column;align-items:flex-start;gap:10px;padding:14px 16px}
+  .request-table-card{border-radius:12px}
+  .request-table-card__bar{flex-direction:column;align-items:flex-start;gap:6px;padding:8px 12px}
 
   .request-table{min-width:0}
   .request-table thead{display:none}
-  .request-table tbody{display:grid;gap:12px;padding:12px 16px}
-  .request-table tr{display:grid;gap:8px;padding:16px;border:1px solid #e7eaf0;border-radius:14px;background:#fff}
-  .request-table td{padding:0;border:0;font-size:.85rem}
-  .request-table td::before{display:block;margin-bottom:3px;color:#94a3b8;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .request-table tbody{display:grid;gap:6px;padding:6px 10px}
+  .request-table tr{display:grid;gap:4px;padding:10px;border:1px solid #e7eaf0;border-radius:10px;background:#fff}
+  .request-table td{padding:0;border:0;font-size:.76rem}
+  .request-table td::before{display:block;margin-bottom:1px;color:#94a3b8;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
   .request-table td[data-label="Request ID"]::before{content:"Request ID"}
   .request-table td[data-label="Route"]::before{content:"Route"}
   .request-table td[data-label="Journey date"]::before{content:"Journey Date"}
@@ -89,12 +90,14 @@
   .request-table td[data-label="Phone"]::before{content:"Phone"}
   .request-table td[data-label="Time left"]::before{content:"Time Left"}
   .request-table td[data-label="Status"]::before{content:"Status"}
-  .request-table td[data-label="Action"]{margin-top:4px}
-  .request-table td[data-label="Action"] .table-action{width:100%;justify-content:center;padding:10px}
+  .request-table td[data-label="Action"]{margin-top:2px}
+  .request-table td[data-label="Action"] .table-action{width:100%;justify-content:center;padding:7px}
 }
 
 @media(max-width:420px){
-  .requests-page__header h1{font-size:1.3rem}
-  .request-table-card__bar{padding:12px}
-  .request-table td{font-size:.8rem}
+  .requests-page__header h1{font-size:1.15rem}
+  .request-table-card__bar{padding:6px 10px}
+  .request-table td{font-size:.72rem}
+  .request-table tbody{gap:4px;padding:4px 8px}
+  .request-table tr{padding:8px;gap:3px}
 }

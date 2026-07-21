@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 
 from accounts.models import User
@@ -14,7 +17,7 @@ class BackendWorkflowTests(TestCase):
         self.admin_user = User.objects.create_user(
             phone_number="9000000001",
             email="admin@example.com",
-            passwordgit="StrongPass123",
+            password="StrongPass123",
             role="admin",
             is_staff=True,
             is_active=True,
@@ -128,7 +131,7 @@ class BackendWorkflowTests(TestCase):
         detail_response = self.client.get(f"/api/customer/requests/{request.id}/")
 
         self.assertEqual(detail_response.status_code, 200)
-        self.assertEqual(detail_response.json()["phone_number"], "******3210")
+        self.assertEqual(detail_response.json()["phone_number"], "*****3210")
 
         self.client.force_authenticate(self.operator_user)
         assigned_detail_response = self.client.get(f"/api/customer/requests/{request.id}/")
@@ -161,3 +164,69 @@ class BackendWorkflowTests(TestCase):
         self.assertEqual(request.status, "ACCEPTED")
         self.assertEqual(wallet.current_balance, 4)
         self.assertEqual(Transaction.objects.filter(operator=self.operator).count(), 1)
+
+    def test_operator_can_accept_lead_when_wallet_is_created_on_the_fly(self):
+        request = CustomerRequests.objects.create(
+            name="Nina Park",
+            phone_number="8888888888",
+            from_location="Kolkata",
+            to_location="Dhanbad",
+            journey_date="2026-08-04",
+            total_tickets=2,
+            bus_type="AC_SEATER",
+            expected_price="760.00",
+        )
+
+        self.client.force_authenticate(self.operator_user)
+        response = self.client.post(
+            f"/api/customer/leads/{request.id}/accept/",
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        request.refresh_from_db()
+        self.assertEqual(request.status, "ACCEPTED")
+        wallet = Wallet.objects.get(operator=self.operator)
+        self.assertEqual(wallet.current_balance, 4)
+        self.assertEqual(Transaction.objects.filter(operator=self.operator).count(), 1)
+
+    def test_expired_request_marks_status_as_expired(self):
+        request = CustomerRequests.objects.create(
+            name="Mina Ray",
+            phone_number="8888888888",
+            from_location="Hyderabad",
+            to_location="Vizag",
+            journey_date="2026-08-04",
+            total_tickets=2,
+            bus_type="AC_SLEEPER",
+            expected_price="1400.00",
+            expires_at=timezone.now() - timedelta(minutes=1),
+        )
+
+        self.assertEqual(request.refresh_status(), "EXPIRED")
+        request.refresh_from_db()
+        self.assertEqual(request.status, "EXPIRED")
+
+    def test_expired_request_cannot_be_accepted(self):
+        request = CustomerRequests.objects.create(
+            name="Ravi Kumar",
+            phone_number="7777777777",
+            from_location="Bangalore",
+            to_location="Mysore",
+            journey_date="2026-08-05",
+            total_tickets=1,
+            bus_type="NON_AC_SEATER",
+            expected_price="650.00",
+            expires_at=timezone.now() - timedelta(minutes=1),
+        )
+        wallet = Wallet.objects.create(operator=self.operator, current_balance=3)
+
+        self.client.force_authenticate(self.operator_user)
+        response = self.client.post(
+            f"/api/customer/leads/{request.id}/accept/",
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        wallet.refresh_from_db()
+        self.assertEqual(wallet.current_balance, 3)

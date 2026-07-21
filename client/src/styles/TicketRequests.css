@@ -12,14 +12,14 @@
   overflow: hidden;
   padding: 0 32px 34px;
   background:
-    linear-gradient(125deg, rgba(24, 25, 25, 0.96), rgba(224, 239, 252, 0.9)),
+    linear-gradient(125deg, rgba(151, 156, 156, 0.96), rgba(224, 239, 252, 0.9)),
     url("../assets/back.png") center bottom / cover no-repeat;
   color: #10244a;
   font-family: "Inter", sans-serif;
 }
 
 /* Header remains full width even though the ticket page has side padding. */
-.ticket-wrapper > .site-header {
+.ticket-wrapper>.site-header {
   width: 100vw;
   margin-right: calc(50% - 50vw);
   margin-left: calc(50% - 50vw);
@@ -53,21 +53,21 @@
 .journey-promo h2 {
   max-width: 210px;
   margin: 0;
-  color: #0d1f45;
+  color: #e52c2c;
   font-size: clamp(1.45rem, 3vw, 2rem);
   line-height: 1.22;
 }
 
 .journey-promo h2 span {
   display: block;
-  color: #2d5aa6;
+  color: #0f0f10;
 }
 
-.journey-promo > p {
+.journey-promo>p {
   max-width: 195px;
   margin: 12px 0 22px;
-  color: #263757;
-  font-size: 0.8rem;
+  color: #0a0a0a;
+  font-size: 0.86rem;
   line-height: 1.6;
 }
 
@@ -83,8 +83,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #263757;
-  font-size: 0.73rem;
+  color: #0d0d0e;
+  font-size: 0.98rem;
   font-weight: 500;
 }
 
@@ -138,13 +138,13 @@
 
 .form-card-intro strong {
   display: block;
-  color: #102044;
+  color: #0c0c0c;
   font-size: 0.98rem;
 }
 
 .form-card-intro p {
   margin: 3px 0 0;
-  color: #57657f;
+  color: #040505;
   font-size: 0.67rem;
 }
 
@@ -180,7 +180,7 @@
 
 .input-group label {
   margin-bottom: 7px;
-  color: #172648;
+  color: #010101;
   font-size: 0.7rem;
   font-weight: 700;
 }
@@ -202,7 +202,7 @@
   border: 1px solid #c7d2e2;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.85);
-  color: #243656;
+  color: #050505;
   font: inherit;
   font-size: 0.69rem;
   outline: none;
@@ -211,7 +211,7 @@
 
 .input-group input::placeholder,
 .captcha-box input::placeholder {
-  color: #8995a8;
+  color: #0c0c0c;
 }
 
 .input-group input:focus,
@@ -242,7 +242,7 @@
 .city-suggestions li {
   padding: 8px 9px;
   border-radius: 4px;
-  color: #243656;
+  color: #0d0d0f;
   cursor: pointer;
   font-size: 0.72rem;
 }
@@ -254,7 +254,7 @@
 }
 
 .city-suggestions-empty {
-  color: #64728a;
+  color: #0a0b0b;
   font-size: 0.72rem;
 }
 
@@ -277,11 +277,11 @@
   color: #0a0909;
   font-size: 1rem;
   cursor: pointer;
-  
+
 }
 
 .ticket-counter strong {
-  color: #1b2b4c;
+  color: #0b0b0b;
   font-size: 0.75rem;
 }
 
@@ -296,7 +296,7 @@
   padding: 8px 12px;
   border-radius: 6px;
   background: #f3f4fb;
-  color: #34446c;
+  color: #09090a;
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -318,7 +318,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #4a5976;
+  color: #0e0e0f;
   font-size: 0.65rem;
 }
 
@@ -361,7 +361,7 @@
   box-shadow: 0 8px 20px rgba(50, 84, 134, 0.1);
 }
 
-.booking-benefits > div {
+.booking-benefits>div {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -369,19 +369,20 @@
   padding: 9px 11px;
   border-right: 1px solid #e0e8f2;
 }
+
 /* head */
-.booking-benefits > div:last-child {
+.booking-benefits>div:last-child {
   border-right: 0;
 }
 
-.booking-benefits > div > span {
+.booking-benefits>div>span {
   color: #533fca;
   font-size: 1.2rem;
 }
 
 .booking-benefits p {
   margin: 0;
-  color: #64718a;
+  color: #0b0b0b;
   font-size: 0.57rem;
   line-height: 1.4;
 }
@@ -441,11 +442,11 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .booking-benefits > div:nth-child(2) {
+  .booking-benefits>div:nth-child(2) {
     border-right: 0;
   }
 
-  .booking-benefits > div:nth-child(-n + 2) {
+  .booking-benefits>div:nth-child(-n + 2) {
     border-bottom: 1px solid #e0e8f2;
   }
 

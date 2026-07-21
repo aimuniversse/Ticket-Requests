@@ -12,14 +12,13 @@ const CITY_NAMES = [
   "Ballari", "Bengaluru", "Belagavi", "Bidar", "Chikkamagaluru", "Davanagere", "Gadag", "Hubballi", "Kalaburagi", "Kolar", "Mandya", "Mangaluru", "Mysuru", "Raichur", "Shivamogga", "Tumakuru", "Udupi", "Vijayapura",
   "Alappuzha", "Ernakulam", "Kannur", "Kasaragod", "Kochi", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad",
   "Ariyalur", "Chengalpattu", "Chennai", "Chidambaram", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Hosur", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Kumbakonam", "Madurai", "Mayiladuthurai", "Nagapattinam", "Nagercoil", "Namakkal", "Ooty", "Perambalur", "Pollachi", "Pudukkottai", "Ramanathapuram", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupattur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
-
+    "Avinashi",
   // Western and central India
   "Ahmedabad", "Amreli", "Anand", "Bhavnagar", "Bhuj", "Gandhinagar", "Godhra", "Jamnagar", "Junagadh", "Mehsana", "Morbi", "Nadiad", "Navsari", "Palanpur", "Patan", "Porbandar", "Rajkot", "Surat", "Surendranagar", "Vadodara", "Valsad",
   "Akola", "Amravati", "Aurangabad", "Baramati", "Bhandara", "Chandrapur", "Dhule", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai", "Nagpur", "Nanded", "Nashik", "Navi Mumbai", "Osmanabad", "Parbhani", "Pune", "Ratnagiri", "Sangli", "Satara", "Solapur", "Thane", "Wardha", "Yavatmal",
   "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Dewas", "Gwalior", "Indore", "Jabalpur", "Khandwa", "Mandsaur", "Morena", "Ratlam", "Rewa", "Sagar", "Satna", "Shivpuri", "Ujjain", "Vidisha",
   "Ahmednagar", "Ambikapur", "Bhilai", "Bilaspur", "Dhamtari", "Durg", "Jagdalpur", "Korba", "Raigarh", "Raipur", "Rajnandgaon",
-  "Panaji", "Margao", "Mapusa", "Vasco da Gama",
-
+  "Panaji", "Margao", "Mapusa", "Vasco da Gama", "Goa", "ponda", "Pernem", "Bicholim", "Curchorem", "Avinashi", 
   // North and east India
   "Ajmer", "Alwar", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Chittorgarh", "Jaipur", "Jaisalmer", "Jodhpur", "Kota", "Pali", "Sikar", "Sri Ganganagar", "Udaipur",
   "Agra", "Aligarh", "Allahabad", "Ayodhya", "Bareilly", "Basti", "Deoria", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Ghaziabad", "Gonda", "Gorakhpur", "Greater Noida", "Hapur", "Jhansi", "Kanpur", "Lucknow", "Mathura", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Noida", "Prayagraj", "Raebareli", "Saharanpur", "Sitapur", "Sultanpur", "Varanasi",
@@ -34,7 +33,8 @@ const CITY_NAMES = [
   "Bhubaneswar", "Balasore", "Baripada", "Berhampur", "Cuttack", "Jharsuguda", "Puri", "Rourkela", "Sambalpur",
   "Kolkata", "Asansol", "Bardhaman", "Durgapur", "Haldia", "Howrah", "Kharagpur", "Malda", "Siliguri",
   "Gangtok", "Darjeeling", "Jalpaiguri", "Cooch Behar",
-  "Agartala", "Aizawl", "Imphal", "Kohima", "Shillong", "Itanagar", "Naharlagun", "Pasighat", "Dibrugarh", "Guwahati", "Jorhat", "Nagaon", "Silchar", "Tezpur",
+  "Agartala", "Aizawl", "Imphal", "Kohima", "Shillong", "Itanagar", "Naharlagun", "Pasighat", "Dibrugarh", "Guwahati", "Jorhat", "Nagaon", "Silchar", "Tezpur", "Goa", "ponda", "Pernem", "Bicholim", "Curchorem",
+  // North and east India
 
   // Union territories
   "Puducherry", "Karaikal", "Mahe", "Yanam", "Port Blair", "Daman", "Diu", "Kavaratti", "Silvassa"
@@ -54,6 +54,30 @@ const INITIAL_FORM_DATA = {
   notes: "",
   email: "",
   agree: false,
+};
+
+const REQUEST_STORAGE_KEY = "latestTicketRequest";
+
+const buildRequestSnapshot = (responseData) => {
+  const fallbackExpiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+
+  return {
+    ...responseData,
+    id: responseData?.id ?? responseData?.request_id,
+    request_id: responseData?.request_id || responseData?.id,
+    expires_at: responseData?.expires_at || fallbackExpiresAt,
+    status: responseData?.status || "PENDING",
+  };
+};
+
+const persistLatestRequest = (requestData) => {
+  if (!requestData) return;
+
+  try {
+    localStorage.setItem(REQUEST_STORAGE_KEY, JSON.stringify(requestData));
+  } catch (error) {
+    console.warn("Unable to persist ticket request snapshot", error);
+  }
 };
 
 const TicketRequestForm = () => {
@@ -119,15 +143,15 @@ const TicketRequestForm = () => {
 
     console.log("Response :", response.data);
 
-    if (response.data?.public_token) {
-      navigate(`/ticket-request/status/${response.data.public_token}`);
-      return;
-    }
-    alert("Ticket Request Submitted Successfully!");
+    const requestSnapshot = buildRequestSnapshot(response.data);
+    persistLatestRequest(requestSnapshot);
 
-    // Reset Form
     setFormData(INITIAL_FORM_DATA);
     setCaptchaToken("");
+
+    const requestIdentifier = requestSnapshot.id ?? response.data?.id ?? response.data?.public_token;
+    navigate(`/ticket-request/status/${requestIdentifier}`, { state: { request: requestSnapshot } });
+    return;
 
     } catch (error) {
     console.error(error.response?.data || error);
@@ -297,12 +321,12 @@ const TicketRequestForm = () => {
           </div> */}
 
           <div className="form-grid">
-            {renderCityAutocomplete("from_location", "From Location", "Enter departure city")}
+            {renderCityAutocomplete("from_location", "From ", "Enter departure city")}
 
-            {renderCityAutocomplete("to_location", "To Location", "Enter destination city")}
+            {renderCityAutocomplete("to_location", "To ", "Enter destination city")}
 
             <div className="input-group">
-              <label>Journey Date</label>
+              <label>Date OF Journey </label>
               <input
                 type="date"
                 name="journey_date"
@@ -330,7 +354,9 @@ const TicketRequestForm = () => {
                 <option value="NON_AC_SLEEPER">NON_AC_SLEEPER</option>
                 <option value="AC_SEATER">AC_SEATER</option>
                 <option value="NON_AC_SEATER">NON_AC_SEATER</option>
-                <option value="SEMI_SLEEPER">SEMI_SLEEPER</option>
+                <option value="SEMI_SLEEPER">UPPER SINGLE_SLEEPER</option>
+                 <option value="SEMI_SLEEPER">LOWER SINGLE_SLEEPER</option>
+                  <option value="SEMI_SLEEPER">FEMALE_SLEEPER</option>
               </select>
             </div>
 
@@ -395,12 +421,7 @@ const TicketRequestForm = () => {
         </div>
       </div>
 
-      <div className="booking-benefits" aria-label="Booking benefits">
-        <div><span>⌁</span><p><strong>Zero Booking Fee</strong>No hidden charges</p></div>
-        <div><span>▣</span><p><strong>Instant Confirmation</strong>Get ticket in seconds</p></div>
-        <div><span>▤</span><p><strong>Multiple Payment Options</strong>UPI, card, and net banking</p></div>
-        <div><span>✦</span><p><strong>Trusted by Millions</strong>Safe and reliable booking</p></div>
-      </div>
+     
 
     </section>
 

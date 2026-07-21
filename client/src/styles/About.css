@@ -7,7 +7,8 @@
 
 .about-main {
   flex: 1;
-  width: max(1120px, 100%);
+  width: 100%;
+  max-width: 1120px;
   background: linear-gradient(180deg, rgba(248, 251, 255, 0.92) 0%, rgba(238, 244, 255, 0.92) 100%), url("../assets/logo1.png");
   margin: 0 auto;
   padding: 3rem 1.5rem;
@@ -150,6 +151,10 @@
 }
 
 @media (max-width: 900px) {
+  .about-main {
+    padding: 2rem 1rem;
+  }
+
   .about-hero {
     grid-template-columns: 1fr;
     padding: 2rem;
@@ -159,9 +164,59 @@
     min-height: 260px;
   }
 
+  .about-why-choose {
+    padding: 2rem;
+  }
+
   .why-cards {
     grid-template-columns: 1fr;
   }
+
+  .why-card {
+    min-height: auto;
+    padding: 1.5rem;
+  }
 }
 
-/* new add */
+@media (max-width: 480px) {
+  .about-main {
+    padding: 1rem 0.75rem;
+  }
+
+  .about-hero {
+    padding: 1.25rem;
+    border-radius: 24px;
+  }
+
+  .about-image-wrapper {
+    min-height: 200px;
+    border-radius: 20px;
+  }
+
+  .about-why-choose {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .why-card {
+    padding: 1.25rem;
+  }
+
+  .why-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-copy p {
+    font-size: 0.925rem;
+  }
+
+  .about-hero h1 {
+    font-size: clamp(2rem, 6vw, 2.5rem);
+  }
+
+  .about-why-header h2 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+}

@@ -1,121 +1,46 @@
-.unlock-container{
+.customer-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1.25rem;padding:1.5rem}
 
-display:flex;
+.customer-detail-card{border:1px solid #e7eaf0;border-radius:14px;background:#fff;overflow:hidden;transition:box-shadow .2s ease}
+.customer-detail-card:hover{box-shadow:0 8px 24px rgba(15,23,42,.08)}
+.customer-detail-card--locked{border-color:#fbbf24}
+.customer-detail-card--unlocked{border-color:#6ee7b7}
 
-justify-content:center;
+.customer-detail-card__header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#f8fafc;border-bottom:1px solid #eef1f5}
+.customer-detail-card__id{display:flex;align-items:center;gap:8px;font-weight:700;color:#8b1e3f;font-size:.85rem}
 
-margin-top:40px;
+.customer-detail-card__route{display:flex;align-items:center;gap:8px;padding:14px 18px 0;font-size:1rem;color:#253047}
+.customer-detail-card__route svg{color:#be123c;flex-shrink:0}
 
+.customer-detail-card__meta{display:flex;flex-wrap:wrap;gap:10px 20px;padding:10px 18px;font-size:.82rem;color:#64748b}
+.customer-detail-card__meta span{display:inline-flex;align-items:center;gap:5px}
+.customer-detail-card__meta svg{font-size:.78rem;color:#94a3b8}
+
+.customer-detail-card__contact{padding:14px 18px;border-top:1px solid #eef1f5;background:#fafbfc}
+.customer-detail-card__unlock-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:#dcfce7;color:#166534;font-size:.75rem;font-weight:700;margin-bottom:10px}
+.customer-detail-card__info{display:flex;flex-direction:column;gap:10px}
+.customer-detail-card__field{display:flex;align-items:center;gap:12px}
+.customer-detail-card__field svg{font-size:1.1rem;color:#be123c;flex-shrink:0}
+.customer-detail-card__field span{font-size:.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+.customer-detail-card__field h4{margin-top:2px;font-size:.95rem;font-weight:600;color:#1e293b}
+.customer-detail-card__locked{display:flex;align-items:center;gap:10px;padding:16px;border-radius:10px;background:#fffbeb;color:#92400e;font-size:.85rem;font-weight:500;text-align:center;justify-content:center}
+.customer-detail-card__locked svg{font-size:1rem;color:#b45309}
+
+.status-pill--completed{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:999px;background:#dbeafe;color:#1e40af;font-size:.72rem;font-weight:700;text-transform:capitalize}
+
+/* ── Mobile: Tablet ── */
+@media(max-width:760px){
+  .customer-details-page .requests-page__header{flex-direction:column;align-items:flex-start;gap:12px}
+  .customer-details-page .request-table-card__bar{flex-direction:column;align-items:flex-start;gap:10px}
+  .customer-details-page .accepted-filters{width:100%}
+  .customer-cards-grid{grid-template-columns:1fr;padding:1rem}
 }
 
-.unlock-card{
-
-width:650px;
-
-background:#fff;
-
-border-radius:20px;
-
-padding:30px;
-
-box-shadow:0 15px 40px rgba(0,0,0,.08);
-
-}
-
-.unlock-header{
-
-text-align:center;
-
-margin-bottom:35px;
-
-}
-
-.success-icon{
-
-font-size:55px;
-
-color:#2e7d32;
-
-margin-bottom:15px;
-
-}
-
-.unlock-header h2{
-
-margin-bottom:10px;
-
-}
-
-.unlock-header p{
-
-color:#666;
-
-}
-
-.locked-state{
-
-text-align:center;
-
-padding:50px 20px;
-
-}
-
-.lock-icon{
-
-font-size:70px;
-
-margin-bottom:20px;
-
-}
-
-.customer-details{
-
-display:flex;
-
-flex-direction:column;
-
-gap:18px;
-
-}
-
-.detail-row{
-
-display:flex;
-
-align-items:center;
-
-gap:18px;
-
-padding:18px;
-
-background:#f7f7f7;
-
-border-radius:14px;
-
-}
-
-.detail-row svg{
-
-font-size:25px;
-
-color:#d32f2f;
-
-}
-
-.detail-row span{
-
-font-size:13px;
-
-color:#777;
-
-}
-
-.detail-row h4{
-
-margin-top:4px;
-
-font-size:18px;
-
-font-weight:600;
-
+/* ── Mobile: Small phone ── */
+@media(max-width:420px){
+  .customer-cards-grid{padding:.75rem;gap:1rem}
+  .customer-detail-card__header{padding:12px 14px}
+  .customer-detail-card__route{padding:12px 14px 0;font-size:.9rem}
+  .customer-detail-card__meta{padding:8px 14px;gap:8px 14px;font-size:.78rem}
+  .customer-detail-card__contact{padding:12px 14px}
+  .customer-detail-card__field h4{font-size:.88rem}
 }

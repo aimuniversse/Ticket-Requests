@@ -113,7 +113,7 @@ function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2026 ANBU TRANSPORT. All Rights Reserved.</p>
+        <p>© 2026 ANBU TRANSPORT SERVICE. All Rights Reserved.</p>
         <div className="bottom-links">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms &amp; Conditions</a>

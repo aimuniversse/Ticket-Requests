@@ -12,14 +12,13 @@ const CITY_NAMES = [
   "Ballari", "Bengaluru", "Belagavi", "Bidar", "Chikkamagaluru", "Davanagere", "Gadag", "Hubballi", "Kalaburagi", "Kolar", "Mandya", "Mangaluru", "Mysuru", "Raichur", "Shivamogga", "Tumakuru", "Udupi", "Vijayapura",
   "Alappuzha", "Ernakulam", "Kannur", "Kasaragod", "Kochi", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad",
   "Ariyalur", "Chengalpattu", "Chennai", "Chidambaram", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Hosur", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Kumbakonam", "Madurai", "Mayiladuthurai", "Nagapattinam", "Nagercoil", "Namakkal", "Ooty", "Perambalur", "Pollachi", "Pudukkottai", "Ramanathapuram", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupattur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
-
+    "Avinashi",
   // Western and central India
   "Ahmedabad", "Amreli", "Anand", "Bhavnagar", "Bhuj", "Gandhinagar", "Godhra", "Jamnagar", "Junagadh", "Mehsana", "Morbi", "Nadiad", "Navsari", "Palanpur", "Patan", "Porbandar", "Rajkot", "Surat", "Surendranagar", "Vadodara", "Valsad",
   "Akola", "Amravati", "Aurangabad", "Baramati", "Bhandara", "Chandrapur", "Dhule", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai", "Nagpur", "Nanded", "Nashik", "Navi Mumbai", "Osmanabad", "Parbhani", "Pune", "Ratnagiri", "Sangli", "Satara", "Solapur", "Thane", "Wardha", "Yavatmal",
   "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Dewas", "Gwalior", "Indore", "Jabalpur", "Khandwa", "Mandsaur", "Morena", "Ratlam", "Rewa", "Sagar", "Satna", "Shivpuri", "Ujjain", "Vidisha",
   "Ahmednagar", "Ambikapur", "Bhilai", "Bilaspur", "Dhamtari", "Durg", "Jagdalpur", "Korba", "Raigarh", "Raipur", "Rajnandgaon",
-  "Panaji", "Margao", "Mapusa", "Vasco da Gama",
-
+  "Panaji", "Margao", "Mapusa", "Vasco da Gama", "Goa", "ponda", "Pernem", "Bicholim", "Curchorem", "Avinashi", 
   // North and east India
   "Ajmer", "Alwar", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Chittorgarh", "Jaipur", "Jaisalmer", "Jodhpur", "Kota", "Pali", "Sikar", "Sri Ganganagar", "Udaipur",
   "Agra", "Aligarh", "Allahabad", "Ayodhya", "Bareilly", "Basti", "Deoria", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Ghaziabad", "Gonda", "Gorakhpur", "Greater Noida", "Hapur", "Jhansi", "Kanpur", "Lucknow", "Mathura", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Noida", "Prayagraj", "Raebareli", "Saharanpur", "Sitapur", "Sultanpur", "Varanasi",
@@ -34,7 +33,8 @@ const CITY_NAMES = [
   "Bhubaneswar", "Balasore", "Baripada", "Berhampur", "Cuttack", "Jharsuguda", "Puri", "Rourkela", "Sambalpur",
   "Kolkata", "Asansol", "Bardhaman", "Durgapur", "Haldia", "Howrah", "Kharagpur", "Malda", "Siliguri",
   "Gangtok", "Darjeeling", "Jalpaiguri", "Cooch Behar",
-  "Agartala", "Aizawl", "Imphal", "Kohima", "Shillong", "Itanagar", "Naharlagun", "Pasighat", "Dibrugarh", "Guwahati", "Jorhat", "Nagaon", "Silchar", "Tezpur",
+  "Agartala", "Aizawl", "Imphal", "Kohima", "Shillong", "Itanagar", "Naharlagun", "Pasighat", "Dibrugarh", "Guwahati", "Jorhat", "Nagaon", "Silchar", "Tezpur", "Goa", "ponda", "Pernem", "Bicholim", "Curchorem",
+  // North and east India
 
   // Union territories
   "Puducherry", "Karaikal", "Mahe", "Yanam", "Port Blair", "Daman", "Diu", "Kavaratti", "Silvassa"
@@ -59,7 +59,7 @@ const INITIAL_FORM_DATA = {
 const REQUEST_STORAGE_KEY = "latestTicketRequest";
 
 const buildRequestSnapshot = (responseData) => {
-  const fallbackExpiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+  const fallbackExpiresAt = new Date(Date.now() + 2 * 60 * 1000).toISOString();
 
   return {
     ...responseData,

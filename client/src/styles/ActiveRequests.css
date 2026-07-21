@@ -20,10 +20,20 @@
 .request-table tbody tr:hover{background:#fffafb}
 .request-row--active{background:#ffffff}
 .request-row--active:hover{background:#fef2f4 !important}
-.request-row--accepted{background:#f8fdfa}
-.request-row--accepted:hover{background:#ecfdf5 !important}
-.request-row--accepted td{border-top-color:#d1fae5}
+.request-row--new{background:#eff6ff;border-left:3px solid #2563eb}
+.request-row--new:hover{background:#dbeafe !important}
+.request-row--accepted{background:#f0fdf4}
+.request-row--accepted:hover{background:#dcfce7 !important}
+.request-row--accepted td{border-top-color:#bbf7d0}
+.request-row--completed{background:#f0fdf4}
+.request-row--completed:hover{background:#dcfce7 !important}
+.request-row--completed td{border-top-color:#bbf7d0}
+.request-row--expired{background:#fef2f2}
+.request-row--expired:hover{background:#fee2e2 !important}
+.request-row--expired td{border-top-color:#fecdd3}
 .accepted-label{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:.78rem;font-weight:700;color:#166534;background:#dcfce7;white-space:nowrap}
+.request-row--new .request-id{color:#1d4ed8}
+.request-row--new .route-cell span{color:#2563eb}
 
 .request-id{color:#8b1e3f;font-size:.75rem;font-weight:700;white-space:nowrap}
 .route-cell{display:inline-flex;align-items:center;gap:7px;color:#253047;white-space:nowrap}
@@ -31,8 +41,10 @@
 .type-pill{display:inline-flex;padding:4px 12px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:.72rem;font-weight:700;text-transform:capitalize}
 .status-pill{display:inline-flex;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:capitalize}
 .status-pill--pending{background:#fef3c7;color:#92400e}
+.status-pill--new{background:#dbeafe;color:#1e40af}
 .status-pill--accepted{background:#dcfce7;color:#166534}
-.status-pill--assigned{background:#dbeafe;color:#1e40af}
+.status-pill--assigned{background:#e0e7ff;color:#3730a3}
+.status-pill--completed{background:#dcfce7;color:#166534}
 .status-pill--expired{background:#fee2e2;color:#991b1b}
 .status-stack{display:flex;flex-direction:column;gap:5px}
 .expired-badge{font-size:.68rem;color:#991b1b;font-weight:600}
@@ -54,19 +66,20 @@
 
 /* ── Mobile: Card layout replaces table ── */
 @media(max-width:760px){
-  .requests-page{padding:0 0 16px}
-  .requests-page__header{flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:16px}
+  .requests-page{padding:0 0 12px}
+  .requests-page__header{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:10px}
   .requests-page__tools{width:100%;justify-content:space-between}
-  .live-indicator{font-size:.75rem}
+  .live-indicator{font-size:.7rem}
 
-  .request-table-card__bar{flex-direction:column;align-items:flex-start;gap:10px;padding:14px 16px}
+  .request-table-card{border-radius:12px}
+  .request-table-card__bar{flex-direction:column;align-items:flex-start;gap:6px;padding:8px 12px}
 
   .request-table{min-width:0}
   .request-table thead{display:none}
-  .request-table tbody{display:grid;gap:12px;padding:12px 16px}
-  .request-table tr{display:grid;gap:8px;padding:16px;border:1px solid #e7eaf0;border-radius:14px;background:#fff}
-  .request-table td{padding:0;border:0;font-size:.85rem}
-  .request-table td::before{display:block;margin-bottom:3px;color:#94a3b8;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .request-table tbody{display:grid;gap:6px;padding:6px 10px}
+  .request-table tr{display:grid;gap:4px;padding:10px;border:1px solid #e7eaf0;border-radius:10px;background:#fff}
+  .request-table td{padding:0;border:0;font-size:.76rem}
+  .request-table td::before{display:block;margin-bottom:1px;color:#94a3b8;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
   .request-table td[data-label="Request ID"]::before{content:"Request ID"}
   .request-table td[data-label="Route"]::before{content:"Route"}
   .request-table td[data-label="Journey date"]::before{content:"Journey Date"}
@@ -74,14 +87,17 @@
   .request-table td[data-label="Bus type"]::before{content:"Bus Type"}
   .request-table td[data-label="Requested price"]::before{content:"Price"}
   .request-table td[data-label="Customer"]::before{content:"Customer"}
-  .request-table td[data-label="Remaining time"]::before{content:"Time Left"}
+  .request-table td[data-label="Phone"]::before{content:"Phone"}
+  .request-table td[data-label="Time left"]::before{content:"Time Left"}
   .request-table td[data-label="Status"]::before{content:"Status"}
-  .request-table td[data-label="Action"]{margin-top:4px}
-  .request-table td[data-label="Action"] .table-action{width:100%;justify-content:center;padding:10px}
+  .request-table td[data-label="Action"]{margin-top:2px}
+  .request-table td[data-label="Action"] .table-action{width:100%;justify-content:center;padding:7px}
 }
 
 @media(max-width:420px){
-  .requests-page__header h1{font-size:1.3rem}
-  .request-table-card__bar{padding:12px}
-  .request-table td{font-size:.8rem}
+  .requests-page__header h1{font-size:1.15rem}
+  .request-table-card__bar{padding:6px 10px}
+  .request-table td{font-size:.72rem}
+  .request-table tbody{gap:4px;padding:4px 8px}
+  .request-table tr{padding:8px;gap:3px}
 }

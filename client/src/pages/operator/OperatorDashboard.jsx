@@ -47,7 +47,7 @@ const OperatorDashboard = () => {
 
           <FaBus />
 
-          <h2>TicketMyBus</h2>
+          <h2>Tickmybus</h2>
 
         </div>
 

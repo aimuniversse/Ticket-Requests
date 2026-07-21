@@ -51,6 +51,7 @@ const OperatorDashboardNew = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [user, setUser] = useState(null);
+  const [acceptedCounts, setAcceptedCounts] = useState({});
 
   const fetchAssignedRequests = async () => {
     setLoading(true);
@@ -110,6 +111,10 @@ const OperatorDashboardNew = () => {
     return { total, active, followUp };
   }, [requests]);
 
+  const handleAcceptedCounts = (counts) => {
+    setAcceptedCounts(counts);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -144,16 +149,40 @@ const OperatorDashboardNew = () => {
           <h2>{loading ? "--" : summary.total}</h2>
         </div>
 
-        <div className="dashboard-card">
+        <div className="dashboard-card dashboard-card--new">
           <FaClock className="card-icon" />
-          <span>Active Requests</span>
-          <h2>{loading ? "--" : summary.active}</h2>
+          <span>New Requests</span>
+          <h2>{acceptedCounts.NEW ?? 0}</h2>
         </div>
 
-        <div className="dashboard-card">
+        <div className="dashboard-card dashboard-card--active">
+          <FaClock className="card-icon" />
+          <span>Pending</span>
+          <h2>{acceptedCounts.PENDING ?? 0}</h2>
+        </div>
+
+        <div className="dashboard-card dashboard-card--accepted">
           <FaCheckCircle className="card-icon" />
-          <span>Follow-up Needed</span>
-          <h2>{loading ? "--" : summary.followUp}</h2>
+          <span>Accepted</span>
+          <h2>{acceptedCounts.ACCEPTED ?? 0}</h2>
+        </div>
+
+        <div className="dashboard-card dashboard-card--assigned">
+          <FaCheckCircle className="card-icon" />
+          <span>Assigned</span>
+          <h2>{acceptedCounts.ASSIGNED ?? 0}</h2>
+        </div>
+
+        <div className="dashboard-card dashboard-card--completed">
+          <FaCheckCircle className="card-icon" />
+          <span>Completed</span>
+          <h2>{acceptedCounts.COMPLETED ?? 0}</h2>
+        </div>
+
+        <div className="dashboard-card dashboard-card--expired">
+          <FaClock className="card-icon" />
+          <span>Expired</span>
+          <h2>{acceptedCounts.EXPIRED ?? 0}</h2>
         </div>
 
         <div className="dashboard-card">
@@ -265,7 +294,7 @@ const OperatorDashboardNew = () => {
 
         {activeSection === "overview" && renderOverview()}
         {activeSection === "active" && <ActiveRequests />}
-        {activeSection === "accepted" && <AcceptedRequests />}
+        {activeSection === "accepted" && <AcceptedRequests onCountChange={handleAcceptedCounts} />}
 
         {activeSection === "wallet" && <Wallet />}
         {activeSection === "notifications" && <Notifications notifications={[]} />}

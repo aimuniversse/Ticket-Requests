@@ -56,6 +56,30 @@ const INITIAL_FORM_DATA = {
   agree: false,
 };
 
+const REQUEST_STORAGE_KEY = "latestTicketRequest";
+
+const buildRequestSnapshot = (responseData) => {
+  const fallbackExpiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+
+  return {
+    ...responseData,
+    id: responseData?.id ?? responseData?.request_id,
+    request_id: responseData?.request_id || responseData?.id,
+    expires_at: responseData?.expires_at || fallbackExpiresAt,
+    status: responseData?.status || "PENDING",
+  };
+};
+
+const persistLatestRequest = (requestData) => {
+  if (!requestData) return;
+
+  try {
+    localStorage.setItem(REQUEST_STORAGE_KEY, JSON.stringify(requestData));
+  } catch (error) {
+    console.warn("Unable to persist ticket request snapshot", error);
+  }
+};
+
 const TicketRequestForm = () => {
   const navigate = useNavigate();
   const [captchaToken, setCaptchaToken] = useState("");
@@ -119,15 +143,15 @@ const TicketRequestForm = () => {
 
     console.log("Response :", response.data);
 
-    if (response.data?.public_token) {
-      navigate(`/ticket-request/status/${response.data.public_token}`);
-      return;
-    }
-    alert("Ticket Request Submitted Successfully!");
+    const requestSnapshot = buildRequestSnapshot(response.data);
+    persistLatestRequest(requestSnapshot);
 
-    // Reset Form
     setFormData(INITIAL_FORM_DATA);
     setCaptchaToken("");
+
+    const requestIdentifier = requestSnapshot.id ?? response.data?.id ?? response.data?.public_token;
+    navigate(`/ticket-request/status/${requestIdentifier}`, { state: { request: requestSnapshot } });
+    return;
 
     } catch (error) {
     console.error(error.response?.data || error);

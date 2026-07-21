@@ -28,7 +28,6 @@ import CustomerDetailsUnlock from "./CustomerDetailsUnlock";
 import Notifications from "./Notifications";
 import Profile from "./Profile";
 import Settings from "./Settings";
-import Transactions from "./Transactions";
 import Wallet from "./Wallet";
 
 const requestLinks = [
@@ -38,8 +37,6 @@ const requestLinks = [
 ];
 
 const accountLinks = [
-  { id: "wallet", label: "Wallet", icon: FaWallet },
-  { id: "transactions", label: "Transactions", icon: FaMoneyBillWave },
   { id: "notifications", label: "Notifications", icon: FaBell },
   { id: "settings", label: "Settings", icon: FaCog },
 ];
@@ -50,6 +47,9 @@ const OperatorDashboardNew = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [wallet, setWallet] = useState(null);
+  const [walletError, setWalletError] = useState("");
+  const [walletLoading, setWalletLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [user, setUser] = useState(null);
@@ -76,6 +76,20 @@ const OperatorDashboardNew = () => {
     }
   };
 
+  const loadWallet = async () => {
+    setWalletLoading(true);
+    setWalletError("");
+
+    try {
+      const response = await API.get("auth/wallet/");
+      setWallet(response.data || null);
+    } catch (err) {
+      setWalletError(err.response?.data?.detail || "Unable to load wallet details.");
+    } finally {
+      setWalletLoading(false);
+    }
+  };
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -87,6 +101,7 @@ const OperatorDashboardNew = () => {
     }
 
     fetchAssignedRequests();
+    loadWallet();
   }, [navigate]);
 
   const summary = useMemo(() => {
@@ -103,6 +118,8 @@ const OperatorDashboardNew = () => {
     localStorage.removeItem("user");
     navigate("/operator-login");
   };
+
+  const requestPoints = walletLoading ? "--" : wallet?.current_balance ?? 0;
 
   const selectSection = (section) => {
     setActiveSection(section);
@@ -183,53 +200,7 @@ const OperatorDashboardNew = () => {
     </>
   );
 
-  const renderRequests = () => (
-    <section className="panel">
-      <div className="section-title">
-        <h2>Assigned Requests</h2>
-        <button type="button" className="ghost-btn" onClick={fetchAssignedRequests}>
-          <FaSyncAlt /> Refresh
-        </button>
-      </div>
-
-      {loading ? (
-        <div className="status-card">Loading assigned requests…</div>
-      ) : error ? (
-        <div className="status-card error">{error}</div>
-      ) : requests.length === 0 ? (
-        <div className="empty-request">
-          <FaTicketAlt className="empty-icon" />
-          <h3>No assigned requests found</h3>
-          <p>Your backend-assigned requests will appear here.</p>
-        </div>
-      ) : (
-        <div className="request-grid">
-          {requests.map((request) => (
-            <article className="request-card" key={request.id}>
-              <div className="request-header">
-                <div>
-                  <h3>{request.name}</h3>
-                  <p className="muted">Request ID: {request.id}</p>
-                </div>
-                <span className="badge">{request.status || "Assigned"}</span>
-              </div>
-
-              <div className="request-body">
-                <div className="info-row">
-                  <FaMapMarkerAlt />
-                  <span>Assigned operator ID: {request.assigned_operator_id || "N/A"}</span>
-                </div>
-                <div className="info-row">
-                  <FaInfoCircle />
-                  <span>Backend status: {request.status || "Pending"}</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
-  );
+  const renderRequests = () => null;
 
   const renderAccount = () => (
     <section className="panel account-panel">
@@ -281,7 +252,12 @@ const OperatorDashboardNew = () => {
             <button type="button" className="notification-btn" aria-label="Notifications" onClick={() => selectSection("notifications")}><FaBell /></button>
             <div className={`profile-menu ${openDropdown === "profile" ? "is-open" : ""}`}>
               <button type="button" className="profile-trigger" onClick={() => setOpenDropdown(openDropdown === "profile" ? null : "profile")}><FaUserCircle /><span><strong>{user?.name || "Operator"}</strong><small>{user?.email || "Operator account"}</small></span><FaChevronDown /></button>
-              <div className="profile-popover"><button type="button" onClick={() => selectSection("profile")}><FaUserCircle /> My profile</button><button type="button" onClick={() => selectSection("settings")}><FaCog /> Settings</button><button type="button" className="logout-button" onClick={handleLogout}><FaSignOutAlt /> Logout</button></div>
+              <div className="profile-popover">
+                <button type="button" onClick={() => selectSection("profile")}><FaUserCircle /> My profile</button>
+                <button type="button" className="requests-item"><FaTicketAlt /> Requests <span className="requests-count">{requestPoints}</span></button>
+                <button type="button" onClick={() => selectSection("settings")}><FaCog /> Settings</button>
+                <button type="button" className="logout-button" onClick={handleLogout}><FaSignOutAlt /> Logout</button>
+              </div>
             </div>
           </div>
         </div>
@@ -292,13 +268,12 @@ const OperatorDashboardNew = () => {
         {activeSection === "overview" && renderOverview()}
         {activeSection === "active" && <ActiveRequests />}
         {activeSection === "accepted" && <AcceptedRequests />}
-        {activeSection === "details" && <CustomerDetailsUnlock unlocked={false} customer={{ name: "Sample Customer", phone: "9876543210", email: "customer@example.com", bookingCode: "TB-1001" }} />}
+        {activeSection === "details" && <CustomerDetailsUnlock />}
         {activeSection === "wallet" && <Wallet />}
-        {activeSection === "transactions" && <Transactions />}
         {activeSection === "notifications" && <Notifications notifications={[]} />}
         {activeSection === "profile" && <Profile />}
         {activeSection === "settings" && <Settings />}
-        {activeSection === "requests" && renderRequests()}
+        {activeSection === "requests" && null}
         {activeSection === "account" && renderAccount()}
       </main>
     </div>

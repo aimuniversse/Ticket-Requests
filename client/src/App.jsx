@@ -17,7 +17,6 @@ import CustomerDetailsUnlock from "./pages/operator/CustomerDetailsUnlock";
 import ActiveRequests from "./pages/operator/ActiveRequests";
 import AcceptedRequests from "./pages/operator/AcceptedRequests";
 import Wallet from "./pages/operator/Wallet";
-import Transactions from "./pages/operator/Transactions";
 import Notifications from "./pages/operator/Notifications";
 import Profile from "./pages/operator/Profile";
 import Settings from "./pages/operator/Settings";
@@ -45,7 +44,6 @@ function App() {
         <Route path="/operator/active-requests" element={<ActiveRequests />} />
         <Route path="/operator/accepted-requests" element={<AcceptedRequests />} />
         <Route path="/operator/wallet" element={<Wallet />} />
-        <Route path="/operator/transactions" element={<Transactions />} />
         <Route path="/operator/notifications" element={<Notifications />} />
         <Route path="/operator/profile" element={<Profile />} />
         <Route path="/operator/settings" element={<Settings />} />

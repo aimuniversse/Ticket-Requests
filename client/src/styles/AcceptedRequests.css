@@ -1,1 +1,44 @@
-/* Accepted Requests uses the shared responsive table styles from ActiveRequests.css. */
+.accepted-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.accepted-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #d9e2f0;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.accepted-filter input {
+  border: 0;
+  outline: 0;
+  min-width: 160px;
+  font: inherit;
+}
+
+.accepted-filters select {
+  border: 1px solid #d9e2f0;
+  border-radius: 999px;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  background: #fff;
+}
+
+.customer-unlocked {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: #14532d;
+}
+
+.customer-locked {
+  color: #b45309;
+  font-weight: 600;
+}

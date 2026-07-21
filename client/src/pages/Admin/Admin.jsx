@@ -2,12 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
 import API from "../../api/axios";
-import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
-const SECTIONS = ["Dashboard", "Users", "Requests", "Approvals", "Settings"];
+const SECTIONS = ["Dashboard", "Users", "Requests", "History", "Approvals", "Settings"];
 const Empty = ({ label }) => <div className="empty-card"><h3>No {label} yet</h3><p>This section is connected to live backend data and will populate when records are created.</p></div>;
 
 function Admin() {

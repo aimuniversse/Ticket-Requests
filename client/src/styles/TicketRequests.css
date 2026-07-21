@@ -66,13 +66,8 @@
 .journey-promo>p {
   max-width: 195px;
   margin: 12px 0 22px;
-<<<<<<< HEAD
-  color: #ced3dd;
-  font-size: 0.8rem;
-=======
   color: #0a0a0a;
   font-size: 0.86rem;
->>>>>>> 5969a1914c9711dcb77d44353a8c0de6668b2291
   line-height: 1.6;
 }
 
@@ -88,13 +83,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-<<<<<<< HEAD
-  color: #e8eaee;
-  font-size: 0.73rem;
-=======
   color: #0d0d0e;
   font-size: 0.98rem;
->>>>>>> 5969a1914c9711dcb77d44353a8c0de6668b2291
   font-weight: 500;
 }
 

@@ -30,6 +30,11 @@ class OperatorRegistrationAPIView(APIView):
 
 class PendingOperatorListAPIView(APIView):
     def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
+            return Response({"detail": "Only admins can view pending operators."}, status=status.HTTP_403_FORBIDDEN)
+
         operators = Operator.objects.filter(user__approval_status="pending")
         serializer = PendingOpeartorSerializer(operators, many=True)
 
@@ -38,7 +43,9 @@ class PendingOperatorListAPIView(APIView):
 
 class OperatorListAPIView(APIView):
     def get(self, request):
-        if not request.user.is_authenticated or request.user.role != "admin":
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
             return Response({"detail": "Only admins can view operators."}, status=status.HTTP_403_FORBIDDEN)
 
         operators = Operator.objects.all().order_by("-created_at")
@@ -48,7 +55,9 @@ class OperatorListAPIView(APIView):
 
 class ApproveOperatorAPIView(APIView):
     def post(self, request, operator_id):
-        if not request.user.is_authenticated or request.user.role != "admin":
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
             return Response(
                 {"detail": "Only admins can approve operators."},
                 status=status.HTTP_403_FORBIDDEN,
@@ -70,7 +79,9 @@ class ApproveOperatorAPIView(APIView):
 
 class RejectOperatorAPIView(APIView):
     def post(self, request, operator_id):
-        if not request.user.is_authenticated or request.user.role != "admin":
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
             return Response({"detail": "Only admins can reject operators."}, status=status.HTTP_403_FORBIDDEN)
 
         operator = get_object_or_404(Operator, id=operator_id)
@@ -83,7 +94,9 @@ class RejectOperatorAPIView(APIView):
 
 class ActivateOperatorAPIView(APIView):
     def post(self, request, operator_id):
-        if not request.user.is_authenticated or request.user.role != "admin":
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
             return Response({"detail": "Only admins can activate operators."}, status=status.HTTP_403_FORBIDDEN)
 
         operator = get_object_or_404(Operator, id=operator_id)
@@ -95,7 +108,9 @@ class ActivateOperatorAPIView(APIView):
 
 class DeactivateOperatorAPIView(APIView):
     def post(self, request, operator_id):
-        if not request.user.is_authenticated or request.user.role != "admin":
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
             return Response({"detail": "Only admins can deactivate operators."}, status=status.HTTP_403_FORBIDDEN)
 
         operator = get_object_or_404(Operator, id=operator_id)
@@ -149,7 +164,9 @@ class AssignedRequestsAPIView(APIView):
 
 class AddCreditAPIView(APIView):
     def post(self, request):
-        if not request.user.is_authenticated or request.user.role != "admin":
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
             return Response({"detail": "Only admins can add credits."}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = AddCreditSerializer(data=request.data)
@@ -195,3 +212,19 @@ class WalletHistoryAPIView(APIView):
         transactions = Transaction.objects.filter(operator=operator).order_by("-created_at")
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminOperatorTransactionsAPIView(APIView):
+    def get(self, request, operator_id):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
+            return Response({"detail": "Only admins can view operator transactions."}, status=status.HTTP_403_FORBIDDEN)
+
+        operator = get_object_or_404(Operator, id=operator_id)
+        wallet, _ = Wallet.objects.get_or_create(operator=operator)
+        transactions = Transaction.objects.filter(operator=operator).order_by("-created_at")
+        return Response({
+            "wallet": WalletSerializer(wallet).data,
+            "transactions": TransactionSerializer(transactions, many=True).data,
+        }, status=status.HTTP_200_OK)

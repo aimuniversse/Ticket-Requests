@@ -31,12 +31,15 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err?.response?.status === 401 && typeof window !== "undefined" && window.location.pathname.startsWith("/operator")) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("access");
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
-      window.location.assign("/operator-login");
+    if (err?.response?.status === 401 && typeof window !== "undefined") {
+      if (window.location.pathname.startsWith("/operator") || window.location.pathname.startsWith("/admin")) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("access");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userRole");
+        window.location.assign("/operator-login");
+      }
     }
 
     return Promise.reject(err);

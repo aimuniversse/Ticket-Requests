@@ -113,6 +113,7 @@ button,input{font:inherit}
   .main{padding:20px 14px 28px}
   .welcome{margin-bottom:16px;border-radius:16px}.welcome::after{right:-100px}
   .dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+  .dashboard-cards .dashboard-card:nth-child(n+10){display:none}
   .dashboard-card{padding:14px;border-radius:14px}.card-icon{width:34px;height:34px;margin-bottom:11px;padding:8px}
   .dashboard-card span{min-height:31px;font-size:10px}
   .dashboard-card h2{font-size:18px}
@@ -124,7 +125,8 @@ button,input{font:inherit}
 
 /* ── Responsive: Small phone ── */
 @media(max-width:420px){
-  .dashboard-cards{grid-template-columns:1fr}
+  .dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dashboard-cards .dashboard-card:nth-child(n+10){display:none}
   .welcome h1{font-size:22px}
   .welcome p:not(.eyebrow){font-size:12px}
   .operator-header__inner{min-height:56px;gap:8px;padding:0 12px}

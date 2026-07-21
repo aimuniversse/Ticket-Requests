@@ -59,7 +59,7 @@ const INITIAL_FORM_DATA = {
 const REQUEST_STORAGE_KEY = "latestTicketRequest";
 
 const buildRequestSnapshot = (responseData) => {
-  const fallbackExpiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+  const fallbackExpiresAt = new Date(Date.now() + 2 * 60 * 1000).toISOString();
 
   return {
     ...responseData,

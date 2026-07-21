@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaCheckCircle, FaSearch, FaSyncAlt, FaUser } from "react-icons/fa";
+import { FaCheckCircle, FaPhone, FaSearch, FaSyncAlt, FaUser } from "react-icons/fa";
 import API from "../../api/axios";
 import "../../styles/AcceptedRequests.css";
 import "../../styles/ActiveRequests.css";
@@ -63,7 +63,7 @@ const AcceptedRequests = () => {
         <div className="accepted-filters">
           <label className="accepted-filter">
             <FaSearch />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search requests" />
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name, phone, route..." />
           </label>
           <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
             <option value="ALL">All</option>
@@ -73,7 +73,7 @@ const AcceptedRequests = () => {
           </select>
         </div>
       </div>
-      {loading ? <div className="requests-empty"><FaSyncAlt className="requests-empty__icon requests-empty__icon--spin" /><h2>Loading requests</h2><p>Getting your accepted requests.</p></div> : filteredRequests.length === 0 ? <div className="requests-empty"><FaCheckCircle className="requests-empty__icon" /><h2>No accepted requests</h2><p>Requests you accept from the active queue will appear here.</p></div> : <div className="request-table-wrap"><table className="request-table"><thead><tr><th>Request ID</th><th>Route</th><th>Journey date</th><th>Seats</th><th>Bus type</th><th>Requested price</th><th>Customer details</th><th>Status</th></tr></thead><tbody>{filteredRequests.map((item) => <tr key={item.id}><td data-label="Request ID"><span className="request-id">{item.request_id || `#${item.id}`}</span></td><td data-label="Route"><strong className="route-cell">{item.from_location}<span>→</span>{item.to_location}</strong></td><td data-label="Journey date">{formatDate(item.journey_date)}</td><td data-label="Seats">{item.total_tickets}</td><td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "—"}</span></td><td data-label="Requested price"><strong>₹{item.expected_price}</strong></td><td data-label="Customer details">{item.contact_unlocked ? <span className="customer-unlocked"><FaUser /> {item.name || item.phone_number || "Available"}</span> : <span className="customer-locked">Locked</span>}</td><td data-label="Status"><span className="status-pill status-pill--accepted">{labelStatus(item.status)}</span></td></tr>)}</tbody></table></div>}
+      {loading ? <div className="requests-empty"><FaSyncAlt className="requests-empty__icon requests-empty__icon--spin" /><h2>Loading requests</h2><p>Getting your accepted requests.</p></div> : filteredRequests.length === 0 ? <div className="requests-empty"><FaCheckCircle className="requests-empty__icon" /><h2>No accepted requests</h2><p>Requests you accept from the active queue will appear here.</p></div> : <div className="request-table-wrap"><table className="request-table"><thead><tr><th>Request ID</th><th>Route</th><th>Journey date</th><th>Time</th><th>Seats</th><th>Bus type</th><th>Price</th><th>Customer name</th><th>Phone number</th><th>Status</th></tr></thead><tbody>{filteredRequests.map((item) => <tr key={item.id}><td data-label="Request ID"><span className="request-id">{item.request_id || `#${item.id}`}</span></td><td data-label="Route"><strong className="route-cell">{item.from_location}<span>→</span>{item.to_location}</strong></td><td data-label="Journey date">{formatDate(item.journey_date)}</td><td data-label="Time">{item.journey_time || "—"}</td><td data-label="Seats">{item.total_tickets}</td><td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "—"}</span></td><td data-label="Price"><strong>₹{item.expected_price}</strong></td><td data-label="Customer name">{item.contact_unlocked ? <span className="customer-unlocked"><FaUser /> {item.name || "—"}</span> : <span className="customer-locked">Locked</span>}</td><td data-label="Phone number">{item.contact_unlocked ? <span className="customer-unlocked"><FaPhone /> {item.phone_number || "—"}</span> : <span className="customer-locked">Locked</span>}</td><td data-label="Status"><span className={`status-pill ${item.status === "ACCEPTED" ? "status-pill--accepted" : item.status === "COMPLETED" ? "status-pill--completed" : item.status === "ASSIGNED" ? "status-pill--assigned" : "status-pill--pending"}`}>{labelStatus(item.status)}</span></td></tr>)}</tbody></table></div>}
     </div>
   </section>;
 };

@@ -24,7 +24,6 @@ import {
 } from "react-icons/fa";
 import AcceptedRequests from "./AcceptedRequests";
 import ActiveRequests from "./ActiveRequests";
-import CustomerDetailsUnlock from "./CustomerDetailsUnlock";
 import Notifications from "./Notifications";
 import Profile from "./Profile";
 import Settings from "./Settings";
@@ -33,7 +32,6 @@ import Wallet from "./Wallet";
 const requestLinks = [
   { id: "active", label: "Active Requests", icon: FaClock },
   { id: "accepted", label: "Accepted Requests", icon: FaCheckCircle },
-  { id: "details", label: "Customer Details", icon: FaInfoCircle },
 ];
 
 const accountLinks = [
@@ -268,7 +266,7 @@ const OperatorDashboardNew = () => {
         {activeSection === "overview" && renderOverview()}
         {activeSection === "active" && <ActiveRequests />}
         {activeSection === "accepted" && <AcceptedRequests />}
-        {activeSection === "details" && <CustomerDetailsUnlock />}
+
         {activeSection === "wallet" && <Wallet />}
         {activeSection === "notifications" && <Notifications notifications={[]} />}
         {activeSection === "profile" && <Profile />}

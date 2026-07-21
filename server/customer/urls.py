@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomerRequestCreateView, CustomerRequestDetailView, AssignRequestAPIView, AcceptLeadAPIView, LeadListAPIView, MyLeadsAPIView
+from .views import CustomerRequestCreateView, CustomerRequestDetailView, AssignRequestAPIView, AcceptLeadAPIView, LeadListAPIView, MyLeadsAPIView, AdminCustomerListAPIView, AdminCustomerRequestsAPIView
 
 
 urlpatterns = [
@@ -24,5 +24,15 @@ urlpatterns = [
         "leads/<int:request_id>/accept/",
         AcceptLeadAPIView.as_view(),
         name="accept-lead",
+    ),
+    path(
+        "admin/customers/",
+        AdminCustomerListAPIView.as_view(),
+        name="admin-customer-list",
+    ),
+    path(
+        "admin/customers/<str:phone_number>/requests/",
+        AdminCustomerRequestsAPIView.as_view(),
+        name="admin-customer-requests",
     ),
 ]

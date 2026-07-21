@@ -1,44 +1,29 @@
-.accepted-filters {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
+.accepted-filters{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.accepted-filter{display:flex;align-items:center;gap:.4rem;padding:.55rem .75rem;border:1px solid #d9e2f0;border-radius:999px;background:#fff;flex:1;min-width:0}
+.accepted-filter input{border:0;outline:0;min-width:0;flex:1;font:inherit}
+.accepted-filters select{border:1px solid #d9e2f0;border-radius:999px;padding:.55rem .75rem;font:inherit;background:#fff;cursor:pointer}
+.customer-unlocked{display:inline-flex;align-items:center;gap:.4rem;font-weight:600;color:#14532d}
+.customer-locked{color:#b45309;font-weight:600}
 
-.accepted-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.75rem;
-  border: 1px solid #d9e2f0;
-  border-radius: 999px;
-  background: #fff;
-}
+/* ── Mobile ── */
+@media(max-width:760px){
+  .accepted-requests-page .requests-page__header{flex-direction:column;align-items:flex-start;gap:12px}
+  .accepted-requests-page .request-table-card__bar{flex-direction:column;align-items:flex-start;gap:10px}
+  .accepted-filters{width:100%}
+  .accepted-filter{min-width:0}
+  .accepted-filter input{min-width:0}
 
-.accepted-filter input {
-  border: 0;
-  outline: 0;
-  min-width: 160px;
-  font: inherit;
-}
-
-.accepted-filters select {
-  border: 1px solid #d9e2f0;
-  border-radius: 999px;
-  padding: 0.55rem 0.75rem;
-  font: inherit;
-  background: #fff;
-}
-
-.customer-unlocked {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-weight: 600;
-  color: #14532d;
-}
-
-.customer-locked {
-  color: #b45309;
-  font-weight: 600;
+  .accepted-requests-page .request-table thead{display:none}
+  .accepted-requests-page .request-table tbody{display:grid;gap:12px;padding:12px 16px}
+  .accepted-requests-page .request-table tr{display:grid;gap:8px;padding:16px;border:1px solid #e7eaf0;border-radius:14px;background:#fff}
+  .accepted-requests-page .request-table td{padding:0;border:0;font-size:.85rem}
+  .accepted-requests-page .request-table td::before{display:block;margin-bottom:3px;color:#94a3b8;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .accepted-requests-page .request-table td[data-label="Request ID"]::before{content:"Request ID"}
+  .accepted-requests-page .request-table td[data-label="Route"]::before{content:"Route"}
+  .accepted-requests-page .request-table td[data-label="Journey date"]::before{content:"Journey Date"}
+  .accepted-requests-page .request-table td[data-label="Seats"]::before{content:"Seats"}
+  .accepted-requests-page .request-table td[data-label="Bus type"]::before{content:"Bus Type"}
+  .accepted-requests-page .request-table td[data-label="Requested price"]::before{content:"Price"}
+  .accepted-requests-page .request-table td[data-label="Customer details"]::before{content:"Customer"}
+  .accepted-requests-page .request-table td[data-label="Status"]::before{content:"Status"}
 }

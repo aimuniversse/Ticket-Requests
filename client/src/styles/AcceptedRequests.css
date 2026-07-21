@@ -21,9 +21,12 @@
   .accepted-requests-page .request-table td[data-label="Request ID"]::before{content:"Request ID"}
   .accepted-requests-page .request-table td[data-label="Route"]::before{content:"Route"}
   .accepted-requests-page .request-table td[data-label="Journey date"]::before{content:"Journey Date"}
+  .accepted-requests-page .request-table td[data-label="Time"]::before{content:"Time"}
   .accepted-requests-page .request-table td[data-label="Seats"]::before{content:"Seats"}
   .accepted-requests-page .request-table td[data-label="Bus type"]::before{content:"Bus Type"}
-  .accepted-requests-page .request-table td[data-label="Requested price"]::before{content:"Price"}
-  .accepted-requests-page .request-table td[data-label="Customer details"]::before{content:"Customer"}
+  .accepted-requests-page .request-table td[data-label="Price"]::before{content:"Price"}
+  .accepted-requests-page .request-table td[data-label="Customer name"]::before{content:"Customer Name"}
+  .accepted-requests-page .request-table td[data-label="Phone number"]::before{content:"Phone Number"}
+  .accepted-requests-page .request-table td[data-label="Created at"]::before{content:"Created At"}
   .accepted-requests-page .request-table td[data-label="Status"]::before{content:"Status"}
 }

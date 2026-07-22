@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+/* Removed remote Google Font import for offline support. */
 
 .operator-register-page { min-height: 100vh; display: grid; place-items: center; padding: 18px; background: #f4f7fb; font-family: "Poppins", sans-serif; }
 .register-container { width: min(880px, 100%); display: grid; grid-template-columns: 255px minmax(0, 1fr); overflow: hidden; background: #fff; border: 1px solid #e6ebf2; border-radius: 16px; box-shadow: 0 14px 36px rgba(25,49,80,.11); }

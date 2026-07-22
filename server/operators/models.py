@@ -73,6 +73,7 @@ class Transaction(models.Model):
     credits = models.IntegerField()
     balance_after_transaction = models.IntegerField()
     description = models.CharField(max_length=255)
+<<<<<<< HEAD
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -94,3 +95,13 @@ class PointRequest(models.Model):
     admin_response = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+=======
+    customer_request = models.ForeignKey(
+        "customer.CustomerRequests",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="transactions"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+>>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2

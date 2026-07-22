@@ -230,6 +230,7 @@ class AdminOperatorTransactionsAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+<<<<<<< HEAD
 class OperatorPointRequestCreateView(APIView):
     def post(self, request):
         if not request.user.is_authenticated:
@@ -258,10 +259,14 @@ class OperatorPointRequestListView(APIView):
 
 
 class AdminPointRequestListView(APIView):
+=======
+class AdminTransactionsAPIView(APIView):
+>>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
     def get(self, request):
         if not request.user.is_authenticated:
             return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
         if request.user.role != "admin":
+<<<<<<< HEAD
             return Response({"detail": "Only admins can view point requests."}, status=status.HTTP_403_FORBIDDEN)
 
         point_requests = PointRequest.objects.all().order_by("-created_at")
@@ -310,3 +315,10 @@ class AdminPointRequestActionView(APIView):
             point_request.save(update_fields=["status", "admin_response", "updated_at"])
 
         return Response({"message": f"Request {action}d successfully."}, status=status.HTTP_200_OK)
+=======
+            return Response({"detail": "Only admins can view transaction history."}, status=status.HTTP_403_FORBIDDEN)
+
+        credits = Transaction.objects.filter(transaction_type="CREDIT").order_by("-created_at")
+        serializer = TransactionSerializer(credits, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+>>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2

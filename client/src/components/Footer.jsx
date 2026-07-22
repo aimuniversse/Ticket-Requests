@@ -98,8 +98,8 @@ function Footer() {
           <h3>Contact</h3>
           <ul className="footer-links contact-links">
             <li>Coimbatore, Tamil Nadu</li>
-            <li>+91 90925 48488</li>
-            <li>tickmybus@gmail.com</li>
+            <li>+91 9600690059</li>
+            <li>support@tickmybus.com</li>
             <li>Mon – Sun • 24/7 Support</li>
           </ul>
           <div className="social-links" aria-label="Social media">

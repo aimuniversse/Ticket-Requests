@@ -117,10 +117,15 @@ DATABASES = {
         ssl_require=False,
     )
 }
+<<<<<<< HEAD
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default'].pop('OPTIONS', None)
+=======
 
 if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
     DATABASES['default'].pop('OPTIONS', None)
 
+>>>>>>> 2a568f1e841e64fb9e5f7864512befd6279bcf6f
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

@@ -6,7 +6,7 @@ import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
-const SECTIONS = ["Dashboard", "Users", "Requests", "History", "Approvals", "Settings"];
+const SECTIONS = ["Dashboard", "Users", "Requests","History","Approvals", "Settings"];
 
 const Empty = ({ label }) => (
   <div className="empty-card">
@@ -65,7 +65,7 @@ function OperatorPanel({ user, data, loading, error }) {
       {wallet && (
         <div className="panel-wallet-card">
           <div>
-            <div className="panel-wallet-label">Wallet Balance</div>
+            <div className="panel-wallet-label">Points Balance</div>
             <div className="panel-wallet-balance">{wallet.current_balance ?? 0}</div>
             <div className="panel-wallet-unit">points available</div>
           </div>
@@ -73,7 +73,7 @@ function OperatorPanel({ user, data, loading, error }) {
         </div>
       )}
 
-      <div className="panel-section-label">Transaction History</div>
+      <div className="panel-section-label">Request History</div>
       {transactions.length ? (
         <div style={{ overflowX: "auto" }}>
           <table className="panel-mini-table">
@@ -84,6 +84,10 @@ function OperatorPanel({ user, data, loading, error }) {
                 <th>Balance After</th>
                 <th>Description</th>
                 <th>Date</th>
+                <th>Customer</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Journey Date</th>
               </tr>
             </thead>
             <tbody>
@@ -98,6 +102,10 @@ function OperatorPanel({ user, data, loading, error }) {
                   <td>{tx.balance_after_transaction}</td>
                   <td>{tx.description || "—"}</td>
                   <td>{formatDate(tx.created_at)}</td>
+                  <td>{tx.customer_name || "—"}</td>
+                  <td>{tx.customer_from || "—"}</td>
+                  <td>{tx.customer_to || "—"}</td>
+                  <td>{formatDate(tx.request_date)}</td>
                 </tr>
               ))}
             </tbody>
@@ -169,7 +177,7 @@ function CustomerPanel({ user, data, loading, error }) {
 function Admin() {
   const navigate = useNavigate();
   const [section, setSection] = useState("Dashboard");
-  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [] });
+  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [], history: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -214,10 +222,11 @@ function Admin() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [operatorsResponse, approvalsResponse, customersResponse] = await Promise.all([
+      const [operatorsResponse, approvalsResponse, customersResponse, historyResponse] = await Promise.all([
         API.get("operators/"),
         API.get("auth/admin/operators/pending/"),
         API.get("customer/admin/customers/").catch(() => ({ data: [] })),
+        API.get("auth/admin/transactions/").catch(() => ({ data: [] })),
       ]);
       const operators = (operatorsResponse.data || []).map((op) => ({
         ...op,
@@ -227,7 +236,8 @@ function Admin() {
       }));
       const approvals = (approvalsResponse.data || []).map((op) => ({ ...op, mobile: op.phone_number }));
       const customers = customersResponse.data || [];
-      setData({ operators, customers, approvals, requests: [], wallets: [] });
+      const history = historyResponse.data || [];
+      setData({ operators, customers, approvals, requests: [], wallets: [], history });
       setError("");
     } catch (err) {
       const statusCode = err.response?.status;
@@ -288,7 +298,7 @@ function Admin() {
 
   const users = userType === "operators" ? data.operators
     : userType === "customers" ? data.customers
-    : [...data.operators, ...data.customers];
+      : [...data.operators, ...data.customers];
 
   const shownUsers = useMemo(
     () => users.filter((item) => `${item.id} ${item.name} ${item.email} ${item.mobile}`.toLowerCase().includes(search.toLowerCase())),
@@ -454,6 +464,50 @@ function Admin() {
                   </div>
                 )}
               </div>
+            </section>
+          )}
+
+          {/* ── History ── */}
+          {section === "History" && (
+            <section className="admin-section">
+              <div className="section-header">
+                <div>
+                  <span className="section-title">Transaction History</span>
+                  <p className="section-subtitle">Points transferred from admin to operators.</p>
+                </div>
+              </div>
+              {data.history.length ? (
+                <div className="table-wrapper">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Operator ID</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Points</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.history.map((item) => (
+                        <tr key={item.id}>
+                          <td>{item.operator_id || "—"}</td>
+                          <td>{item.operator_name || "—"}</td>
+                          <td>{item.operator_company || "—"}</td>
+                          <td>{item.operator_email || "—"}</td>
+                          <td>{item.credits}</td>
+                          <td>{formatDate(item.created_at)}</td>
+                          <td>{item.description || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <Empty label="transaction history" />
+              )}
             </section>
           )}
 

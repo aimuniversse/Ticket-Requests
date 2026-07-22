@@ -149,6 +149,7 @@ class AcceptLeadAPIView(APIView):
                 credits=1,
                 balance_after_transaction=wallet.current_balance,
                 description="Lead accepted",
+                customer_request=customer_request,
             )
 
             customer_request.assigned_operator = operator
@@ -192,7 +193,7 @@ class AdminCustomerListAPIView(APIView):
                 "name": customer.name,
                 "email": "—",
                 "mobile": customer.phone_number,
-                "status": "—",
+                "status": customer.status or "—",
                 "role": "Customer"
             })
 

@@ -103,6 +103,47 @@ class WalletSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    operator_id = serializers.IntegerField(source="operator.id", read_only=True)
+    operator_name = serializers.CharField(source="operator.user.name", read_only=True)
+    operator_email = serializers.EmailField(source="operator.user.email", read_only=True)
+    operator_company = serializers.CharField(source="operator.company_name", read_only=True)
+    customer_request_id = serializers.IntegerField(source="customer_request.id", read_only=True)
+    customer_name = serializers.SerializerMethodField()
+    customer_from = serializers.SerializerMethodField()
+    customer_to = serializers.SerializerMethodField()
+    request_date = serializers.SerializerMethodField()
+
     class Meta:
         model = Transaction
-        fields = ["transaction_type", "credits", "balance_after_transaction", "description", "created_at"]
+        fields = [
+            "id",
+            "transaction_type",
+            "credits",
+            "balance_after_transaction",
+            "description",
+            "created_at",
+            "operator_id",
+            "operator_name",
+            "operator_email",
+            "operator_company",
+            "customer_request_id",
+            "customer_name",
+            "customer_from",
+            "customer_to",
+            "request_date",
+        ]
+
+    def get_customer_name(self, obj):
+        return obj.customer_request.name if obj.customer_request else None
+
+    def get_customer_from(self, obj):
+        return obj.customer_request.from_location if obj.customer_request else None
+
+    def get_customer_to(self, obj):
+        return obj.customer_request.to_location if obj.customer_request else None
+
+    def get_request_date(self, obj):
+        if obj.customer_request and obj.customer_request.journey_date:
+            return obj.customer_request.journey_date
+        return None

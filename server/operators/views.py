@@ -228,3 +228,15 @@ class AdminOperatorTransactionsAPIView(APIView):
             "wallet": WalletSerializer(wallet).data,
             "transactions": TransactionSerializer(transactions, many=True).data,
         }, status=status.HTTP_200_OK)
+
+
+class AdminTransactionsAPIView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
+            return Response({"detail": "Only admins can view transaction history."}, status=status.HTTP_403_FORBIDDEN)
+
+        credits = Transaction.objects.filter(transaction_type="CREDIT").order_by("-created_at")
+        serializer = TransactionSerializer(credits, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

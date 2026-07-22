@@ -11,6 +11,7 @@ from .views import (
     WalletAPIView,
     WalletHistoryAPIView,
     AdminOperatorTransactionsAPIView,
+    AdminTransactionsAPIView,
 )
 
 
@@ -64,5 +65,10 @@ urlpatterns = [
         "admin/operators/<int:operator_id>/transactions/",
         AdminOperatorTransactionsAPIView.as_view(),
         name="admin-operator-transactions",
+    ),
+    path(
+        "admin/transactions/",
+        AdminTransactionsAPIView.as_view(),
+        name="admin-transactions",
     ),
 ]

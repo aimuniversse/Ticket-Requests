@@ -76,7 +76,10 @@
   .wallet-actions{flex-direction:column;gap:12px;margin-bottom:24px}
   .wallet-actions button{width:100%;justify-content:center;padding:13px}
   .wallet-request-form{grid-template-columns:1fr}
-  .wallet-request-section{padding:16px}
+  .wallet-request-section{padding:18px}
+  .wallet-request-icon{width:44px;height:44px;font-size:22px;border-radius:12px}
+  .pr-list{gap:10px}
+  .pr-card{padding:14px}
   .wallet-history{padding:16px;border-radius:14px}
   .wallet-history table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .wallet-history thead{display:none}

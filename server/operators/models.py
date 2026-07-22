@@ -73,4 +73,31 @@ class Transaction(models.Model):
     credits = models.IntegerField()
     balance_after_transaction = models.IntegerField()
     description = models.CharField(max_length=255)
+    customer_request = models.ForeignKey(
+        "customer.CustomerRequests",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="transactions"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PointRequest(models.Model):
+    STATUS_CHOICES = (
+        ("PENDING", "Pending"),
+        ("APPROVED", "Approved"),
+        ("REJECTED", "Rejected"),
+    )
+
+    operator = models.ForeignKey(
+        Operator,
+        related_name="point_requests",
+        on_delete=models.CASCADE,
+    )
+    points_requested = models.PositiveIntegerField()
+    reason = models.TextField(blank=True, default="")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDING")
+    admin_response = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

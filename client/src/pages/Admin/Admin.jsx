@@ -6,7 +6,7 @@ import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
-const SECTIONS = ["Dashboard", "Users", "Requests", "History", "Approvals", "Settings"];
+const SECTIONS = ["Dashboard", "Users", "Requests","History","Approvals", "Settings"];
 
 const Empty = ({ label }) => (
   <div className="empty-card">
@@ -65,7 +65,7 @@ function OperatorPanel({ user, data, loading, error }) {
       {wallet && (
         <div className="panel-wallet-card">
           <div>
-            <div className="panel-wallet-label">Wallet Balance</div>
+            <div className="panel-wallet-label">Points Balance</div>
             <div className="panel-wallet-balance">{wallet.current_balance ?? 0}</div>
             <div className="panel-wallet-unit">points available</div>
           </div>
@@ -73,7 +73,7 @@ function OperatorPanel({ user, data, loading, error }) {
         </div>
       )}
 
-      <div className="panel-section-label">Transaction History</div>
+      <div className="panel-section-label">Request History</div>
       {transactions.length ? (
         <div style={{ overflowX: "auto" }}>
           <table className="panel-mini-table">
@@ -84,6 +84,10 @@ function OperatorPanel({ user, data, loading, error }) {
                 <th>Balance After</th>
                 <th>Description</th>
                 <th>Date</th>
+                <th>Customer</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Journey Date</th>
               </tr>
             </thead>
             <tbody>
@@ -98,6 +102,10 @@ function OperatorPanel({ user, data, loading, error }) {
                   <td>{tx.balance_after_transaction}</td>
                   <td>{tx.description || "—"}</td>
                   <td>{formatDate(tx.created_at)}</td>
+                  <td>{tx.customer_name || "—"}</td>
+                  <td>{tx.customer_from || "—"}</td>
+                  <td>{tx.customer_to || "—"}</td>
+                  <td>{formatDate(tx.request_date)}</td>
                 </tr>
               ))}
             </tbody>
@@ -169,7 +177,7 @@ function CustomerPanel({ user, data, loading, error }) {
 function Admin() {
   const navigate = useNavigate();
   const [section, setSection] = useState("Dashboard");
-  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [] });
+  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [], history: [], pointRequests: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -177,6 +185,8 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
+  const [pointRequestAction, setPointRequestAction] = useState({});
+  const [historyTab, setHistoryTab] = useState("Point Requests");
 
   // Detail panel state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -214,10 +224,12 @@ function Admin() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [operatorsResponse, approvalsResponse, customersResponse] = await Promise.all([
+      const [operatorsResponse, approvalsResponse, customersResponse, historyResponse, pointRequestsResponse] = await Promise.all([
         API.get("operators/"),
         API.get("auth/admin/operators/pending/"),
         API.get("customer/admin/customers/").catch(() => ({ data: [] })),
+        API.get("auth/admin/transactions/").catch(() => ({ data: [] })),
+        API.get("auth/admin/point-requests/").catch(() => ({ data: [] })),
       ]);
       const operators = (operatorsResponse.data || []).map((op) => ({
         ...op,
@@ -227,7 +239,9 @@ function Admin() {
       }));
       const approvals = (approvalsResponse.data || []).map((op) => ({ ...op, mobile: op.phone_number }));
       const customers = customersResponse.data || [];
-      setData({ operators, customers, approvals, requests: [], wallets: [] });
+      const history = historyResponse.data || [];
+      const pointRequests = pointRequestsResponse.data || [];
+      setData({ operators, customers, approvals, requests: [], wallets: [], history, pointRequests });
       setError("");
     } catch (err) {
       const statusCode = err.response?.status;
@@ -286,9 +300,20 @@ function Admin() {
     }
   };
 
+  const actOnPointRequest = async (requestId, action) => {
+    const response = pointRequestAction[requestId] || "";
+    try {
+      await API.post(`auth/admin/point-requests/${requestId}/${action}/`, { admin_response: response });
+      setPointRequestAction((prev) => { const next = { ...prev }; delete next[requestId]; return next; });
+      await load();
+    } catch (err) {
+      setError(err.response?.data?.detail || `Unable to ${action} this request.`);
+    }
+  };
+
   const users = userType === "operators" ? data.operators
     : userType === "customers" ? data.customers
-    : [...data.operators, ...data.customers];
+      : [...data.operators, ...data.customers];
 
   const shownUsers = useMemo(
     () => users.filter((item) => `${item.id} ${item.name} ${item.email} ${item.mobile}`.toLowerCase().includes(search.toLowerCase())),
@@ -457,7 +482,101 @@ function Admin() {
             </section>
           )}
 
-          {/* ── Approvals ── */}
+          {/* ── History ── */}  
+          {section === "History" && (
+            <section className="admin-section">
+              <div className="section-header">
+                <div>
+                  <span className="section-title">History</span>
+                  <p className="section-subtitle">Operator point requests and transaction history.</p>
+                </div>
+                <div className="tab-group">
+                  {["Point Requests", "Transactions"].map((tab) => (
+                    <button
+                      key={tab}
+                      className={`tab ${historyTab === tab ? "active" : ""}`}
+                      onClick={() => setHistoryTab(tab)}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {historyTab === "Point Requests" && (
+                (data.pointRequests && data.pointRequests.length) ? (
+                  <div className="history-list">
+                    {data.pointRequests.map((req) => (
+                      <article key={req.id} className={`history-card ${req.status.toLowerCase()}`}>
+                        <div className="history-card-main">
+                          <div className="history-card-top">
+                            <span className="history-operator">{req.company_name || "—"}</span>
+                            <span className={`history-points ${req.status === "APPROVED" ? "approved" : req.status === "REJECTED" ? "rejected" : ""}`}>
+                              {req.points_requested} pts
+                            </span>
+                          </div>
+                          <p className="history-reason">{req.reason || "No reason provided"}</p>
+                          <div className="history-meta">
+                            <span className={`history-status-pill ${req.status.toLowerCase()}`}>{req.status}</span>
+                            <span className="history-date">{formatDate(req.created_at)}</span>
+                            {req.admin_response && <span className="history-admin-note">Admin: {req.admin_response}</span>}
+                          </div>
+                        </div>
+                        {req.status === "PENDING" && (
+                          <div className="history-card-actions">
+                            <input
+                              type="text"
+                              className="history-response-input"
+                              placeholder="Response (optional)"
+                              value={pointRequestAction[req.id] || ""}
+                              onChange={(e) => setPointRequestAction({ ...pointRequestAction, [req.id]: e.target.value })}
+                            />
+                            <div className="history-btn-group">
+                              <button className="action-btn success" onClick={() => actOnPointRequest(req.id, "approve")}>Approve</button>
+                              <button className="action-btn secondary" onClick={() => actOnPointRequest(req.id, "reject")}>Reject</button>
+                            </div>
+                          </div>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <Empty label="point requests" />
+                )
+              )}
+
+              {historyTab === "Transactions" && (
+                (data.history && data.history.length) ? (
+                  <div className="table-wrapper">
+                    <table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>Operator</th>
+                          <th>Company</th>
+                          <th>Points</th>
+                          <th>Date</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.history.map((item) => (
+                          <tr key={item.id}>
+                            <td>{item.operator_name || "—"}</td>
+                            <td>{item.operator_company || "—"}</td>
+                            <td>{item.credits}</td>
+                            <td>{formatDate(item.created_at)}</td>
+                            <td>{item.description || "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <Empty label="transaction history" />
+                )
+              )}
+            </section>
+          )}
           {section === "Approvals" && (
             <section className="admin-section">
               <div className="section-header">
@@ -500,7 +619,7 @@ function Admin() {
                   <select value={creditForm.operator_id} onChange={(e) => setCreditForm({ ...creditForm, operator_id: e.target.value })}>
                     <option value="">Select operator</option>
                     {walletOperators.map((op) => (
-                      <option key={op.id} value={op.id}>{op.company_name} — {op.name}</option>
+                      <option key={op.id} value={op.id}>{op.company_name} — {op.name} — {op.phone_number}</option>
                     ))}
                   </select>
                 </label>

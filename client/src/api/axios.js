@@ -6,8 +6,27 @@ import axios from "axios";
 //     "Content-Type": "application/json",
 //   },
 // });
+const apiBaseUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/`,
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+  baseURL: `${apiBaseUrl}/api/`,
+=======
+<<<<<<< HEAD
+>>>>>>> 7c4aa1f8db2fb0d86b3853259ec6273f6ca95d83
+  baseURL: `${import.meta.env.VITE_API_URL || ''}/api/`,
+
+  baseURL: `${import.meta.env.VITE_API_URL || ""}/api/`,
+<<<<<<< HEAD
+ 
+=======
+>>>>>>> 3ecfc87015048b1302280ace2b7322f8d95622a1
+>>>>>>> 2a568f1e841e64fb9e5f7864512befd6279bcf6f
+>>>>>>> 4d51ba85b1b2c4d5416553f837d75967d6f52959
+>>>>>>> 7c4aa1f8db2fb0d86b3853259ec6273f6ca95d83
   headers: {
     "Content-Type": "application/json",
   },

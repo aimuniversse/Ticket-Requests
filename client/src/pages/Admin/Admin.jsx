@@ -177,11 +177,7 @@ function CustomerPanel({ user, data, loading, error }) {
 function Admin() {
   const navigate = useNavigate();
   const [section, setSection] = useState("Dashboard");
-<<<<<<< HEAD
-  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [], pointRequests: [] });
-=======
   const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [], history: [] });
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -227,19 +223,11 @@ function Admin() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-<<<<<<< HEAD
-      const [operatorsResponse, approvalsResponse, customersResponse, pointRequestsResponse] = await Promise.all([
-        API.get("operators/"),
-        API.get("auth/admin/operators/pending/"),
-        API.get("customer/admin/customers/").catch(() => ({ data: [] })),
-        API.get("auth/admin/point-requests/"),
-=======
       const [operatorsResponse, approvalsResponse, customersResponse, historyResponse] = await Promise.all([
         API.get("operators/"),
         API.get("auth/admin/operators/pending/"),
         API.get("customer/admin/customers/").catch(() => ({ data: [] })),
         API.get("auth/admin/transactions/").catch(() => ({ data: [] })),
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
       ]);
       const operators = (operatorsResponse.data || []).map((op) => ({
         ...op,
@@ -249,13 +237,8 @@ function Admin() {
       }));
       const approvals = (approvalsResponse.data || []).map((op) => ({ ...op, mobile: op.phone_number }));
       const customers = customersResponse.data || [];
-<<<<<<< HEAD
-      const pointRequests = pointRequestsResponse.data || [];
-      setData({ operators, customers, approvals, requests: [], wallets: [], pointRequests });
-=======
       const history = historyResponse.data || [];
       setData({ operators, customers, approvals, requests: [], wallets: [], history });
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
       setError("");
     } catch (err) {
       const statusCode = err.response?.status;

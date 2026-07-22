@@ -66,6 +66,10 @@ class CustomerRequestSerilaizers(serializers.ModelSerializer):
 
         instance.refresh_status()
 
+        representation["assigned_operator_name"] = (
+            instance.assigned_operator.company_name if instance.assigned_operator else None
+        )
+
         if not request or not getattr(request.user, "is_authenticated", False):
             representation["phone_number"] = mask_phone_number(instance.phone_number)
             representation["name"] = "Hidden"

@@ -174,3 +174,37 @@ class AcceptLeadAPIView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class AdminCustomerListAPIView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated or request.user.role != "admin":
+            return Response({"detail": "Only admins can view customers list."}, status=status.HTTP_403_FORBIDDEN)
+
+        from django.db.models import Max
+        latest_request_ids = CustomerRequests.objects.values('phone_number').annotate(latest_id=Max('id')).values_list('latest_id', flat=True)
+        customers = CustomerRequests.objects.filter(id__in=latest_request_ids).order_by("-created_at")
+
+        data = []
+        for customer in customers:
+            data.append({
+                "id": f"CUST-{customer.phone_number}",
+                "name": customer.name,
+                "email": "—",
+                "mobile": customer.phone_number,
+                "status": "—",
+                "role": "Customer"
+            })
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class AdminCustomerRequestsAPIView(APIView):
+    def get(self, request, phone_number):
+        if not request.user.is_authenticated or request.user.role != "admin":
+            return Response({"detail": "Only admins can view customer requests."}, status=status.HTTP_403_FORBIDDEN)
+
+        requests = CustomerRequests.objects.filter(phone_number=phone_number).order_by("-created_at")
+        serializer = CustomerRequestSerilaizers(requests, many=True, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

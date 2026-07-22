@@ -169,7 +169,7 @@ function CustomerPanel({ user, data, loading, error }) {
 function Admin() {
   const navigate = useNavigate();
   const [section, setSection] = useState("Dashboard");
-  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [] });
+  const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [], pointRequests: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -177,6 +177,7 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
+  const [pointRequestAction, setPointRequestAction] = useState({});
 
   // Detail panel state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -214,10 +215,11 @@ function Admin() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [operatorsResponse, approvalsResponse, customersResponse] = await Promise.all([
+      const [operatorsResponse, approvalsResponse, customersResponse, pointRequestsResponse] = await Promise.all([
         API.get("operators/"),
         API.get("auth/admin/operators/pending/"),
         API.get("customer/admin/customers/").catch(() => ({ data: [] })),
+        API.get("auth/admin/point-requests/"),
       ]);
       const operators = (operatorsResponse.data || []).map((op) => ({
         ...op,
@@ -227,7 +229,8 @@ function Admin() {
       }));
       const approvals = (approvalsResponse.data || []).map((op) => ({ ...op, mobile: op.phone_number }));
       const customers = customersResponse.data || [];
-      setData({ operators, customers, approvals, requests: [], wallets: [] });
+      const pointRequests = pointRequestsResponse.data || [];
+      setData({ operators, customers, approvals, requests: [], wallets: [], pointRequests });
       setError("");
     } catch (err) {
       const statusCode = err.response?.status;
@@ -283,6 +286,17 @@ function Admin() {
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
     } finally {
       setCrediting(false);
+    }
+  };
+
+  const actOnPointRequest = async (requestId, action) => {
+    const response = pointRequestAction[requestId] || "";
+    try {
+      await API.post(`auth/admin/point-requests/${requestId}/${action}/`, { admin_response: response });
+      setPointRequestAction((prev) => { const next = { ...prev }; delete next[requestId]; return next; });
+      await load();
+    } catch (err) {
+      setError(err.response?.data?.detail || `Unable to ${action} this request.`);
     }
   };
 
@@ -514,6 +528,57 @@ function Admin() {
                 </label>
                 <button className="action-btn success" disabled={crediting}>{crediting ? "Adding..." : "Add points"}</button>
               </form>
+            </section>
+          )}
+
+          {/* ── History ── */}
+          {section === "History" && (
+            <section className="admin-section">
+              <div className="section-header">
+                <div>
+                  <span className="section-title">Operator point requests</span>
+                  <p className="section-subtitle">Review and approve or reject point requests submitted by operators.</p>
+                </div>
+              </div>
+              {data.pointRequests.length ? (
+                <div className="history-list">
+                  {data.pointRequests.map((req) => (
+                    <article key={req.id} className={`history-card ${req.status.toLowerCase()}`}>
+                      <div className="history-card-main">
+                        <div className="history-card-top">
+                          <span className="history-operator">{req.company_name || "—"}</span>
+                          <span className={`history-points ${req.status === "APPROVED" ? "approved" : req.status === "REJECTED" ? "rejected" : ""}`}>
+                            {req.points_requested} pts
+                          </span>
+                        </div>
+                        <p className="history-reason">{req.reason || "No reason provided"}</p>
+                        <div className="history-meta">
+                          <span className={`history-status-pill ${req.status.toLowerCase()}`}>{req.status}</span>
+                          <span className="history-date">{formatDate(req.created_at)}</span>
+                          {req.admin_response && <span className="history-admin-note">Admin: {req.admin_response}</span>}
+                        </div>
+                      </div>
+                      {req.status === "PENDING" && (
+                        <div className="history-card-actions">
+                          <input
+                            type="text"
+                            className="history-response-input"
+                            placeholder="Response (optional)"
+                            value={pointRequestAction[req.id] || ""}
+                            onChange={(e) => setPointRequestAction({ ...pointRequestAction, [req.id]: e.target.value })}
+                          />
+                          <div className="history-btn-group">
+                            <button className="action-btn success" onClick={() => actOnPointRequest(req.id, "approve")}>Approve</button>
+                            <button className="action-btn secondary" onClick={() => actOnPointRequest(req.id, "reject")}>Reject</button>
+                          </div>
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <Empty label="point requests" />
+              )}
             </section>
           )}
 

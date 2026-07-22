@@ -114,11 +114,18 @@ DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=True,
+        ssl_require=False,
     )
 }
+<<<<<<< HEAD
 if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
     DATABASES['default'].pop('OPTIONS', None)
+=======
+
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default'].pop('OPTIONS', None)
+
+>>>>>>> 2a568f1e841e64fb9e5f7864512befd6279bcf6f
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

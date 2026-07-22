@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import RegistraionOperatorSerilaizers, PendingOpeartorSerializer, AddCreditSerializer, WalletSerializer, TransactionSerializer
-from .models import Operator, Wallet, Transaction
+from .serializers import RegistraionOperatorSerilaizers, PendingOpeartorSerializer, AddCreditSerializer, WalletSerializer, TransactionSerializer, PointRequestSerializer, PointRequestActionSerializer
+from .models import Operator, Wallet, Transaction, PointRequest
 from customer.models import CustomerRequests
 from customer.serializers import mask_phone_number
 
@@ -228,3 +228,97 @@ class AdminOperatorTransactionsAPIView(APIView):
             "wallet": WalletSerializer(wallet).data,
             "transactions": TransactionSerializer(transactions, many=True).data,
         }, status=status.HTTP_200_OK)
+
+
+<<<<<<< HEAD
+class OperatorPointRequestCreateView(APIView):
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "operator":
+            return Response({"detail": "Only operators can request points."}, status=status.HTTP_403_FORBIDDEN)
+
+        operator = get_object_or_404(Operator, user=request.user)
+        serializer = PointRequestSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.save(operator=operator)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class OperatorPointRequestListView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        operator = get_object_or_404(Operator, user=request.user)
+        point_requests = PointRequest.objects.filter(operator=operator).order_by("-created_at")
+        serializer = PointRequestSerializer(point_requests, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminPointRequestListView(APIView):
+=======
+class AdminTransactionsAPIView(APIView):
+>>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
+<<<<<<< HEAD
+            return Response({"detail": "Only admins can view point requests."}, status=status.HTTP_403_FORBIDDEN)
+
+        point_requests = PointRequest.objects.all().order_by("-created_at")
+        serializer = PointRequestSerializer(point_requests, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminPointRequestActionView(APIView):
+    def post(self, request, request_id, action):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.role != "admin":
+            return Response({"detail": "Only admins can act on point requests."}, status=status.HTTP_403_FORBIDDEN)
+        if action not in ("approve", "reject"):
+            return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+        point_request = get_object_or_404(PointRequest, id=request_id)
+        if point_request.status != "PENDING":
+            return Response({"detail": "This request has already been processed."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = PointRequestActionSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        admin_response = serializer.validated_data.get("admin_response", "")
+
+        if action == "approve":
+            point_request.status = "APPROVED"
+            point_request.admin_response = admin_response or "Approved by admin"
+            point_request.save(update_fields=["status", "admin_response", "updated_at"])
+
+            operator = point_request.operator
+            wallet, _ = Wallet.objects.get_or_create(operator=operator)
+            wallet.current_balance += point_request.points_requested
+            wallet.save(update_fields=["current_balance", "updated_at"])
+            Transaction.objects.create(
+                operator=operator,
+                transaction_type="CREDIT",
+                credits=point_request.points_requested,
+                balance_after_transaction=wallet.current_balance,
+                description=f"Points approved: {point_request.reason or 'Operator request'}",
+            )
+        else:
+            point_request.status = "REJECTED"
+            point_request.admin_response = admin_response or "Rejected by admin"
+            point_request.save(update_fields=["status", "admin_response", "updated_at"])
+
+        return Response({"message": f"Request {action}d successfully."}, status=status.HTTP_200_OK)
+=======
+            return Response({"detail": "Only admins can view transaction history."}, status=status.HTTP_403_FORBIDDEN)
+
+        credits = Transaction.objects.filter(transaction_type="CREDIT").order_by("-created_at")
+        serializer = TransactionSerializer(credits, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+>>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2

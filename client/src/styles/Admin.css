@@ -541,6 +541,206 @@
 .wallet-credit-form label { display: grid; gap: .4rem; color: #475569; font-size: .82rem; font-weight: 700; }
 .wallet-credit-form input, .wallet-credit-form select { width: 100%; padding: .72rem; border: 1px solid #dbe3ef; border-radius: 9px; color: #1e293b; background: #fff; font: inherit; }
 
+/* ── History Section ─────────────────────────────────────────────── */
+.history-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.history-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.history-card {
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 1.5rem;
+  border-left: 5px solid #e2e8f0;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-card:hover {
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.history-card.pending { border-left-color: #f59e0b; background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 40%); }
+.history-card.approved { border-left-color: #16a34a; background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 40%); }
+.history-card.rejected { border-left-color: #dc2626; background: linear-gradient(135deg, #fef2f2 0%, #f8fafc 40%); }
+
+.history-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.history-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.history-operator {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.history-operator::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6366f1;
+  flex-shrink: 0;
+}
+
+.history-points {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #0f172a;
+  background: #f1f5f9;
+  padding: 0.35rem 0.9rem;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.history-points.approved { background: #dcfce7; color: #166534; }
+.history-points.rejected { background: #fee2e2; color: #991b1b; }
+
+.history-reason {
+  margin: 0;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.history-status-pill {
+  display: inline-flex;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.history-status-pill.pending { background: #fef3c7; color: #854d0e; }
+.history-status-pill.approved { background: #dcfce7; color: #166534; }
+.history-status-pill.rejected { background: #fee2e2; color: #991b1b; }
+
+.history-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.history-admin-note {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.history-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  flex-wrap: wrap;
+}
+
+.history-response-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: #1e293b;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.history-response-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.history-btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #94a3b8;
+}
+
+.history-empty-icon {
+  font-size: 3rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.history-empty h3 {
+  margin: 0 0 0.5rem;
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+.history-empty p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 600px) {
+  .history-card {
+    padding: 1.15rem;
+  }
+
+  .history-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .history-card-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .history-response-input {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .history-btn-group {
+    justify-content: flex-end;
+  }
+}
+
 @media (max-width: 1180px) {
   .dashboard-overview {
     grid-template-columns: repeat(2, minmax(0, 1fr));

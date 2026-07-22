@@ -11,14 +11,11 @@ from .views import (
     WalletAPIView,
     WalletHistoryAPIView,
     AdminOperatorTransactionsAPIView,
-<<<<<<< HEAD
     OperatorPointRequestCreateView,
     OperatorPointRequestListView,
     AdminPointRequestListView,
     AdminPointRequestActionView,
-=======
     AdminTransactionsAPIView,
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
 )
 
 
@@ -74,7 +71,6 @@ urlpatterns = [
         name="admin-operator-transactions",
     ),
     path(
-<<<<<<< HEAD
         "point-requests/",
         OperatorPointRequestListView.as_view(),
         name="operator-point-requests",
@@ -93,10 +89,10 @@ urlpatterns = [
         "admin/point-requests/<int:request_id>/<str:action>/",
         AdminPointRequestActionView.as_view(),
         name="admin-point-request-action",
-=======
+    ),
+    path(
         "admin/transactions/",
         AdminTransactionsAPIView.as_view(),
         name="admin-transactions",
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
     ),
 ]

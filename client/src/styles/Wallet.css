@@ -28,6 +28,41 @@
 .empty-icon{font-size:70px;color:#1976d2;margin-bottom:20px}
 
 .status-error{padding:12px 16px;border-radius:10px;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;font-size:.86rem;margin-bottom:14px}
+.status-success{padding:12px 16px;border-radius:10px;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;font-size:.86rem;margin-bottom:14px}
+
+/* ── Point Request Section ── */
+.wallet-request-section{background:#fff;padding:28px;border-radius:18px;box-shadow:0 12px 35px rgba(0,0,0,.08);margin-bottom:25px}
+.wallet-request-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.wallet-request-icon{font-size:30px;color:#1976d2;background:#e3f2fd;width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wallet-request-header h2{margin:0;font-size:1.1rem;color:#1d2a44}
+.wallet-request-header p{margin:4px 0 0;font-size:.85rem;color:#64748b}
+
+.wallet-request-form{display:grid;grid-template-columns:140px 1fr auto;gap:1rem;align-items:end}
+.wallet-request-form label{display:grid;gap:.4rem;color:#475569;font-size:.82rem;font-weight:700}
+.wallet-request-form input{width:100%;padding:.72rem;border:1px solid #dbe3ef;border-radius:9px;color:#1e293b;background:#fff;font:inherit;transition:border-color .2s,box-shadow .2s}
+.wallet-request-form input:focus{outline:none;border-color:#1976d2;box-shadow:0 0 0 3px rgba(25,118,210,.12)}
+.wallet-request-btn{padding:.72rem 1.6rem;border:none;border-radius:10px;background:#1976d2;color:#fff;font-weight:700;cursor:pointer;font-size:.88rem;white-space:nowrap;transition:background .2s,transform .15s}
+.wallet-request-btn:hover{background:#1565c0;transform:translateY(-1px)}
+.wallet-request-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ── Point Request History ── */
+.wallet-request-history{margin-bottom:25px}
+.wallet-request-history h2{margin:0 0 14px;font-size:1.1rem;color:#1d2a44;display:flex;align-items:center;gap:8px}
+.pr-list{display:grid;gap:10px}
+.pr-card{background:#fff;padding:18px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.05);border-left:5px solid #e2e8f0;transition:box-shadow .2s}
+.pr-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.pr-card.pending{border-left-color:#f59e0b;background:linear-gradient(135deg,#fffbeb 0%,#fff 40%)}
+.pr-card.approved{border-left-color:#16a34a;background:linear-gradient(135deg,#f0fdf4 0%,#fff 40%)}
+.pr-card.rejected{border-left-color:#dc2626;background:linear-gradient(135deg,#fef2f2 0%,#fff 40%)}
+.pr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pr-points{font-weight:800;font-size:1.15rem;color:#0f172a}
+.pr-status{font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
+.pr-status.pending{background:#fef3c7;color:#854d0e}
+.pr-status.approved{background:#dcfce7;color:#166534}
+.pr-status.rejected{background:#fee2e2;color:#991b1b}
+.pr-reason{margin:4px 0 10px;font-size:.88rem;color:#475569;line-height:1.5}
+.pr-meta{display:flex;gap:14px;font-size:.78rem;color:#94a3b8;flex-wrap:wrap;align-items:center}
+.pr-admin-note{color:#1976d2;font-weight:600}
 
 /* ── Mobile ── */
 @media(max-width:760px){
@@ -40,6 +75,11 @@
   .wallet-card h2{font-size:24px}
   .wallet-actions{flex-direction:column;gap:12px;margin-bottom:24px}
   .wallet-actions button{width:100%;justify-content:center;padding:13px}
+  .wallet-request-form{grid-template-columns:1fr}
+  .wallet-request-section{padding:18px}
+  .wallet-request-icon{width:44px;height:44px;font-size:22px;border-radius:12px}
+  .pr-list{gap:10px}
+  .pr-card{padding:14px}
   .wallet-history{padding:16px;border-radius:14px}
   .wallet-history table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .wallet-history thead{display:none}

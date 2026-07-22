@@ -500,7 +500,7 @@ function Admin() {
                   <select value={creditForm.operator_id} onChange={(e) => setCreditForm({ ...creditForm, operator_id: e.target.value })}>
                     <option value="">Select operator</option>
                     {walletOperators.map((op) => (
-                      <option key={op.id} value={op.id}>{op.company_name} — {op.name}</option>
+                      <option key={op.id} value={op.id}>{op.company_name} — {op.name} — {op.phone_number}</option>
                     ))}
                   </select>
                 </label>

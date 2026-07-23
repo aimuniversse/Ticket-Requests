@@ -185,13 +185,8 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
-<<<<<<< HEAD
-  const [pointRequestAction, setPointRequestAction] = useState({});
-  const [historyTab, setHistoryTab] = useState("Point Requests");
-=======
   const [historySearch, setHistorySearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
->>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
   const [operatorSearch, setOperatorSearch] = useState("");
   const [showOperatorDropdown, setShowOperatorDropdown] = useState(false);
   const [activeOperatorIndex, setActiveOperatorIndex] = useState(-1);
@@ -524,48 +519,6 @@ function Admin() {
                 </div>
               </div>
 
-<<<<<<< HEAD
-              {historyTab === "Point Requests" && (
-                (data.pointRequests && data.pointRequests.length) ? (
-                  <div className="history-list">
-                    {data.pointRequests.map((req) => (
-                      <article key={req.id} className={`history-card ${req.status.toLowerCase()}`}>
-                        <div className="history-card-main">
-                          <div className="history-card-top">
-                            <span className="history-operator">{req.company_name || "—"}</span>
-                            <span className={`history-points ${req.status === "APPROVED" ? "approved" : req.status === "REJECTED" ? "rejected" : ""}`}>
-                              {req.points_requested} pts
-                            </span>
-                          </div>
-                          <p className="history-reason">{req.reason || "No reason provided"}</p>
-                          <div className="history-meta">
-                            <span className={`history-status-pill ${req.status.toLowerCase()}`}>{req.status}</span>
-                            <span className="history-date">{formatDate(req.created_at)}</span>
-                            {req.admin_response && <span className="history-admin-note">Admin: {req.admin_response}</span>}
-                          </div>
-                        </div>
-                        {req.status === "PENDING" && (
-                          <div className="history-card-actions">
-                            <input
-                              type="text"
-                              className="history-response-input"
-                              placeholder="Response (optional)"
-                              value={pointRequestAction[req.id] || ""}
-                              onChange={(e) => setPointRequestAction({ ...pointRequestAction, [req.id]: e.target.value })}
-                            />
-                            <div className="history-btn-group">
-                              <button className="action-btn success" onClick={() => actOnPointRequest(req.id, "approve")}>Approve</button>
-                              <button className="action-btn secondary" onClick={() => actOnPointRequest(req.id, "reject")}>Reject</button>
-                            </div>
-                          </div>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <Empty label="point requests" />
-                )
-=======
               {(data.history && data.history.length > 0) && (
                 <div style={{ marginBottom: "1rem", maxWidth: "400px", width: "100%" }}>
                   <input
@@ -577,7 +530,6 @@ function Admin() {
                     style={{ padding: "0.5rem 1rem", width: "100%", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
                   />
                 </div>
->>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
               )}
               {(() => {
                 const filtered = data.history.filter((item) =>
@@ -596,44 +548,6 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-<<<<<<< HEAD
-                        {data.history.map((item) => (
-                          <tr key={item.id}>
-                            <td>{item.operator_name || "—"}</td>
-                            <td>{item.operator_company || "—"}</td>
-                            <td>{item.credits}</td>
-                            <td>{formatDate(item.created_at)}</td>
-                            <td>{item.description || "—"}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <Empty label="transaction history" />
-                )
-              )}
-              {(() => {
-                const filtered = data.history.filter((item) =>
-                  (item.operator_company || "").toLowerCase().includes(historySearch.toLowerCase())
-                );
-                return filtered.length ? (
-                  <div className="table-wrapper">
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Operator ID</th>
-                          <th>Name</th>
-                          <th>Company</th>
-                          <th>Email</th>
-                          <th>Points</th>
-                          <th>Date</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-=======
->>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
                         {filtered.map((item) => (
                           <tr key={item.id}>
                             <td>{item.operator_name || "—"}</td>

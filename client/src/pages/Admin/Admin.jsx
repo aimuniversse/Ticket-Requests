@@ -185,8 +185,13 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
+<<<<<<< HEAD
   const [pointRequestAction, setPointRequestAction] = useState({});
   const [historyTab, setHistoryTab] = useState("Point Requests");
+=======
+  const [historySearch, setHistorySearch] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+>>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
   const [operatorSearch, setOperatorSearch] = useState("");
   const [showOperatorDropdown, setShowOperatorDropdown] = useState(false);
   const [activeOperatorIndex, setActiveOperatorIndex] = useState(-1);
@@ -335,17 +340,6 @@ function Admin() {
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
     } finally {
       setCrediting(false);
-    }
-  };
-
-  const actOnPointRequest = async (requestId, action) => {
-    const response = pointRequestAction[requestId] || "";
-    try {
-      await API.post(`auth/admin/point-requests/${requestId}/${action}/`, { admin_response: response });
-      setPointRequestAction((prev) => { const next = { ...prev }; delete next[requestId]; return next; });
-      await load();
-    } catch (err) {
-      setError(err.response?.data?.detail || `Unable to ${action} this request.`);
     }
   };
 
@@ -520,27 +514,17 @@ function Admin() {
             </section>
           )}
 
-          {/* ── History ── */}  
+          {/* ── History ── */}
           {section === "History" && (
             <section className="admin-section">
               <div className="section-header">
                 <div>
-                  <span className="section-title">History</span>
-                  <p className="section-subtitle">Operator point requests and transaction history.</p>
-                </div>
-                <div className="tab-group">
-                  {["Point Requests", "Transactions"].map((tab) => (
-                    <button
-                      key={tab}
-                      className={`tab ${historyTab === tab ? "active" : ""}`}
-                      onClick={() => setHistoryTab(tab)}
-                    >
-                      {tab}
-                    </button>
-                  ))}
+                  <span className="section-title">Transaction History</span>
+                  <p className="section-subtitle">Points transferred from admin to operators.</p>
                 </div>
               </div>
 
+<<<<<<< HEAD
               {historyTab === "Point Requests" && (
                 (data.pointRequests && data.pointRequests.length) ? (
                   <div className="history-list">
@@ -581,10 +565,25 @@ function Admin() {
                 ) : (
                   <Empty label="point requests" />
                 )
+=======
+              {(data.history && data.history.length > 0) && (
+                <div style={{ marginBottom: "1rem", maxWidth: "400px", width: "100%" }}>
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search by company name..."
+                    value={historySearch}
+                    onChange={(e) => setHistorySearch(e.target.value)}
+                    style={{ padding: "0.5rem 1rem", width: "100%", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
+                  />
+                </div>
+>>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
               )}
-
-              {historyTab === "Transactions" && (
-                (data.history && data.history.length) ? (
+              {(() => {
+                const filtered = data.history.filter((item) =>
+                  (item.operator_company || "").toLowerCase().includes(historySearch.toLowerCase())
+                );
+                return filtered.length ? (
                   <div className="table-wrapper">
                     <table className="admin-table">
                       <thead>
@@ -597,6 +596,7 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
+<<<<<<< HEAD
                         {data.history.map((item) => (
                           <tr key={item.id}>
                             <td>{item.operator_name || "—"}</td>
@@ -632,12 +632,12 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
+=======
+>>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
                         {filtered.map((item) => (
                           <tr key={item.id}>
-                            <td>{item.operator_id || "—"}</td>
                             <td>{item.operator_name || "—"}</td>
                             <td>{item.operator_company || "—"}</td>
-                            <td>{item.operator_email || "—"}</td>
                             <td>{item.credits}</td>
                             <td>{formatDate(item.created_at)}</td>
                             <td>{item.description || "—"}</td>

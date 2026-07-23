@@ -1,12 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt, FaWallet, FaUser, FaBus } from "react-icons/fa";
+import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaUsers, FaEnvelope, FaHistory, FaCheckCircle, FaCog } from "react-icons/fa";
 import API from "../../api/axios";
 import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
 const SECTIONS = ["Dashboard", "Users", "Requests","History","Approvals", "Settings"];
+
+const SECTION_ICONS = {
+  Dashboard: FaHome,
+  Users: FaUsers,
+  Requests: FaEnvelope,
+  History: FaHistory,
+  Approvals: FaCheckCircle,
+  Settings: FaCog,
+};
 
 const Empty = ({ label }) => (
   <div className="empty-card">
@@ -192,6 +201,7 @@ function Admin() {
   const [activeOperatorIndex, setActiveOperatorIndex] = useState(-1);
   const operatorDropdownTimer = useRef(null);
   const operatorInputRef = useRef(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Detail panel state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -373,7 +383,7 @@ function Admin() {
                 className={`${onRowClick ? "clickable-row" : ""} ${selectedUser?.id === row.id ? "selected-row" : ""}`}
               >
                 {columns.map((c) => (
-                  <td key={c.label}>{c.render ? c.render(row) : row[c.key] || "—"}</td>
+                  <td key={c.label} data-label={c.label}>{c.render ? c.render(row) : row[c.key] || "—"}</td>
                 ))}
               </tr>
             ))}
@@ -402,7 +412,48 @@ function Admin() {
           ))}
         </nav>
         <button type="button" className="logout-btn" onClick={logout}><FaSignOutAlt /> Logout</button>
+        <button type="button" className="admin-drawer-toggle" onClick={() => setDrawerOpen(true)} aria-label="Open menu">
+          <FaBars />
+        </button>
       </div>
+
+      {/* Mobile Drawer Menu */}
+      {drawerOpen && (
+        <div className="admin-drawer-overlay" onClick={() => setDrawerOpen(false)}>
+          <nav className="admin-drawer" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-drawer-header">
+              <img src={logoImage} alt="Tick My Bus" className="admin-drawer-logo" />
+              <button type="button" className="admin-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close menu">
+                &times;
+              </button>
+            </div>
+            <ul className="admin-drawer-list">
+              {SECTIONS.map((label) => {
+                const Icon = SECTION_ICONS[label];
+                return (
+                  <li key={label}>
+                    <button
+                      type="button"
+                      className={`admin-drawer-item ${section === label ? "active" : ""}`}
+                      onClick={() => { setSection(label); closePanel(); setDrawerOpen(false); }}
+                    >
+                      <Icon />
+                      <span>{label}</span>
+                    </button>
+                  </li>
+                );
+              })}
+              <li className="admin-drawer-divider" />
+              <li>
+                <button type="button" className="admin-drawer-item logout" onClick={() => { logout(); setDrawerOpen(false); }}>
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      )}
 
       <div className="admin-layout">
         <main className="admin-main">

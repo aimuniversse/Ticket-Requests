@@ -40,6 +40,40 @@ const StatusPill = ({ status }) => (
   <span className={`status-pill ${status || ""}`}>{status || "—"}</span>
 );
 
+function UserCard({ user, isSelected, onClick }) {
+  return (
+    <article
+      className={`user-card ${isSelected ? "user-card--selected" : ""}`}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
+    >
+      <div className="user-card__top">
+        <div className="user-card__avatar">
+          {user.role === "Operator" ? <FaBus /> : <FaUser />}
+        </div>
+        <div className="user-card__identity">
+          <span className="user-card__name">{user.name || user.company_name || "—"}</span>
+          <span className="user-card__role">{user.role}{user.id ? ` #${user.id}` : ""}</span>
+        </div>
+        <StatusPill status={user.status} />
+      </div>
+      <div className="user-card__details">
+        {user.company_name && user.role === "Operator" && (
+          <span className="user-card__detail"><strong>Company:</strong> {user.company_name}</span>
+        )}
+        {user.email && (
+          <span className="user-card__detail"><strong>Email:</strong> {user.email}</span>
+        )}
+        {user.mobile && (
+          <span className="user-card__detail"><strong>Phone:</strong> {user.mobile}</span>
+        )}
+      </div>
+    </article>
+  );
+}
+
 function formatDate(str) {
   if (!str) return "—";
   return new Date(str).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
@@ -213,6 +247,7 @@ function Admin() {
     setSelectedUser(null);
     setDetailsData(null);
     setDetailsError("");
+    document.body.style.overflow = "";
   }, []);
 
   const getOperatorSuggestions = useCallback(() => {
@@ -253,6 +288,9 @@ function Admin() {
     setDetailsData(null);
     setDetailsError("");
     setDetailsLoading(true);
+    if (window.innerWidth <= 900) {
+      document.body.style.overflow = "hidden";
+    }
     try {
       if (user.role === "Operator") {
         const res = await API.get(`auth/admin/operators/${user.id}/transactions/`);
@@ -307,7 +345,7 @@ function Admin() {
   useEffect(() => {
     load();
     const timer = window.setInterval(load, 15000);
-    return () => window.clearInterval(timer);
+    return () => { window.clearInterval(timer); document.body.style.overflow = ""; };
   }, [load]);
 
   useEffect(() => {
@@ -496,14 +534,16 @@ function Admin() {
                 </div>
               </div>
 
-              <label>
+              <label className="users-search-label">
                 Search users
                 <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name, ID, email or phone" />
               </label>
 
               <div className={`users-layout ${selectedUser ? "panel-open" : ""}`}>
-                {/* Table */}
-                <div>
+                {selectedUser && <div className="panel-backdrop" onClick={closePanel} />}
+
+                {/* Desktop: Table */}
+                <div className="users-table-wrap">
                   {renderTable(
                     shownUsers,
                     [
@@ -518,9 +558,22 @@ function Admin() {
                   )}
                 </div>
 
+                {/* Mobile: Cards */}
+                <div className="users-cards-list">
+                  {shownUsers.length ? shownUsers.map((user) => (
+                    <UserCard
+                      key={user.id}
+                      user={user}
+                      isSelected={selectedUser?.id === user.id}
+                      onClick={() => selectUser(user)}
+                    />
+                  )) : <Empty label="records" />}
+                </div>
+
                 {/* Detail Panel */}
                 {selectedUser && (
                   <div className="user-detail-panel">
+                    <span className="panel-drag-handle" />
                     <div className="panel-header">
                       <div className="panel-header-info">
                         <span className={`panel-role-badge ${selectedUser.role?.toLowerCase()}`}>

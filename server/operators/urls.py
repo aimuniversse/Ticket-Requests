@@ -71,14 +71,11 @@ urlpatterns = [
         name="admin-operator-transactions",
     ),
     path(
-<<<<<<< HEAD
-=======
         "point-requests/",
         OperatorPointRequestListView.as_view(),
         name="operator-point-requests",
     ),
     path(
->>>>>>> f5d66dd4877597126b0a35456d9accde13a641ad
         "point-requests/create/",
         OperatorPointRequestCreateView.as_view(),
         name="operator-point-request-create",

@@ -49,18 +49,26 @@ function UserCard({ user, isSelected, onClick }) {
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
     >
-      <div className="user-card__avatar">
-        {user.role === "Operator" ? <FaBus /> : <FaUser />}
-      </div>
-      <div className="user-card__info">
-        <span className="user-card__name">{user.name || user.company_name || "—"}</span>
-        <span className="user-card__meta">
-          {user.role === "Operator" ? user.company_name : user.mobile || "—"}
-        </span>
-      </div>
-      <div className="user-card__right">
+      <div className="user-card__top">
+        <div className="user-card__avatar">
+          {user.role === "Operator" ? <FaBus /> : <FaUser />}
+        </div>
+        <div className="user-card__identity">
+          <span className="user-card__name">{user.name || user.company_name || "—"}</span>
+          <span className="user-card__role">{user.role}{user.id ? ` #${user.id}` : ""}</span>
+        </div>
         <StatusPill status={user.status} />
-        <span className="user-card__role">{user.role}</span>
+      </div>
+      <div className="user-card__details">
+        {user.company_name && user.role === "Operator" && (
+          <span className="user-card__detail"><strong>Company:</strong> {user.company_name}</span>
+        )}
+        {user.email && (
+          <span className="user-card__detail"><strong>Email:</strong> {user.email}</span>
+        )}
+        {user.mobile && (
+          <span className="user-card__detail"><strong>Phone:</strong> {user.mobile}</span>
+        )}
       </div>
     </article>
   );

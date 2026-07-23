@@ -150,6 +150,24 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 
 class PointRequestSerializer(serializers.ModelSerializer):
+<<<<<<< HEAD
+    class Meta:
+        model = PointRequest
+        fields = [
+            "id",
+            "operator",
+            "points_requested",
+            "reason",
+            "status",
+            "admin_response",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class PointRequestActionSerializer(serializers.Serializer):
+    action = serializers.ChoiceField(choices=["approve", "reject"])
+=======
     operator_name = serializers.CharField(source="operator.user.name", read_only=True)
     company_name = serializers.CharField(source="operator.company_name", read_only=True)
 
@@ -160,4 +178,5 @@ class PointRequestSerializer(serializers.ModelSerializer):
 
 
 class PointRequestActionSerializer(serializers.Serializer):
+>>>>>>> 332fab01927346c87f0b547ac4c9f0dce9bbf7af
     admin_response = serializers.CharField(required=False, allow_blank=True, default="")

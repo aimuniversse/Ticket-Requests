@@ -84,7 +84,7 @@ class Transaction(models.Model):
 
 
 class PointRequest(models.Model):
-    STATUS_CHOICES = (
+    REQUEST_STATUS_CHOICES = (
         ("PENDING", "Pending"),
         ("APPROVED", "Approved"),
         ("REJECTED", "Rejected"),
@@ -97,7 +97,11 @@ class PointRequest(models.Model):
     )
     points_requested = models.PositiveIntegerField()
     reason = models.TextField(blank=True, default="")
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDING")
+    status = models.CharField(
+        max_length=10,
+        choices=REQUEST_STATUS_CHOICES,
+        default="PENDING",
+    )
     admin_response = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

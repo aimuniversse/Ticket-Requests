@@ -6,6 +6,7 @@ import AcceptQuoteModal from "./AcceptQuoteModal";
 import CustomerDetailsUnlock from "./CustomerDetailsUnlock";
 import ActiveRequests from "./ActiveRequests";
 import AcceptedRequests from "./AcceptedRequests";
+import logo from "../../assets/logo.jpeg";
 
 import {
   FaBus,
@@ -42,15 +43,10 @@ const OperatorDashboard = () => {
       {/* Sidebar */}
 
       <aside className="sidebar">
-
         <div className="logo">
-
-          <FaBus />
-
+          <img src={logo} alt="Tick My Bus" />
           <h2>Tickmybus</h2>
-
         </div>
-
         <ul>
 
           <li className={location.pathname === "/operator/dashboard" ? "active" : ""}>

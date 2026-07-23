@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/axios";
 import "../../styles/OperatorDashboard.css";
+import logo from "../../assets/logo.jpeg";
 import {
   FaBars,
   FaBell,
@@ -269,7 +270,7 @@ const OperatorDashboardNew = () => {
       <header className="operator-header">
         <div className="operator-header__inner">
           <button type="button" className="mobile-menu-btn" aria-label="Open navigation" onClick={() => setMenuOpen(!menuOpen)}><FaBars /></button>
-          <button type="button" className="brand" onClick={() => selectSection("overview")}><span><FaBus /></span><strong>TickMyBus</strong></button>
+          <button type="button" className="brand" onClick={() => selectSection("overview")}><span><img src={logo} alt="Tick My Bus" style={{ height: "35px", width: "35px", borderRadius: "5px", marginLeft: "-17px", marginTop: "-17px" }} /></span>{/*<strong>TickMyBus</strong>*/}</button>
           <nav className={`top-nav ${menuOpen ? "is-open" : ""}`}>
             <button type="button" className={`top-nav-link ${activeSection === "overview" ? "active" : ""}`} onClick={() => selectSection("overview")}><FaHome /> Overview</button>
             {renderDropdown("Requests", "requests", requestLinks)}

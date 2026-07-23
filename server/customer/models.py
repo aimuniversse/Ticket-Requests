@@ -96,7 +96,7 @@ class CustomerRequests(models.Model):
             self.request_id = f"REQ-{self.id:05d}"
             updated_fields.append("request_id")
         if is_new and not self.expires_at:
-            self.expires_at = timezone.now() + timedelta(minutes=5)
+            self.expires_at = timezone.now() + timedelta(minutes=2)
             updated_fields.append("expires_at")
         if updated_fields:
             super().save(update_fields=updated_fields)

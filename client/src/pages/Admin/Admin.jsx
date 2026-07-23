@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSignOutAlt, FaWallet, FaUser, FaBus } from "react-icons/fa";
 import API from "../../api/axios";
@@ -187,6 +187,11 @@ function Admin() {
   const [crediting, setCrediting] = useState(false);
   const [pointRequestAction, setPointRequestAction] = useState({});
   const [historyTab, setHistoryTab] = useState("Point Requests");
+  const [operatorSearch, setOperatorSearch] = useState("");
+  const [showOperatorDropdown, setShowOperatorDropdown] = useState(false);
+  const [activeOperatorIndex, setActiveOperatorIndex] = useState(-1);
+  const operatorDropdownTimer = useRef(null);
+  const operatorInputRef = useRef(null);
 
   // Detail panel state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -199,6 +204,39 @@ function Admin() {
     setDetailsData(null);
     setDetailsError("");
   }, []);
+
+  const getOperatorSuggestions = useCallback(() => {
+    const query = operatorSearch.trim().toLowerCase();
+    if (!query) return walletOperators;
+    return walletOperators.filter((op) =>
+      `${op.company_name} ${op.name} ${op.phone_number}`.toLowerCase().includes(query)
+    );
+  }, [operatorSearch, walletOperators]);
+
+  const selectOperator = useCallback((op) => {
+    setCreditForm((prev) => ({ ...prev, operator_id: String(op.id) }));
+    setOperatorSearch("");
+    setShowOperatorDropdown(false);
+    setActiveOperatorIndex(-1);
+  }, []);
+
+  const handleOperatorKeyDown = useCallback((e) => {
+    const suggestions = getOperatorSuggestions();
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setShowOperatorDropdown(true);
+      setActiveOperatorIndex((cur) => Math.min(cur + 1, suggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveOperatorIndex((cur) => Math.max(cur - 1, 0));
+    } else if (e.key === "Enter" && activeOperatorIndex >= 0 && activeOperatorIndex < suggestions.length) {
+      e.preventDefault();
+      selectOperator(suggestions[activeOperatorIndex]);
+    } else if (e.key === "Escape") {
+      setShowOperatorDropdown(false);
+      setActiveOperatorIndex(-1);
+    }
+  }, [getOperatorSuggestions, activeOperatorIndex, selectOperator]);
 
   const selectUser = useCallback(async (user) => {
     setSelectedUser(user);
@@ -614,14 +652,72 @@ function Admin() {
                 </div>
               </div>
               <form className="wallet-credit-form" onSubmit={addCredit}>
-                <label>
+                <label className="operator-autocomplete-label">
                   Operator
-                  <select value={creditForm.operator_id} onChange={(e) => setCreditForm({ ...creditForm, operator_id: e.target.value })}>
-                    <option value="">Select operator</option>
-                    {walletOperators.map((op) => (
-                      <option key={op.id} value={op.id}>{op.company_name} — {op.name} — {op.phone_number}</option>
-                    ))}
-                  </select>
+                  <div className="operator-autocomplete">
+                    <input
+                      ref={operatorInputRef}
+                      type="text"
+                      value={operatorSearch || (creditForm.operator_id ? walletOperators.find((op) => String(op.id) === creditForm.operator_id)
+                        ? `${walletOperators.find((op) => String(op.id) === creditForm.operator_id).company_name} — ${walletOperators.find((op) => String(op.id) === creditForm.operator_id).name}`
+                        : "" : "")}
+                      onChange={(e) => {
+                        setOperatorSearch(e.target.value);
+                        setShowOperatorDropdown(true);
+                        setActiveOperatorIndex(-1);
+                        if (creditForm.operator_id) setCreditForm((prev) => ({ ...prev, operator_id: "" }));
+                      }}
+                      onFocus={() => {
+                        clearTimeout(operatorDropdownTimer.current);
+                        setShowOperatorDropdown(true);
+                        setActiveOperatorIndex(-1);
+                      }}
+                      onBlur={() => {
+                        operatorDropdownTimer.current = setTimeout(() => setShowOperatorDropdown(false), 180);
+                      }}
+                      onKeyDown={handleOperatorKeyDown}
+                      placeholder="Type to search operators..."
+                      role="combobox"
+                      aria-autocomplete="list"
+                      aria-expanded={showOperatorDropdown}
+                      autoComplete="off"
+                    />
+                    {creditForm.operator_id && !operatorSearch && (
+                      <button
+                        type="button"
+                        className="operator-clear-btn"
+                        onClick={() => {
+                          setCreditForm((prev) => ({ ...prev, operator_id: "" }));
+                          setOperatorSearch("");
+                          operatorInputRef.current?.focus();
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                    {showOperatorDropdown && getOperatorSuggestions().length > 0 && (
+                      <ul className="operator-dropdown" role="listbox">
+                        {getOperatorSuggestions().map((op, index) => (
+                          <li
+                            key={op.id}
+                            className={`operator-option ${index === activeOperatorIndex ? "is-active" : ""} ${String(op.id) === creditForm.operator_id ? "is-selected" : ""}`}
+                            role="option"
+                            aria-selected={String(op.id) === creditForm.operator_id}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => selectOperator(op)}
+                          >
+                            <span className="operator-option-name">{op.company_name}</span>
+                            <span className="operator-option-detail">{op.name} — {op.phone_number}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {showOperatorDropdown && operatorSearch && getOperatorSuggestions().length === 0 && (
+                      <div className="operator-dropdown operator-dropdown-empty" role="status">
+                        No matching operators
+                      </div>
+                    )}
+                  </div>
                 </label>
                 <label>
                   Points

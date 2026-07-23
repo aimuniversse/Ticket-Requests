@@ -6,7 +6,7 @@ import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
-const SECTIONS = ["Dashboard", "Users", "Requests","History","Approvals", "Settings"];
+const SECTIONS = ["Dashboard", "Users", "Requests", "History", "Approvals", "Settings"];
 
 const SECTION_ICONS = {
   Dashboard: FaHome,
@@ -194,8 +194,8 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
-  const [pointRequestAction, setPointRequestAction] = useState({});
-  const [historyTab, setHistoryTab] = useState("Point Requests");
+  const [historySearch, setHistorySearch] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [operatorSearch, setOperatorSearch] = useState("");
   const [showOperatorDropdown, setShowOperatorDropdown] = useState(false);
   const [activeOperatorIndex, setActiveOperatorIndex] = useState(-1);
@@ -345,17 +345,6 @@ function Admin() {
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
     } finally {
       setCrediting(false);
-    }
-  };
-
-  const actOnPointRequest = async (requestId, action) => {
-    const response = pointRequestAction[requestId] || "";
-    try {
-      await API.post(`auth/admin/point-requests/${requestId}/${action}/`, { admin_response: response });
-      setPointRequestAction((prev) => { const next = { ...prev }; delete next[requestId]; return next; });
-      await load();
-    } catch (err) {
-      setError(err.response?.data?.detail || `Unable to ${action} this request.`);
     }
   };
 
@@ -571,71 +560,33 @@ function Admin() {
             </section>
           )}
 
-          {/* ── History ── */}  
+          {/* ── History ── */}
           {section === "History" && (
             <section className="admin-section">
               <div className="section-header">
                 <div>
-                  <span className="section-title">History</span>
-                  <p className="section-subtitle">Operator point requests and transaction history.</p>
-                </div>
-                <div className="tab-group">
-                  {["Point Requests", "Transactions"].map((tab) => (
-                    <button
-                      key={tab}
-                      className={`tab ${historyTab === tab ? "active" : ""}`}
-                      onClick={() => setHistoryTab(tab)}
-                    >
-                      {tab}
-                    </button>
-                  ))}
+                  <span className="section-title">Transaction History</span>
+                  <p className="section-subtitle">Points transferred from admin to operators.</p>
                 </div>
               </div>
 
-              {historyTab === "Point Requests" && (
-                (data.pointRequests && data.pointRequests.length) ? (
-                  <div className="history-list">
-                    {data.pointRequests.map((req) => (
-                      <article key={req.id} className={`history-card ${req.status.toLowerCase()}`}>
-                        <div className="history-card-main">
-                          <div className="history-card-top">
-                            <span className="history-operator">{req.company_name || "—"}</span>
-                            <span className={`history-points ${req.status === "APPROVED" ? "approved" : req.status === "REJECTED" ? "rejected" : ""}`}>
-                              {req.points_requested} pts
-                            </span>
-                          </div>
-                          <p className="history-reason">{req.reason || "No reason provided"}</p>
-                          <div className="history-meta">
-                            <span className={`history-status-pill ${req.status.toLowerCase()}`}>{req.status}</span>
-                            <span className="history-date">{formatDate(req.created_at)}</span>
-                            {req.admin_response && <span className="history-admin-note">Admin: {req.admin_response}</span>}
-                          </div>
-                        </div>
-                        {req.status === "PENDING" && (
-                          <div className="history-card-actions">
-                            <input
-                              type="text"
-                              className="history-response-input"
-                              placeholder="Response (optional)"
-                              value={pointRequestAction[req.id] || ""}
-                              onChange={(e) => setPointRequestAction({ ...pointRequestAction, [req.id]: e.target.value })}
-                            />
-                            <div className="history-btn-group">
-                              <button className="action-btn success" onClick={() => actOnPointRequest(req.id, "approve")}>Approve</button>
-                              <button className="action-btn secondary" onClick={() => actOnPointRequest(req.id, "reject")}>Reject</button>
-                            </div>
-                          </div>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <Empty label="point requests" />
-                )
+              {(data.history && data.history.length > 0) && (
+                <div style={{ marginBottom: "1rem", maxWidth: "400px", width: "100%" }}>
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search by company name..."
+                    value={historySearch}
+                    onChange={(e) => setHistorySearch(e.target.value)}
+                    style={{ padding: "0.5rem 1rem", width: "100%", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
+                  />
+                </div>
               )}
-
-              {historyTab === "Transactions" && (
-                (data.history && data.history.length) ? (
+              {(() => {
+                const filtered = data.history.filter((item) =>
+                  (item.operator_company || "").toLowerCase().includes(historySearch.toLowerCase())
+                );
+                return filtered.length ? (
                   <div className="table-wrapper">
                     <table className="admin-table">
                       <thead>
@@ -648,7 +599,7 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-                        {data.history.map((item) => (
+                        {filtered.map((item) => (
                           <tr key={item.id}>
                             <td>{item.operator_name || "—"}</td>
                             <td>{item.operator_company || "—"}</td>
@@ -661,9 +612,9 @@ function Admin() {
                     </table>
                   </div>
                 ) : (
-                  <Empty label="transaction history" />
-                )
-              )}
+                  <Empty label="transactions" />
+                );
+              })()}
             </section>
           )}
           {section === "Approvals" && (

@@ -93,6 +93,5 @@ urlpatterns = [
     path(
         "admin/transactions/",
         AdminTransactionsAPIView.as_view(),
-        name="admin-transactions",
     ),
 ]

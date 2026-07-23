@@ -11,14 +11,6 @@ const apiBaseUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 // });
 const api = axios.create({
   baseURL: `${apiBaseUrl}/api/`,
-<<<<<<< HEAD
-
-  baseURL: `${import.meta.env.VITE_API_URL || ''}/api/`,
-  baseURL: `${apiBaseUrl}/api/`,
-  baseURL: `${import.meta.env.VITE_API_URL || ""}/api/`,
-
-=======
->>>>>>> 57c248c37f167f776316ddd3abdc7fafaa472b70
   headers: {
     "Content-Type": "application/json",
   },

@@ -31,6 +31,32 @@ const StatusPill = ({ status }) => (
   <span className={`status-pill ${status || ""}`}>{status || "—"}</span>
 );
 
+function UserCard({ user, isSelected, onClick }) {
+  return (
+    <article
+      className={`user-card ${isSelected ? "user-card--selected" : ""}`}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
+    >
+      <div className="user-card__avatar">
+        {user.role === "Operator" ? <FaBus /> : <FaUser />}
+      </div>
+      <div className="user-card__info">
+        <span className="user-card__name">{user.name || user.company_name || "—"}</span>
+        <span className="user-card__meta">
+          {user.role === "Operator" ? user.company_name : user.mobile || "—"}
+        </span>
+      </div>
+      <div className="user-card__right">
+        <StatusPill status={user.status} />
+        <span className="user-card__role">{user.role}</span>
+      </div>
+    </article>
+  );
+}
+
 function formatDate(str) {
   if (!str) return "—";
   return new Date(str).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
@@ -185,13 +211,8 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
-<<<<<<< HEAD
-  const [pointRequestAction, setPointRequestAction] = useState({});
-  const [historyTab, setHistoryTab] = useState("Point Requests");
-=======
   const [historySearch, setHistorySearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
->>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
   const [operatorSearch, setOperatorSearch] = useState("");
   const [showOperatorDropdown, setShowOperatorDropdown] = useState(false);
   const [activeOperatorIndex, setActiveOperatorIndex] = useState(-1);
@@ -208,6 +229,7 @@ function Admin() {
     setSelectedUser(null);
     setDetailsData(null);
     setDetailsError("");
+    document.body.style.overflow = "";
   }, []);
 
   const getOperatorSuggestions = useCallback(() => {
@@ -248,6 +270,9 @@ function Admin() {
     setDetailsData(null);
     setDetailsError("");
     setDetailsLoading(true);
+    if (window.innerWidth <= 900) {
+      document.body.style.overflow = "hidden";
+    }
     try {
       if (user.role === "Operator") {
         const res = await API.get(`auth/admin/operators/${user.id}/transactions/`);
@@ -302,7 +327,7 @@ function Admin() {
   useEffect(() => {
     load();
     const timer = window.setInterval(load, 15000);
-    return () => window.clearInterval(timer);
+    return () => { window.clearInterval(timer); document.body.style.overflow = ""; };
   }, [load]);
 
   useEffect(() => {
@@ -450,14 +475,16 @@ function Admin() {
                 </div>
               </div>
 
-              <label>
+              <label className="users-search-label">
                 Search users
                 <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name, ID, email or phone" />
               </label>
 
               <div className={`users-layout ${selectedUser ? "panel-open" : ""}`}>
-                {/* Table */}
-                <div>
+                {selectedUser && <div className="panel-backdrop" onClick={closePanel} />}
+
+                {/* Desktop: Table */}
+                <div className="users-table-wrap">
                   {renderTable(
                     shownUsers,
                     [
@@ -472,9 +499,22 @@ function Admin() {
                   )}
                 </div>
 
+                {/* Mobile: Cards */}
+                <div className="users-cards-list">
+                  {shownUsers.length ? shownUsers.map((user) => (
+                    <UserCard
+                      key={user.id}
+                      user={user}
+                      isSelected={selectedUser?.id === user.id}
+                      onClick={() => selectUser(user)}
+                    />
+                  )) : <Empty label="records" />}
+                </div>
+
                 {/* Detail Panel */}
                 {selectedUser && (
                   <div className="user-detail-panel">
+                    <span className="panel-drag-handle" />
                     <div className="panel-header">
                       <div className="panel-header-info">
                         <span className={`panel-role-badge ${selectedUser.role?.toLowerCase()}`}>
@@ -524,48 +564,6 @@ function Admin() {
                 </div>
               </div>
 
-<<<<<<< HEAD
-              {historyTab === "Point Requests" && (
-                (data.pointRequests && data.pointRequests.length) ? (
-                  <div className="history-list">
-                    {data.pointRequests.map((req) => (
-                      <article key={req.id} className={`history-card ${req.status.toLowerCase()}`}>
-                        <div className="history-card-main">
-                          <div className="history-card-top">
-                            <span className="history-operator">{req.company_name || "—"}</span>
-                            <span className={`history-points ${req.status === "APPROVED" ? "approved" : req.status === "REJECTED" ? "rejected" : ""}`}>
-                              {req.points_requested} pts
-                            </span>
-                          </div>
-                          <p className="history-reason">{req.reason || "No reason provided"}</p>
-                          <div className="history-meta">
-                            <span className={`history-status-pill ${req.status.toLowerCase()}`}>{req.status}</span>
-                            <span className="history-date">{formatDate(req.created_at)}</span>
-                            {req.admin_response && <span className="history-admin-note">Admin: {req.admin_response}</span>}
-                          </div>
-                        </div>
-                        {req.status === "PENDING" && (
-                          <div className="history-card-actions">
-                            <input
-                              type="text"
-                              className="history-response-input"
-                              placeholder="Response (optional)"
-                              value={pointRequestAction[req.id] || ""}
-                              onChange={(e) => setPointRequestAction({ ...pointRequestAction, [req.id]: e.target.value })}
-                            />
-                            <div className="history-btn-group">
-                              <button className="action-btn success" onClick={() => actOnPointRequest(req.id, "approve")}>Approve</button>
-                              <button className="action-btn secondary" onClick={() => actOnPointRequest(req.id, "reject")}>Reject</button>
-                            </div>
-                          </div>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <Empty label="point requests" />
-                )
-=======
               {(data.history && data.history.length > 0) && (
                 <div style={{ marginBottom: "1rem", maxWidth: "400px", width: "100%" }}>
                   <input
@@ -577,7 +575,6 @@ function Admin() {
                     style={{ padding: "0.5rem 1rem", width: "100%", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
                   />
                 </div>
->>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
               )}
               {(() => {
                 const filtered = data.history.filter((item) =>
@@ -596,44 +593,6 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-<<<<<<< HEAD
-                        {data.history.map((item) => (
-                          <tr key={item.id}>
-                            <td>{item.operator_name || "—"}</td>
-                            <td>{item.operator_company || "—"}</td>
-                            <td>{item.credits}</td>
-                            <td>{formatDate(item.created_at)}</td>
-                            <td>{item.description || "—"}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <Empty label="transaction history" />
-                )
-              )}
-              {(() => {
-                const filtered = data.history.filter((item) =>
-                  (item.operator_company || "").toLowerCase().includes(historySearch.toLowerCase())
-                );
-                return filtered.length ? (
-                  <div className="table-wrapper">
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Operator ID</th>
-                          <th>Name</th>
-                          <th>Company</th>
-                          <th>Email</th>
-                          <th>Points</th>
-                          <th>Date</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-=======
->>>>>>> 001cd98a0a13fe0931d001b5dde8999159f9da13
                         {filtered.map((item) => (
                           <tr key={item.id}>
                             <td>{item.operator_name || "—"}</td>

@@ -541,6 +541,75 @@
 .wallet-credit-form label { display: grid; gap: .4rem; color: #475569; font-size: .82rem; font-weight: 700; }
 .wallet-credit-form input, .wallet-credit-form select { width: 100%; padding: .72rem; border: 1px solid #dbe3ef; border-radius: 9px; color: #1e293b; background: #fff; font: inherit; }
 
+/* ── Operator Autocomplete Dropdown ──────────────────────────────── */
+.operator-autocomplete { position: relative; }
+.operator-autocomplete input { width: 100%; padding: .72rem 2rem .72rem .72rem; border: 1px solid #dbe3ef; border-radius: 9px; color: #1e293b; background: #fff; font: inherit; }
+.operator-autocomplete input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12); }
+
+.operator-clear-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  padding: 0;
+}
+.operator-clear-btn:hover { background: #e2e8f0; color: #0f172a; }
+
+.operator-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 0.35rem 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  list-style: none;
+  z-index: 50;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.operator-dropdown-empty {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  box-shadow: none;
+}
+
+.operator-option {
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.12s;
+}
+.operator-option:hover, .operator-option.is-active { background: #f0f4ff; }
+.operator-option.is-selected { background: #eef2ff; }
+
+.operator-option-name { font-weight: 600; color: #0f172a; font-size: 0.9rem; }
+.operator-option-detail { font-size: 0.78rem; color: #64748b; }
+
+@media (max-width: 900px) {
+  .wallet-credit-form { grid-template-columns: 1fr; }
+}
+
 /* ── History Section ─────────────────────────────────────────────── */
 .history-list {
   display: grid;
@@ -804,7 +873,6 @@
   .admin-table {
     min-width: 100%;
   }
-  .wallet-credit-form { grid-template-columns: 1fr; }
 }
 
 /* ── User Detail Slide-Over Panel ──────────────────────────────────── */

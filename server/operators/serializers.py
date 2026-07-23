@@ -116,23 +116,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-<<<<<<< HEAD
-        fields = ["transaction_type", "credits", "balance_after_transaction", "description", "created_at"]
-
-
-class PointRequestSerializer(serializers.ModelSerializer):
-    operator_name = serializers.CharField(source="operator.user.name", read_only=True)
-    company_name = serializers.CharField(source="operator.company_name", read_only=True)
-
-    class Meta:
-        model = PointRequest
-        fields = ["id", "operator", "operator_name", "company_name", "points_requested", "reason", "status", "admin_response", "created_at", "updated_at"]
-        read_only_fields = ["id", "operator", "status", "admin_response", "created_at", "updated_at"]
-
-
-class PointRequestActionSerializer(serializers.Serializer):
-    admin_response = serializers.CharField(required=False, allow_blank=True, default="")
-=======
         fields = [
             "id",
             "transaction_type",
@@ -164,4 +147,23 @@ class PointRequestActionSerializer(serializers.Serializer):
         if obj.customer_request and obj.customer_request.journey_date:
             return obj.customer_request.journey_date
         return None
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2
+
+
+class PointRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PointRequest
+        fields = [
+            "id",
+            "operator",
+            "points_requested",
+            "reason",
+            "status",
+            "admin_response",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class PointRequestActionSerializer(serializers.Serializer):
+    action = serializers.ChoiceField(choices=["approve", "reject"])
+    admin_response = serializers.CharField(required=False, allow_blank=True, default="")

@@ -73,12 +73,18 @@ class Transaction(models.Model):
     credits = models.IntegerField()
     balance_after_transaction = models.IntegerField()
     description = models.CharField(max_length=255)
-<<<<<<< HEAD
+    customer_request = models.ForeignKey(
+        "customer.CustomerRequests",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="transactions"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class PointRequest(models.Model):
-    STATUS_CHOICES = (
+    REQUEST_STATUS_CHOICES = (
         ("PENDING", "Pending"),
         ("APPROVED", "Approved"),
         ("REJECTED", "Rejected"),
@@ -91,17 +97,11 @@ class PointRequest(models.Model):
     )
     points_requested = models.PositiveIntegerField()
     reason = models.TextField(blank=True, default="")
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDING")
+    status = models.CharField(
+        max_length=10,
+        choices=REQUEST_STATUS_CHOICES,
+        default="PENDING",
+    )
     admin_response = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-=======
-    customer_request = models.ForeignKey(
-        "customer.CustomerRequests",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="transactions"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
->>>>>>> f07d907808535587174fed9cbde2d2c2db2400b2

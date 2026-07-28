@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.core.mail import send_mail
 from django.conf import settings
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
+from django.core import signing
 
 
 User = get_user_model()
@@ -64,7 +62,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
         email = self.validated_data["email"]
         user = User.objects.get(email=email)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
+        token = signing.dumps(user.pk)
         reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
         send_mail(
@@ -93,18 +91,17 @@ class ResetPasswordSerializer(serializers.Serializer):
         return data
 
     def save(self):
-       
-        uid = self.validated_data["uid"]
         token = self.validated_data["token"]
 
         try:
-            user_id = force_str(urlsafe_base64_decode(uid))
-            user = User.objects.get(pk=user_id)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            raise serializers.ValidationError({"uid": "Invalid reset link"})
-
-        if not default_token_generator.check_token(user, token):
+            user_pk = signing.loads(token, max_age=getattr(settings, 'PASSWORD_RESET_TIMEOUT', 86400))
+        except signing.BadSignature:
             raise serializers.ValidationError({"token": "Invalid or expired reset link"})
+
+        try:
+            user = User.objects.get(pk=user_pk)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"uid": "Invalid reset link"})
 
         user.set_password(self.validated_data["new_password"])
         user.save()

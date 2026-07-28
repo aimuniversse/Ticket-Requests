@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "../../styles/Notifications.css";
 
 import {
@@ -6,9 +7,22 @@ import {
   FaTimesCircle,
   FaWallet,
   FaClock,
+  FaTicketAlt,
 } from "react-icons/fa";
 
-const Notifications = ({ notifications = [] }) => {
+const typeIcons = {
+  request: FaTicketAlt,
+  accepted: FaCheckCircle,
+  rejected: FaTimesCircle,
+  wallet: FaWallet,
+  expired: FaClock,
+};
+
+const Notifications = ({ notifications = [], onClear }) => {
+
+  useEffect(() => {
+    if (onClear) onClear();
+  }, [onClear]);
 
   return (
 
@@ -58,82 +72,55 @@ const Notifications = ({ notifications = [] }) => {
 
         (
 
-          notifications.map((item)=>(
+          notifications.map((item, idx) => {
 
-            <div
-              key={item.id}
-              className="notification-card"
-            >
+            const Icon = typeIcons[item.type] || FaBell;
 
-              <div className="notification-icon">
+            return (
 
-                {
+              <div
 
-                  item.type==="request" &&
+                key={item.id}
 
-                  <FaBell/>
+                className="notification-card notification-card--animate"
 
-                }
+                style={{ animationDelay: `${idx * 0.06}s` }}
 
-                {
+              >
 
-                  item.type==="accepted" &&
+                <div className="notification-icon">
 
-                  <FaCheckCircle/>
+                  <Icon/>
 
-                }
+                </div>
 
-                {
+                <div className="notification-content">
 
-                  item.type==="rejected" &&
+                  <h4>
 
-                  <FaTimesCircle/>
+                    {item.title}
 
-                }
+                  </h4>
 
-                {
+                  <p>
 
-                  item.type==="wallet" &&
+                    {item.message}
 
-                  <FaWallet/>
+                  </p>
 
-                }
+                  <small>
 
-                {
+                    {item.time}
 
-                  item.type==="expired" &&
+                  </small>
 
-                  <FaClock/>
-
-                }
+                </div>
 
               </div>
 
-              <div className="notification-content">
+            );
 
-                <h4>
-
-                  {item.title}
-
-                </h4>
-
-                <p>
-
-                  {item.message}
-
-                </p>
-
-                <small>
-
-                  {item.time}
-
-                </small>
-
-              </div>
-
-            </div>
-
-          ))
+          })
 
         )
 

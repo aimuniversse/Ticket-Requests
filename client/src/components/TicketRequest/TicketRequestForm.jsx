@@ -399,16 +399,14 @@ const TicketRequestForm = () => {
               </select>
             </div>
 
+            
             <div className="input-group">
-              <label>Expected Price (₹)</label>
-              <input
-                type="number"
-                name="expected_price"
-                value={formData.expected_price}
-                onChange={handleChange}
-                placeholder="Enter expected ticket price"
-                required
-              />
+              <label>Gender</label>
+              <select name="Gender" value={formData.Gender} onChange={handleChange} required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option> 
+                <option value="Female">Female</option>               
+              </select>
             </div>
 
             <div className="input-group">
@@ -439,13 +437,17 @@ const TicketRequestForm = () => {
               {phoneError && <span className="field-error">{phoneError}</span>}
             </div>
 
+            
             <div className="input-group">
-              <label>Gender</label>
-              <select name="Gender" value={formData.Gender} onChange={handleChange} required>
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option> 
-                <option value="Female">Female</option>               
-              </select>
+              <label>Expected Price (₹)</label>
+              <input
+                type="number"
+                name="expected_price"
+                value={formData.expected_price}
+                onChange={handleChange}
+                placeholder="Enter expected ticket price"
+                required
+              />
             </div>
 
             

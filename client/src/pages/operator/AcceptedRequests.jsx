@@ -178,8 +178,8 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                       )}
                     </td>
                     <td data-label="Phone number">
-                      {item.contact_unlocked ? (
-                        <span className="customer-unlocked"><FaPhone /> {item.phone_number || "\u2014"}</span>
+                      {item.contact_unlocked && item.phone_number ? (
+                        <a href={`tel:${item.phone_number}`} className="customer-unlocked phone-link"><FaPhone /> {item.phone_number}</a>
                       ) : (
                         <span className="customer-locked">Locked</span>
                       )}

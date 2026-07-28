@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import { FaBuilding, FaPhone } from "react-icons/fa";
 import API from "../api/axios";
 import "../styles/CustomerRequestStatus.css";
 
@@ -125,6 +126,37 @@ export default function CustomerRequestStatus() {
             {loading && <p className="status-copy">Refreshing the latest status…</p>}
             {remaining && <div className="countdown" aria-live="polite">{remaining}</div>}
             <p className="request-reference">Reference: {request?.request_id || request?.id}</p>
+            {request?.status === "ACCEPTED" && request?.assigned_operator_name && (
+              <div className="operator-info-card">
+                <div className="operator-info-header">
+                  <div className="operator-info-avatar">{(request.assigned_operator_contact_name || request.assigned_operator_name || "O").charAt(0).toUpperCase()}</div>
+                  <div>
+                    <p className="operator-info-title">Operator Accepted</p>
+                    <p className="operator-info-subtitle">{request.assigned_operator_contact_name || "—"}</p>
+                  </div>
+                </div>
+                <div className="operator-info-details">
+                  <div className="operator-info-item">
+                    <FaBuilding className="operator-info-icon" />
+                    <div>
+                      <span className="operator-info-label">Company</span>
+                      <span className="operator-info-value">{request.assigned_operator_name || "—"}</span>
+                    </div>
+                  </div>
+                  <div className="operator-info-item">
+                    <FaPhone className="operator-info-icon" />
+                    <div>
+                      <span className="operator-info-label">Phone</span>
+                      {request.assigned_operator_phone ? (
+                        <a href={`tel:${request.assigned_operator_phone}`} className="operator-info-value operator-phone-link">{request.assigned_operator_phone}</a>
+                      ) : (
+                        <span className="operator-info-value">—</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
         {(error || request?.status === "EXPIRED") && (

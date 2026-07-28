@@ -47,6 +47,12 @@ class CustomerRequestSerilaizers(serializers.ModelSerializer):
 
         return value
 
+    def to_internal_value(self, data):
+        if "Gender" in data:
+            data = data.copy()
+            data["gender"] = data.pop("Gender")
+        return super().to_internal_value(data)
+
     def get_contact_unlocked(self, instance):
         request = self.context.get("request")
         if not request or not getattr(request.user, "is_authenticated", False):
@@ -68,6 +74,12 @@ class CustomerRequestSerilaizers(serializers.ModelSerializer):
 
         representation["assigned_operator_name"] = (
             instance.assigned_operator.company_name if instance.assigned_operator else None
+        )
+        representation["assigned_operator_phone"] = (
+            instance.assigned_operator.user.phone_number if instance.assigned_operator else None
+        )
+        representation["assigned_operator_contact_name"] = (
+            instance.assigned_operator.user.name if instance.assigned_operator else None
         )
 
         if not request or not getattr(request.user, "is_authenticated", False):

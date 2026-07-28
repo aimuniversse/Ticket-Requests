@@ -164,6 +164,7 @@ class AcceptLeadAPIView(APIView):
                 "customer": {
                     "name": customer_request.name,
                     "phone_number": customer_request.phone_number,
+                    "gender": customer_request.gender,
                     "from_location": customer_request.from_location,
                     "to_location": customer_request.to_location,
                     "journey_date": str(customer_request.journey_date),

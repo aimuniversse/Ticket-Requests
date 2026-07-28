@@ -239,6 +239,26 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.input-group input[type="date"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0;
+}
+
 .field-error {
   color: #d32f2f;
   font-size: 0.6rem;
@@ -483,7 +503,7 @@
     font-size: 0.95rem;
     font-weight: 600;
     line-height: 1.3;
-    background: linear-gradient(90deg, #010101, #010101);
+    background: linear-gradient(90deg, #fbf9f9, #fbf9f9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

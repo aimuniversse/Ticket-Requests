@@ -45,12 +45,12 @@ const getRowClass = (status) => {
   }
 };
 
-const AcceptedRequests = ({ onCountChange }) => {
+const AcceptedRequests = ({ onCountChange, initialFilter }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState(initialFilter || "ALL");
 
   const loadRequests = async (showLoader = false) => {
     if (showLoader) setLoading(true);
@@ -70,6 +70,10 @@ const AcceptedRequests = ({ onCountChange }) => {
     const timer = window.setInterval(() => loadRequests(false), 10000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (initialFilter) setStatusFilter(initialFilter);
+  }, [initialFilter]);
 
   const statusCounts = useMemo(() => {
     const counts = { ALL: requests.length, NEW: 0, PENDING: 0, ACCEPTED: 0, ASSIGNED: 0, EXPIRED: 0, COMPLETED: 0 };

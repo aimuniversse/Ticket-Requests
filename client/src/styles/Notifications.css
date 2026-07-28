@@ -5,7 +5,9 @@
 .notification-header p{color:#666}
 
 .notification-card{display:flex;gap:20px;background:#fff;padding:20px;border-radius:15px;margin-bottom:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);transition:.3s}
-.notification-card:hover{transform:translateY(-5px)}
+.notification-card--animate{animation:cardSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) both}
+.notification-card:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(0,0,0,.12)}
+@keyframes cardSlideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .notification-icon{width:60px;height:60px;display:flex;justify-content:center;align-items:center;background:#fff5f5;border-radius:50%;flex-shrink:0}
 .notification-icon svg{font-size:26px;color:#d32f2f}
 .notification-content{flex:1;min-width:0}

@@ -66,13 +66,20 @@ input {
 
 .brand span {
   display: inline-grid;
-  width: 5px;
-  height: 5px;
+  width: 36px;
+  height: 36px;
   place-items: center;
   border-radius: 11px;
   color: #fff;
-  background: linear-gradient(140deg, #f97316, #e11d48);
+  overflow: hidden;
   box-shadow: 0 6px 14px rgba(225, 29, 72, .2)
+}
+
+.brand span img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
 }
 
 .brand strong {
@@ -840,7 +847,8 @@ input {
 
   .brand span {
     width: 28px;
-    height: 28px
+    height: 28px;
+    border-radius: 8px;
   }
 
   .brand strong {

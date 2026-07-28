@@ -2439,6 +2439,15 @@
   box-shadow: inset 3px 0 0 #6366f1;
 }
 
+/* History cards — hidden on desktop, shown on mobile */
+.history-table-wrap {
+  display: block;
+}
+
+.history-cards-list {
+  display: none;
+}
+
 /* Panel wrapper */
 .user-detail-panel {
   background: #ffffff;
@@ -3097,6 +3106,96 @@
   .section-header input {
     max-width: 100%;
   }
+
+  /* History mobile cards */
+  .history-table-wrap {
+    display: none;
+  }
+
+  .history-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .history-card-mobile {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    transition: box-shadow 0.15s;
+  }
+
+  .history-card-mobile:hover {
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+  }
+
+  .history-card-mobile__top {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .history-card-mobile__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fef3c7 0%, #dcfce7 100%);
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .history-card-mobile__identity {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .history-card-mobile__name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-card-mobile__company {
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .history-card-mobile__points {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #16a34a;
+    flex-shrink: 0;
+  }
+
+  .history-card-mobile__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.75rem;
+    margin-top: 0.45rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .history-card-mobile__detail {
+    font-size: 0.72rem;
+    color: #475569;
+  }
+
+  .history-card-mobile__detail strong {
+    color: #94a3b8;
+    font-weight: 600;
+  }
 }
 
 /* ── Users Section Small Screens ───────────────────────────────────── */
@@ -3235,6 +3334,33 @@
   .tx-credit,
   .tx-debit {
     font-size: 0.65rem;
+  }
+
+  .history-card-mobile {
+    padding: 0.65rem 0.7rem;
+  }
+
+  .history-card-mobile__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    font-size: 0.78rem;
+  }
+
+  .history-card-mobile__name {
+    font-size: 0.82rem;
+  }
+
+  .history-card-mobile__company {
+    font-size: 0.66rem;
+  }
+
+  .history-card-mobile__points {
+    font-size: 0.88rem;
+  }
+
+  .history-card-mobile__detail {
+    font-size: 0.68rem;
   }
 }
 

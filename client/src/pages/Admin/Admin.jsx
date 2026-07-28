@@ -640,30 +640,54 @@ function Admin() {
                   (item.operator_company || "").toLowerCase().includes(historySearch.toLowerCase())
                 );
                 return filtered.length ? (
-                  <div className="table-wrapper">
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Operator</th>
-                          <th>Company</th>
-                          <th>Points</th>
-                          <th>Date</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filtered.map((item) => (
-                          <tr key={item.id}>
-                            <td>{item.operator_name || "—"}</td>
-                            <td>{item.operator_company || "—"}</td>
-                            <td>{item.credits}</td>
-                            <td>{formatDate(item.created_at)}</td>
-                            <td>{item.description || "—"}</td>
+                  <>
+                    <div className="table-wrapper history-table-wrap">
+                      <table className="admin-table">
+                        <thead>
+                          <tr>
+                            <th>Operator</th>
+                            <th>Company</th>
+                            <th>Points</th>
+                            <th>Date</th>
+                            <th>Description</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {filtered.map((item) => (
+                            <tr key={item.id}>
+                              <td>{item.operator_name || "—"}</td>
+                              <td>{item.operator_company || "—"}</td>
+                              <td>{item.credits}</td>
+                              <td>{formatDate(item.created_at)}</td>
+                              <td>{item.description || "—"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="history-cards-list">
+                      {filtered.map((item) => (
+                        <article key={item.id} className="history-card-mobile">
+                          <div className="history-card-mobile__top">
+                            <div className="history-card-mobile__avatar">
+                              <FaBus />
+                            </div>
+                            <div className="history-card-mobile__identity">
+                              <span className="history-card-mobile__name">{item.operator_name || "—"}</span>
+                              <span className="history-card-mobile__company">{item.operator_company || "—"}</span>
+                            </div>
+                            <span className="history-card-mobile__points">+{item.credits}</span>
+                          </div>
+                          <div className="history-card-mobile__details">
+                            <span className="history-card-mobile__detail"><strong>Date:</strong> {formatDate(item.created_at)}</span>
+                            {item.description && (
+                              <span className="history-card-mobile__detail"><strong>Note:</strong> {item.description}</span>
+                            )}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </>
                 ) : (
                   <Empty label="transactions" />
                 );

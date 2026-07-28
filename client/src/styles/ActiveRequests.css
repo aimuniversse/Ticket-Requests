@@ -49,6 +49,8 @@
 .status-stack{display:flex;flex-direction:column;gap:5px}
 .expired-badge{font-size:.68rem;color:#991b1b;font-weight:600}
 .time-cell{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.phone-link{color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-weight:600;transition:color .15s}
+.phone-link:hover{color:#1d4ed8;text-decoration:underline}
 .table-action{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:0;border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;transition:.18s ease}
 .table-action--accept{background:#e11d48;color:#fff}.table-action--accept:hover{background:#be123c}
 .table-action--accept:disabled{background:#fda4af;cursor:not-allowed}

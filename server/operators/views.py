@@ -156,6 +156,7 @@ class AssignedRequestsAPIView(APIView):
                     "request_id": item.request_id,
                     "expires_at": item.expires_at,
                     "created_at": item.created_at,
+                    "gender": item.gender,
                 }
             )
 

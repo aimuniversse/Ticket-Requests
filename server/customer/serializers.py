@@ -47,6 +47,12 @@ class CustomerRequestSerilaizers(serializers.ModelSerializer):
 
         return value
 
+    def to_internal_value(self, data):
+        if "Gender" in data:
+            data = data.copy()
+            data["gender"] = data.pop("Gender")
+        return super().to_internal_value(data)
+
     def get_contact_unlocked(self, instance):
         request = self.context.get("request")
         if not request or not getattr(request.user, "is_authenticated", False):

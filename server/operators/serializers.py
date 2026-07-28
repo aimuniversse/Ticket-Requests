@@ -108,6 +108,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     operator_name = serializers.CharField(source="operator.user.name", read_only=True)
     operator_email = serializers.EmailField(source="operator.user.email", read_only=True)
     operator_company = serializers.CharField(source="operator.company_name", read_only=True)
+    operator_phone = serializers.CharField(source="operator.user.phone_number", read_only=True)
     customer_request_id = serializers.IntegerField(source="customer_request.id", read_only=True)
     customer_name = serializers.SerializerMethodField()
     customer_from = serializers.SerializerMethodField()
@@ -127,6 +128,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "operator_name",
             "operator_email",
             "operator_company",
+            "operator_phone",
             "customer_request_id",
             "customer_name",
             "customer_from",

@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaUsers, FaEnvelope, FaHistory, FaCheckCircle, FaCog } from "react-icons/fa";
+import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaEnvelope, FaHistory, FaCheckCircle, FaCog } from "react-icons/fa";
 import API from "../../api/axios";
 import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
-const SECTIONS = ["Dashboard", "Users", "Requests", "History", "Approvals", "Settings"];
+const SECTIONS = ["Dashboard", "Operators", "Customers", "Credit Requests", "Credit History", "Approvals", "Settings"];
 
 const SECTION_ICONS = {
   Dashboard: FaHome,
-  Users: FaUsers,
-  Requests: FaEnvelope,
-  History: FaHistory,
+  Operators: FaBus,
+  Customers: FaUser,
+  "Credit Requests": FaEnvelope,
+  "Credit History": FaHistory,
   Approvals: FaCheckCircle,
   Settings: FaCog,
 };
@@ -63,6 +64,12 @@ function UserCard({ user, isSelected, onClick }) {
         {user.company_name && user.role === "Operator" && (
           <span className="user-card__detail"><strong>Company:</strong> {user.company_name}</span>
         )}
+        {user.accepted_by_company && user.role === "Customer" && user.accepted_by_company !== "Nil" && (
+          <span className="user-card__detail"><strong>Accepted By:</strong> {user.accepted_by_company} ({user.accepted_by_phone})</span>
+        )}
+        {user.accepted_by_company && user.role === "Customer" && user.accepted_by_company === "Nil" && (
+          <span className="user-card__detail"><strong>Accepted By:</strong> Nil</span>
+        )}
         {user.email && (
           <span className="user-card__detail"><strong>Email:</strong> {user.email}</span>
         )}
@@ -81,6 +88,7 @@ function formatDate(str) {
 
 /* ── Operator Detail Panel ──────────────────────────────────────────── */
 function OperatorPanel({ user, data, loading, error }) {
+  const [activeTab, setActiveTab] = useState("overview");
   if (loading) return <PanelSkeleton />;
   if (error) return <p className="panel-error">{error}</p>;
 
@@ -89,73 +97,86 @@ function OperatorPanel({ user, data, loading, error }) {
 
   return (
     <>
-      <div className="panel-info-grid">
-        {[
-          { label: "Company", value: user.company_name || "—" },
-          { label: "Contact Name", value: user.name || "—" },
-          { label: "Phone", value: user.mobile || "—" },
-          { label: "Email", value: user.email || "—" },
-          { label: "Status", value: <StatusPill status={user.status} /> },
-          { label: "ID", value: user.id },
-        ].map(({ label, value }) => (
-          <div className="panel-info-item" key={label}>
-            <span className="panel-info-label">{label}</span>
-            <span className="panel-info-value">{value}</span>
-          </div>
-        ))}
+      <div className="panel-tabs">
+        <button className={`panel-tab ${activeTab === "overview" ? "active" : ""}`} onClick={() => setActiveTab("overview")}>Overview</button>
+        <button className={`panel-tab ${activeTab === "transactions" ? "active" : ""}`} onClick={() => setActiveTab("transactions")}>Transactions</button>
       </div>
 
-      {wallet && (
-        <div className="panel-wallet-card">
-          <div>
-            <div className="panel-wallet-label">Points Balance</div>
-            <div className="panel-wallet-balance">{wallet.current_balance ?? 0}</div>
-            <div className="panel-wallet-unit">points available</div>
+      {activeTab === "overview" && (
+        <>
+          <div className="panel-info-grid">
+            {[
+              { label: "Company", value: user.company_name || "—" },
+              { label: "Contact Name", value: user.name || "—" },
+              { label: "Phone", value: user.mobile || "—" },
+              { label: "Email", value: user.email || "—" },
+              { label: "Status", value: <StatusPill status={user.status} /> },
+              { label: "ID", value: user.id },
+            ].map(({ label, value }) => (
+              <div className="panel-info-item" key={label}>
+                <span className="panel-info-label">{label}</span>
+                <span className="panel-info-value">{value}</span>
+              </div>
+            ))}
           </div>
-          <FaWallet className="panel-wallet-icon" />
-        </div>
+
+          {wallet && (
+            <div className="panel-wallet-card">
+              <div>
+                <div className="panel-wallet-label">Points Balance</div>
+                <div className="panel-wallet-balance">{wallet.current_balance ?? 0}</div>
+                <div className="panel-wallet-unit">points available</div>
+              </div>
+              <FaWallet className="panel-wallet-icon" />
+            </div>
+          )}
+        </>
       )}
 
-      <div className="panel-section-label">Request History</div>
-      {transactions.length ? (
-        <div style={{ overflowX: "auto" }}>
-          <table className="panel-mini-table">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Credits</th>
-                <th>Balance After</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Journey Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((tx, i) => (
-                <tr key={i}>
-                  <td>
-                    <span className={tx.transaction_type === "CREDIT" ? "tx-credit" : "tx-debit"}>
-                      {tx.transaction_type === "CREDIT" ? "+" : "−"}{tx.credits}
-                    </span>
-                  </td>
-                  <td>{tx.credits}</td>
-                  <td>{tx.balance_after_transaction}</td>
-                  <td>{tx.description || "—"}</td>
-                  <td>{formatDate(tx.created_at)}</td>
-                  <td>{tx.customer_name || "—"}</td>
-                  <td>{tx.customer_from || "—"}</td>
-                  <td>{tx.customer_to || "—"}</td>
-                  <td>{formatDate(tx.request_date)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="panel-empty">No transactions yet.</p>
+      {activeTab === "transactions" && (
+        <>
+          <div className="panel-section-label">Request History</div>
+          {transactions.length ? (
+            <div style={{ overflowX: "auto" }}>
+              <table className="panel-mini-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Credits</th>
+                    <th>Balance After</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Journey Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((tx, i) => (
+                    <tr key={i}>
+                      <td>
+                        <span className={tx.transaction_type === "CREDIT" ? "tx-credit" : "tx-debit"}>
+                          {tx.transaction_type === "CREDIT" ? "+" : "−"}{tx.credits}
+                        </span>
+                      </td>
+                      <td>{tx.credits}</td>
+                      <td>{tx.balance_after_transaction}</td>
+                      <td>{tx.description || "—"}</td>
+                      <td>{formatDate(tx.created_at)}</td>
+                      <td>{tx.customer_name || "—"}</td>
+                      <td>{tx.customer_from || "—"}</td>
+                      <td>{tx.customer_to || "—"}</td>
+                      <td>{formatDate(tx.request_date)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="panel-empty">No transactions yet.</p>
+          )}
+        </>
       )}
     </>
   );
@@ -224,7 +245,6 @@ function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
-  const [userType, setUserType] = useState("operators");
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
@@ -386,12 +406,12 @@ function Admin() {
     }
   };
 
-  const users = userType === "operators" ? data.operators
-    : userType === "customers" ? data.customers
-      : [...data.operators, ...data.customers];
+  const users = section === "Operators" ? data.operators
+    : section === "Customers" ? data.customers
+      : [];
 
   const shownUsers = useMemo(
-    () => users.filter((item) => `${item.id} ${item.name} ${item.email} ${item.mobile}`.toLowerCase().includes(search.toLowerCase())),
+    () => users.filter((item) => `${item.id} ${item.name} ${item.email} ${item.mobile} ${item.company_name || ""} ${item.accepted_by_company || ""}`.toLowerCase().includes(search.toLowerCase())),
     [users, search],
   );
 
@@ -403,14 +423,14 @@ function Admin() {
         <table className="admin-table">
           <thead><tr>{columns.map((c) => <th key={c.label}>{c.label}</th>)}</tr></thead>
           <tbody>
-            {rows.map((row) => (
+            {rows.map((row, idx) => (
               <tr
                 key={row.id}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
                 className={`${onRowClick ? "clickable-row" : ""} ${selectedUser?.id === row.id ? "selected-row" : ""}`}
               >
                 {columns.map((c) => (
-                  <td key={c.label} data-label={c.label}>{c.render ? c.render(row) : row[c.key] || "—"}</td>
+                  <td key={c.label} data-label={c.label}>{c.render ? c.render(row, idx) : row[c.key] || "—"}</td>
                 ))}
               </tr>
             ))}
@@ -513,29 +533,18 @@ function Admin() {
             </>
           )}
 
-          {/* ── Users ── */}
-          {section === "Users" && (
+          {/* ── Operators / Customers ── */}
+          {(section === "Operators" || section === "Customers") && (
             <section className="admin-section">
               <div className="section-header">
                 <div>
-                  <span className="section-title">Users</span>
-                  <p className="section-subtitle">Click any row to view details. Customers are derived from submitted requests.</p>
-                </div>
-                <div className="tab-group">
-                  {["operators", "customers", "all"].map((tab) => (
-                    <button
-                      key={tab}
-                      className={userType === tab ? "tab active" : "tab"}
-                      onClick={() => { setUserType(tab); closePanel(); }}
-                    >
-                      {tab}
-                    </button>
-                  ))}
+                  <span className="section-title">{section}</span>
+                  <p className="section-subtitle">Click any row to view details.</p>
                 </div>
               </div>
 
               <label className="users-search-label">
-                Search users
+                Search {section.toLowerCase()}
                 <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name, ID, email or phone" />
               </label>
 
@@ -547,7 +556,10 @@ function Admin() {
                   {renderTable(
                     shownUsers,
                     [
+                      ...(section === "Operators" || section === "Customers" ? [{ label: "S.No", render: (_r, idx) => idx + 1 }] : []),
                       { label: "Name", key: "name" },
+                      ...(section === "Operators" ? [{ label: "Company", key: "company_name" }] : []),
+                      ...(section === "Customers" ? [{ label: "Accepted By", render: (r) => r.accepted_by_company !== "Nil" ? `${r.accepted_by_company} (${r.accepted_by_phone})` : "Nil" }] : []),
                       { label: "ID", key: "id" },
                       { label: "Email", key: "email" },
                       { label: "Mobile", key: "mobile" },
@@ -614,7 +626,7 @@ function Admin() {
           )}
 
           {/* ── History ── */}
-          {section === "History" && (
+          {section === "Credit History" && (
             <section className="admin-section">
               <div className="section-header">
                 <div>
@@ -636,8 +648,11 @@ function Admin() {
                 </div>
               )}
               {(() => {
+                const q = historySearch.toLowerCase();
                 const filtered = data.history.filter((item) =>
-                  (item.operator_company || "").toLowerCase().includes(historySearch.toLowerCase())
+                  (item.operator_company || "").toLowerCase().includes(q) ||
+                  (item.operator_phone || "").toLowerCase().includes(q) ||
+                  String(item.operator_id || "").includes(q)
                 );
                 return filtered.length ? (
                   <>
@@ -645,18 +660,20 @@ function Admin() {
                       <table className="admin-table">
                         <thead>
                           <tr>
+                            <th>S.No</th>
                             <th>Operator</th>
-                            <th>Company</th>
+                            <th>Company (Phone / ID)</th>
                             <th>Points</th>
                             <th>Date</th>
                             <th>Description</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {filtered.map((item) => (
+                          {filtered.map((item, index) => (
                             <tr key={item.id}>
+                              <td>{index + 1}</td>
                               <td>{item.operator_name || "—"}</td>
-                              <td>{item.operator_company || "—"}</td>
+                              <td>{item.operator_company || "—"} ({item.operator_phone || "—"} / {item.operator_id || "—"})</td>
                               <td>{item.credits}</td>
                               <td>{formatDate(item.created_at)}</td>
                               <td>{item.description || "—"}</td>
@@ -666,15 +683,15 @@ function Admin() {
                       </table>
                     </div>
                     <div className="history-cards-list">
-                      {filtered.map((item) => (
+                      {filtered.map((item, index) => (
                         <article key={item.id} className="history-card-mobile">
                           <div className="history-card-mobile__top">
                             <div className="history-card-mobile__avatar">
                               <FaBus />
                             </div>
                             <div className="history-card-mobile__identity">
-                              <span className="history-card-mobile__name">{item.operator_name || "—"}</span>
-                              <span className="history-card-mobile__company">{item.operator_company || "—"}</span>
+                              <span className="history-card-mobile__name">{index + 1}. {item.operator_name || "—"}</span>
+                              <span className="history-card-mobile__company">{item.operator_company || "—"} ({item.operator_phone || "—"} / ID: {item.operator_id || "—"})</span>
                             </div>
                             <span className="history-card-mobile__points">+{item.credits}</span>
                           </div>
@@ -707,8 +724,8 @@ function Admin() {
                   {data.approvals.map((item) => (
                     <article key={item.id} className="approval-card">
                       <div>
-                        <p className="approval-name">{item.name}</p>
-                        <p className="approval-meta">{item.company_name} · {item.email} · {item.mobile}</p>
+                        <p className="approval-name">Name: {item.name}</p>
+                        <p className="approval-meta"><strong>Company Name:</strong> {item.company_name} · <strong>PH.NO:</strong> {item.mobile} · <strong>Email ID:</strong> {item.email}</p>
                       </div>
                       <div className="approval-actions">
                         <button className="action-btn success" onClick={() => approve(item.id, "approve")}>Approve</button>
@@ -722,7 +739,7 @@ function Admin() {
           )}
 
           {/* ── Requests (wallet credit) ── */}
-          {section === "Requests" && (
+          {section === "Credit Requests" && (
             <section className="admin-section">
               <div className="section-header">
                 <div>

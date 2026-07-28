@@ -4,6 +4,7 @@ import "../../styles/TicketRequests.css";
 import api from "../../api/axios";
 import TurnstileCaptcha from "../Security/TurnstileCaptcha";
 import Header from "../Header";
+import logo from "../../assets/logo.jpeg";
 
 const CITY_NAMES = [
   // Andhra Pradesh, Telangana, Karnataka, Kerala and Tamil Nadu
@@ -51,6 +52,7 @@ const INITIAL_FORM_DATA = {
   boardingPoint: "",
   dropPoint: "",
   expected_price: "",
+  Gender: "",
   notes: "",
   email: "",
   agree: false,
@@ -86,6 +88,7 @@ const TicketRequestForm = () => {
   const [openCityField, setOpenCityField] = useState(null);
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
   const closeCityDropdownTimer = useRef(null);
+  const [phoneError, setPhoneError] = useState("");
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
@@ -110,6 +113,11 @@ const TicketRequestForm = () => {
       return;
     }
 
+    if (!/^\d{10}$/.test(formData.phone_number)) {
+      setPhoneError("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
     try {
     const payload = {
       name: formData.name,
@@ -119,6 +127,7 @@ const TicketRequestForm = () => {
       journey_date: formData.journey_date,
       total_tickets: Number(formData.total_tickets) || 1,
       bus_type: formData.bus_type || "",
+      Gender: formData.Gender || "",
       expected_price: formData.expected_price ? String(formData.expected_price) : "",
       turnstile_token: captchaToken,
     };
@@ -130,6 +139,7 @@ const TicketRequestForm = () => {
       !payload.to_location ||
       !payload.journey_date ||
       !payload.bus_type ||
+      !payload.Gender ||
       !payload.expected_price
     ) {
       alert("Please fill in all required fields before submitting.");
@@ -171,6 +181,21 @@ const TicketRequestForm = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handlePhoneChange = (e) => {
+    const raw = e.target.value;
+    const digits = raw.replace(/\D/g, "").slice(0, 10);
+
+    setFormData((prev) => ({ ...prev, phone_number: digits }));
+
+    if (digits.length === 0) {
+      setPhoneError("");
+    } else if (digits.length !== 10) {
+      setPhoneError("Please enter a valid 10-digit mobile number.");
+    } else {
+      setPhoneError("");
+    }
   };
 
   const getCitySuggestions = (field) => {
@@ -289,8 +314,12 @@ const TicketRequestForm = () => {
   return (
      
     <section className="ticket-wrapper">
+     
       <Header />
-      
+      <a href="https://demo.tickmybus.com/" target="_blank" rel="noopener noreferrer" className="mobile-logo-link">
+        <img src={logo} alt="TickMyBus" className="mobile-logo-img" />
+        <p className="mobile-logo-text">For more information, click the logo to visit our official website.</p>
+      </a>
       <div className="ticket-page-layout">
         <aside className="journey-promo" aria-label="Ticket booking benefits">
           <h2>Your Journey <span>Starts Here</span></h2>
@@ -338,25 +367,35 @@ const TicketRequestForm = () => {
            
 
             <div className="input-group">
-              <label>Total Tickets</label>
+              {/* <label>Total Tickets</label>
               <div className="ticket-counter">
                 <button type="button" onClick={decreaseTickets}>-</button>
                 <strong>{formData.total_tickets}</strong>
                 <button type="button" onClick={increaseTickets}>+</button>
-              </div>
+                
+              </div> */}
+              <label>Total Tickets</label>
+              <input
+                type="tel"
+                name="total_tickets"
+                value={formData.total_tickets}
+                onChange={handleChange}
+                placeholder="total ticket"
+                required
+              />
             </div>
 
             <div className="input-group">
               <label>Bus Type</label>
               <select name="bus_type" value={formData.bus_type} onChange={handleChange} required>
                 <option value="">Select bus type</option>
-                <option value="AC_SLEEPER">AC_SLEEPER</option>
-                <option value="NON_AC_SLEEPER">NON_AC_SLEEPER</option>
-                <option value="AC_SEATER">AC_SEATER</option>
-                <option value="NON_AC_SEATER">NON_AC_SEATER</option>
-                <option value="SEMI_SLEEPER">UPPER SINGLE_SLEEPER</option>
-                 <option value="SEMI_SLEEPER">LOWER SINGLE_SLEEPER</option>
-                  <option value="SEMI_SLEEPER">FEMALE_SLEEPER</option>
+                <option value="AC_SLEEPER">AC SLEEPER</option>
+                <option value="NON_AC_SLEEPER">NON AC SLEEPER</option>
+                <option value="AC_SEATER">AC SEATER</option>
+                <option value="NON_AC_SEATER">NON AC SEATER</option>
+                <option value="SEMI_SLEEPER">UPPER SINGLE SLEEPER</option>
+                 <option value="SEMI_SLEEPER">LOWER SINGLE SLEEPER</option>
+                  <option value="SEMI_SLEEPER">FEMALE SLEEPER</option>
               </select>
             </div>
 
@@ -390,11 +429,26 @@ const TicketRequestForm = () => {
                 type="tel"
                 name="phone_number"
                 value={formData.phone_number}
-                onChange={handleChange}
+                onChange={handlePhoneChange}
                 placeholder="Phone Number"
+                inputMode="numeric"
+                pattern="\d{10}"
+                maxLength={10}
                 required
               />
+              {phoneError && <span className="field-error">{phoneError}</span>}
             </div>
+
+            <div className="input-group">
+              <label>Gender</label>
+              <select name="Gender" value={formData.Gender} onChange={handleChange} required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option> 
+                <option value="Female">Female</option>               
+              </select>
+            </div>
+
+            
             <div className="input-group full-width">
              
               <label>Security Verification</label>

@@ -189,13 +189,22 @@ class AdminCustomerListAPIView(APIView):
 
         data = []
         for customer in customers:
+            if customer.status in ("ACCEPTED", "ASSIGNED") and customer.assigned_operator:
+                accepted_by_company = customer.assigned_operator.company_name or "Nil"
+                accepted_by_phone = customer.assigned_operator.user.phone_number or "—"
+            else:
+                accepted_by_company = "Nil"
+                accepted_by_phone = "—"
+
             data.append({
                 "id": f"CUST-{customer.phone_number}",
                 "name": customer.name,
                 "email": "—",
                 "mobile": customer.phone_number,
                 "status": customer.status or "—",
-                "role": "Customer"
+                "role": "Customer",
+                "accepted_by_company": accepted_by_company,
+                "accepted_by_phone": accepted_by_phone,
             })
 
         return Response(data, status=status.HTTP_200_OK)

@@ -149,10 +149,21 @@ export default function CustomerRequestStatus() {
                     </div>
                   </div>
                   <div className="operator-info-item">
+<<<<<<< HEAD
                     <div className="operator-info-icon-wrap"><FaPhone className="operator-info-icon" /></div>
                     <div className="operator-info-text">
                       <span className="operator-info-label">Phone Number</span>
                       <span className="operator-info-value">{request.assigned_operator_phone || "—"}</span>
+=======
+                    <FaPhone className="operator-info-icon" />
+                    <div>
+                      <span className="operator-info-label">Phone</span>
+                      {request.assigned_operator_phone ? (
+                        <a href={`tel:${request.assigned_operator_phone}`} className="operator-info-value operator-phone-link">{request.assigned_operator_phone}</a>
+                      ) : (
+                        <span className="operator-info-value">—</span>
+                      )}
+>>>>>>> a3cc7110dd30558fb35d498b75cc7e480ead8dfb
                     </div>
                   </div>
                 </div>

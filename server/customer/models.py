@@ -37,6 +37,11 @@ class CustomerRequests(models.Model):
     phone_number = models.CharField(
         max_length=15
     )
+    gender = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+    )
     from_location = models.CharField(
         max_length=100
     )

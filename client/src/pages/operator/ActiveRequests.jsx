@@ -208,7 +208,7 @@ const ActiveRequests = ({ initialFilter }) => {
     const filtered = requests.filter((item) => {
       const matchesStatus = statusFilter === "ALL" || item.status === statusFilter;
       if (!search) return matchesStatus;
-      const haystack = [item.request_id, item.from_location, item.to_location, item.name, item.phone_number, item.bus_type]
+      const haystack = [item.request_id, item.from_location, item.to_location, item.name, item.gender, item.phone_number, item.bus_type]
         .filter(Boolean).join(" ").toLowerCase();
       return matchesStatus && haystack.includes(search);
     });
@@ -295,6 +295,7 @@ const ActiveRequests = ({ initialFilter }) => {
                     <th>Bus type</th>
                     <th>Requested price</th>
                     <th>Customer</th>
+                    <th>Gender</th>
                     <th>Phone</th>
                     <th>Time left</th>
                     <th>Status</th>
@@ -317,9 +318,10 @@ const ActiveRequests = ({ initialFilter }) => {
                           <span className="time-cell">{formatPhoneDisplay(item)}</span>
                         )}
                       </td>
+                      <td data-label="Gender">{item.gender || "\u2014"}</td>
                       <td data-label="Phone">
-                        {(item.contact_unlocked || isAccepted(item)) ? (
-                          <span className="customer-unlocked"><FaPhone /> {item.phone_number || "\u2014"}</span>
+                        {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
+                          <a href={`tel:${item.phone_number}`} className="customer-unlocked phone-link"><FaPhone /> {item.phone_number}</a>
                         ) : (
                           <span className="time-cell">{formatPhoneDisplay(item)}</span>
                         )}
@@ -364,9 +366,12 @@ const ActiveRequests = ({ initialFilter }) => {
                   <div className="request-card-mobile__details">
                     <div className="request-card-mobile__col request-card-mobile__col--left">
                       <span className="request-card-mobile__detail"><strong>Passenger:</strong> {item.name || "Customer"}</span>
+                      <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                       <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
-                      <span className="request-card-mobile__detail"><strong>Phone:</strong> {(item.contact_unlocked || isAccepted(item)) ? (item.phone_number || "\u2014") : formatPhoneDisplay(item)}</span>
+                      <span className="request-card-mobile__detail"><strong>Phone:</strong> {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
+                        <a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a>
+                      ) : formatPhoneDisplay(item)}</span>
                     </div>
                     <div className="request-card-mobile__col request-card-mobile__col--right">
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>

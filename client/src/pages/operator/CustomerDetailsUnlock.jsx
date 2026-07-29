@@ -12,6 +12,7 @@ import {
   FaLock,
   FaUnlock,
   FaInfoCircle,
+  FaVenusMars,
 } from "react-icons/fa";
 import API from "../../api/axios";
 import "../../styles/CustomerDetailsUnlock.css";
@@ -68,6 +69,7 @@ const CustomerDetailsUnlock = () => {
         item.from_location,
         item.to_location,
         item.name,
+        item.gender,
         item.phone_number,
         item.bus_type,
       ]
@@ -207,14 +209,25 @@ const CustomerDetailsUnlock = () => {
                           <FaUser />
                           <div>
                             <span>Customer Name</span>
-                            <h4>{item.name || "—"}</h4>
+                            <h4>{item.name || "\u2014"}</h4>
+                          </div>
+                        </div>
+                        <div className="customer-detail-card__field">
+                          <FaVenusMars />
+                          <div>
+                            <span>Gender</span>
+                            <h4>{item.gender || "\u2014"}</h4>
                           </div>
                         </div>
                         <div className="customer-detail-card__field">
                           <FaPhone />
                           <div>
                             <span>Phone Number</span>
-                            <h4>{item.phone_number || "—"}</h4>
+                            {item.phone_number ? (
+                              <h4><a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a></h4>
+                            ) : (
+                              <h4>\u2014</h4>
+                            )}
                           </div>
                         </div>
                       </div>

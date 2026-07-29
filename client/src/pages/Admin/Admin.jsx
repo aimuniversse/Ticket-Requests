@@ -561,7 +561,7 @@ function Admin() {
                       ...(section === "Operators" ? [{ label: "Company", key: "company_name" }] : []),
                       ...(section === "Customers" ? [{ label: "Accepted By", render: (r) => r.accepted_by_company !== "Nil" ? `${r.accepted_by_company} (${r.accepted_by_phone})` : "Nil" }] : []),
                       { label: "ID", key: "id" },
-                      { label: "Email", key: "email" },
+                      ...(section === "Operators" ? [{ label: "Email", key: "email" }] : []),
                       { label: "Mobile", key: "mobile" },
                       { label: "Status", render: (r) => <StatusPill status={r.status} /> },
                       { label: "Role", key: "role" },

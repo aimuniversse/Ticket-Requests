@@ -128,42 +128,26 @@ export default function CustomerRequestStatus() {
             <p className="request-reference">Reference: {request?.request_id || request?.id}</p>
             {request?.status === "ACCEPTED" && request?.assigned_operator_name && (
               <div className="operator-info-card">
-                <div className="operator-info-glow" />
                 <div className="operator-info-header">
-                  <div className="operator-info-avatar">
-                    <span className="operator-info-avatar-text">{(request.assigned_operator_contact_name || request.assigned_operator_name || "O").charAt(0).toUpperCase()}</span>
-                  </div>
-                  <div className="operator-info-identity">
-                    <p className="operator-info-badge">ACCEPTED</p>
-                    <p className="operator-info-name">{request.assigned_operator_contact_name || "—"}</p>
-                    <p className="operator-info-company">{request.assigned_operator_name || "—"}</p>
+                  <div className="operator-info-avatar">{(request.assigned_operator_contact_name || request.assigned_operator_name || "O").charAt(0).toUpperCase()}</div>
+                  <div>
+                    <p className="operator-info-title">Operator Accepted</p>
+                    <p className="operator-info-subtitle">{request.assigned_operator_contact_name || "—"}</p>
                   </div>
                 </div>
-                <div className="operator-info-divider" />
                 <div className="operator-info-details">
                   <div className="operator-info-item">
-                    <div className="operator-info-icon-wrap"><FaBuilding className="operator-info-icon" /></div>
-                    <div className="operator-info-text">
-                      <span className="operator-info-label">Company Name</span>
+                    <FaBuilding className="operator-info-icon" />
+                    <div>
+                      <span className="operator-info-label">Company</span>
                       <span className="operator-info-value">{request.assigned_operator_name || "—"}</span>
                     </div>
                   </div>
                   <div className="operator-info-item">
-<<<<<<< HEAD
-                    <div className="operator-info-icon-wrap"><FaPhone className="operator-info-icon" /></div>
-                    <div className="operator-info-text">
-                      <span className="operator-info-label">Phone Number</span>
-                      <span className="operator-info-value">{request.assigned_operator_phone || "—"}</span>
-=======
                     <FaPhone className="operator-info-icon" />
                     <div>
                       <span className="operator-info-label">Phone</span>
-                      {request.assigned_operator_phone ? (
-                        <a href={`tel:${request.assigned_operator_phone}`} className="operator-info-value operator-phone-link">{request.assigned_operator_phone}</a>
-                      ) : (
-                        <span className="operator-info-value">—</span>
-                      )}
->>>>>>> a3cc7110dd30558fb35d498b75cc7e480ead8dfb
+                      <span className="operator-info-value">{request.assigned_operator_phone || "—"}</span>
                     </div>
                   </div>
                 </div>

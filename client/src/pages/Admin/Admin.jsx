@@ -184,54 +184,97 @@ function OperatorPanel({ user, data, loading, error }) {
 
 /* ── Customer Detail Panel ──────────────────────────────────────────── */
 function CustomerPanel({ user, data, loading, error }) {
+  const [activeTab, setActiveTab] = useState("overview");
   if (loading) return <PanelSkeleton />;
   if (error) return <p className="panel-error">{error}</p>;
 
   const requests = data || [];
+  const statusCounts = requests.reduce((acc, r) => {
+    acc[r.status] = (acc[r.status] || 0) + 1;
+    return acc;
+  }, {});
+  const STATUS_ORDER = ["PENDING", "ACCEPTED", "ASSIGNED", "COMPLETED", "CANCELLED", "EXPIRED"];
 
   return (
     <>
-      <div className="panel-info-grid">
-        {[
-          { label: "Name", value: user.name || "—" },
-          { label: "Phone", value: user.mobile || "—" },
-          { label: "Total Requests", value: requests.length },
-        ].map(({ label, value }) => (
-          <div className="panel-info-item" key={label}>
-            <span className="panel-info-label">{label}</span>
-            <span className="panel-info-value">{value}</span>
-          </div>
-        ))}
+      <div className="panel-tabs">
+        <button className={`panel-tab ${activeTab === "overview" ? "active" : ""}`} onClick={() => setActiveTab("overview")}>Overview</button>
+        <button className={`panel-tab ${activeTab === "history" ? "active" : ""}`} onClick={() => setActiveTab("history")}>Request History ({requests.length})</button>
       </div>
 
-      <div className="panel-section-label">Request History</div>
-      {requests.length ? (
-        <div style={{ overflowX: "auto" }}>
-          <table className="panel-mini-table">
-            <thead>
-              <tr>
-                <th>Route</th>
-                <th>Date</th>
-                <th>Tickets</th>
-                <th>Status</th>
-                <th>Operator</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((req) => (
-                <tr key={req.id}>
-                  <td>{req.from_location} → {req.to_location}</td>
-                  <td>{formatDate(req.journey_date)}</td>
-                  <td>{req.total_tickets}</td>
-                  <td><StatusPill status={req.status} /></td>
-                  <td>{req.assigned_operator_name || "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="panel-empty">No requests found for this customer.</p>
+      {activeTab === "overview" && (
+        <>
+          <div className="panel-info-grid">
+            {[
+              { label: "Name", value: user.name || "—" },
+              { label: "Phone", value: user.mobile || "—" },
+              { label: "Email", value: user.email || "—" },
+              { label: "Status", value: <StatusPill status={user.status} /> },
+              { label: "Total Requests", value: requests.length },
+              { label: "Last Active", value: requests.length ? formatDate(requests[0].created_at) : "—" },
+            ].map(({ label, value }) => (
+              <div className="panel-info-item" key={label}>
+                <span className="panel-info-label">{label}</span>
+                <span className="panel-info-value">{value}</span>
+              </div>
+            ))}
+          </div>
+
+          {requests.length > 0 && (
+            <>
+              <div className="panel-section-label">Request Summary</div>
+              <div className="panel-stats-row">
+                {STATUS_ORDER.filter((s) => statusCounts[s]).map((status) => (
+                  <div className={`panel-stat-chip ${status}`} key={status}>
+                    <span className="panel-stat-count">{statusCounts[status]}</span>
+                    <span className="panel-stat-label">{status}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
+
+      {activeTab === "history" && (
+        <>
+          {requests.length ? (
+            <div style={{ overflowX: "auto" }}>
+              <table className="panel-mini-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Request ID</th>
+                    <th>Route</th>
+                    <th>Date</th>
+                    <th>Bus Type</th>
+                    <th>Tickets</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Operator</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {requests.map((req, idx) => (
+                    <tr key={req.id}>
+                      <td>{idx + 1}</td>
+                      <td>{req.request_id || req.id || "—"}</td>
+                      <td>{req.from_location} → {req.to_location}</td>
+                      <td>{formatDate(req.journey_date)}</td>
+                      <td>{req.bus_type ? req.bus_type.replace(/_/g, " ") : "—"}</td>
+                      <td>{req.total_tickets}</td>
+                      <td>₹{req.expected_price || "—"}</td>
+                      <td><StatusPill status={req.status} /></td>
+                      <td>{req.assigned_operator_name || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="panel-empty">No requests found for this customer.</p>
+          )}
+        </>
       )}
     </>
   );
@@ -561,7 +604,7 @@ function Admin() {
                       ...(section === "Operators" ? [{ label: "Company", key: "company_name" }] : []),
                       ...(section === "Customers" ? [{ label: "Accepted By", render: (r) => r.accepted_by_company !== "Nil" ? `${r.accepted_by_company} (${r.accepted_by_phone})` : "Nil" }] : []),
                       { label: "ID", key: "id" },
-                      { label: "Email", key: "email" },
+                      ...(section === "Operators" ? [{ label: "Email", key: "email" }] : []),
                       { label: "Mobile", key: "mobile" },
                       { label: "Status", render: (r) => <StatusPill status={r.status} /> },
                       { label: "Role", key: "role" },
@@ -643,7 +686,6 @@ function Admin() {
                     placeholder="Search by company name..."
                     value={historySearch}
                     onChange={(e) => setHistorySearch(e.target.value)}
-                    style={{ padding: "0.5rem 1rem", width: "100%", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
                   />
                 </div>
               )}

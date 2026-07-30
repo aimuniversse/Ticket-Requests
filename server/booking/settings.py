@@ -45,7 +45,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
-FRONTEND_URL = "https://ticekt-requests.vercel.app"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 
 # Email Configuration

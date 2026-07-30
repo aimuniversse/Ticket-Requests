@@ -2,7 +2,7 @@
 Django settings for booking project.
 """
 
-from pathlib import Path
+from pathlib import Path 
 import os
 
 from dotenv import load_dotenv
@@ -46,6 +46,8 @@ CORS_ALLOWED_ORIGINS = [
 
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+TURNSTILE_SECRET_KEY = os.getenv("TURNSTILE_SECRET_KEY")
 
 
 # Email Configuration

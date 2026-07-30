@@ -32,6 +32,14 @@ const OperatorRegister = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    if (name === "phone_number") {
+      const digits = value.replace(/\D/g, "").slice(0, 10);
+      setFormData((prev) => ({ ...prev, phone_number: digits }));
+      setErrors((prev) => ({ ...prev, phone_number: "" }));
+      setServerError("");
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -137,7 +145,7 @@ const OperatorRegister = () => {
       } else {
         alert("Registration successful");
       }
-
+         
       navigate("/operator-login");
     } catch (error) {
       const apiError = error.response?.data;
@@ -246,11 +254,13 @@ const OperatorRegister = () => {
                   <label>Phone</label>
 
                   <input
-                    type="text"
+                    type="tel"
                     name="phone_number"
                     value={formData.phone_number}
                     onChange={handleChange}
                     placeholder="Phone Number"
+                    inputMode="numeric"
+                    maxLength={10}
                   />
 
                   <span className="error">{errors.phone_number}</span>

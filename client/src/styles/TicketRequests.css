@@ -209,7 +209,9 @@
 .captcha-box input {
   width: 100%;
   max-width: 100%;
+  height: 32px;
   min-height: 32px;
+  max-height: 32px;
   padding: 6px 10px;
   border: 1px solid #c7d2e2;
   border-radius: 6px;
@@ -219,6 +221,7 @@
   font-size: 0.69rem;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
 .input-group input::placeholder,
@@ -237,6 +240,26 @@
 .input-group select {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.input-group input[type="date"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0;
 }
 
 .field-error {
@@ -476,7 +499,22 @@
   }
 
   .mobile-logo-text {
+<<<<<<< HEAD
     display: none;
+=======
+    display: block;
+    margin: 0 auto 0;
+    max-width: 260px;
+    text-align: center;
+    color: #9b2d9b;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    background: linear-gradient(90deg, #fbf9f9, #fbf9f9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+>>>>>>> 0f549db4f29ce6f45ad54acc87e44786192be99a
   }
 
   .ticket-page-layout {
@@ -518,7 +556,13 @@
   .input-group input,
   .input-group select,
   .input-group textarea {
+<<<<<<< HEAD
     min-height: 24px;
+=======
+    height: 20px;
+    min-height: 20px;
+    max-height: 20px;
+>>>>>>> 0f549db4f29ce6f45ad54acc87e44786192be99a
     max-width: 100%;
     padding: 2px 4px;
     font-size: 0.68rem;
@@ -622,7 +666,13 @@
   .input-group input,
   .input-group select,
   .input-group textarea {
+<<<<<<< HEAD
     min-height: 22px;
+=======
+    height: 18px;
+    min-height: 18px;
+    max-height: 18px;
+>>>>>>> 0f549db4f29ce6f45ad54acc87e44786192be99a
     padding: 1px 3px;
     font-size: 0.62rem;
   }

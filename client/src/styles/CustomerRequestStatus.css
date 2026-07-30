@@ -13,5 +13,3 @@
 .operator-info-item div { display: flex; flex-direction: column; gap: 0.1rem; }
 .operator-info-label { font-size: 0.7rem; font-weight: 600; color: #16a34a; text-transform: uppercase; letter-spacing: 0.03em; }
 .operator-info-value { font-size: 0.85rem; font-weight: 600; color: #1e293b; }
-.operator-phone-link { font-size: 0.85rem; font-weight: 600; color: #2563eb; text-decoration: none; transition: color 0.15s; }
-.operator-phone-link:hover { color: #1d4ed8; text-decoration: underline; }

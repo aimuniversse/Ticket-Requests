@@ -499,9 +499,6 @@
   }
 
   .mobile-logo-text {
-<<<<<<< HEAD
-    display: none;
-=======
     display: block;
     margin: 0 auto 0;
     max-width: 260px;
@@ -514,7 +511,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
->>>>>>> 0f549db4f29ce6f45ad54acc87e44786192be99a
   }
 
   .ticket-page-layout {
@@ -556,13 +552,9 @@
   .input-group input,
   .input-group select,
   .input-group textarea {
-<<<<<<< HEAD
-    min-height: 24px;
-=======
     height: 20px;
     min-height: 20px;
     max-height: 20px;
->>>>>>> 0f549db4f29ce6f45ad54acc87e44786192be99a
     max-width: 100%;
     padding: 2px 4px;
     font-size: 0.68rem;
@@ -666,13 +658,9 @@
   .input-group input,
   .input-group select,
   .input-group textarea {
-<<<<<<< HEAD
-    min-height: 22px;
-=======
     height: 18px;
     min-height: 18px;
     max-height: 18px;
->>>>>>> 0f549db4f29ce6f45ad54acc87e44786192be99a
     padding: 1px 3px;
     font-size: 0.62rem;
   }

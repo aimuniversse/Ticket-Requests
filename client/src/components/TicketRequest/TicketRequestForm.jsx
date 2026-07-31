@@ -118,58 +118,93 @@ const TicketRequestForm = () => {
       return;
     }
 
-    try {
-    const payload = {
-      name: formData.name,
-      phone_number: formData.phone_number,
-      from_location: formData.from_location,
-      to_location: formData.to_location,
-      journey_date: formData.journey_date,
-      total_tickets: Number(formData.total_tickets) || 1,
-      bus_type: formData.bus_type || "",
-      Gender: formData.Gender || "",
-      expected_price: formData.expected_price ? String(formData.expected_price) : "",
-      turnstile_token: captchaToken,
-    };
-
-    if (
-      !payload.name ||
-      !payload.phone_number ||
-      !payload.from_location ||
-      !payload.to_location ||
-      !payload.journey_date ||
-      !payload.bus_type ||
-      !payload.Gender ||
-      !payload.expected_price
-    ) {
-      alert("Please fill in all required fields before submitting.");
+    const parsedPrice = parseFloat(formData.expected_price);
+    if (isNaN(parsedPrice) || parsedPrice <= 0) {
+      alert("Expected price must be a valid number greater than 0.");
       return;
     }
 
-    console.debug("API Payload:", payload);
-    const response = await api.post("customer/request/", payload, {
-      skipAuth: true,
-    });
+    const parsedTickets = parseInt(formData.total_tickets, 10);
+    if (isNaN(parsedTickets) || parsedTickets <= 0) {
+      alert("Total tickets must be at least 1.");
+      return;
+    }
 
-    console.log("Response :", response.data);
+    try {
+      const payload = {
+        name: formData.name.trim(),
+        phone_number: formData.phone_number.trim(),
+        from_location: formData.from_location.trim(),
+        to_location: formData.to_location.trim(),
+        journey_date: formData.journey_date,
+        total_tickets: parsedTickets,
+        bus_type: formData.bus_type || "",
+        Gender: formData.Gender || "",
+        expected_price: parsedPrice,
+        turnstile_token: captchaToken,
+      };
 
-    const requestSnapshot = buildRequestSnapshot(response.data);
-    persistLatestRequest(requestSnapshot);
+      if (
+        !payload.name ||
+        !payload.phone_number ||
+        !payload.from_location ||
+        !payload.to_location ||
+        !payload.journey_date ||
+        !payload.bus_type ||
+        !payload.Gender ||
+        !payload.expected_price ||
+        payload.expected_price <= 0
+      ) {
+        alert("Please fill in all required fields before submitting.");
+        return;
+      }
 
-    setFormData(INITIAL_FORM_DATA);
-    setCaptchaToken("");
+      console.debug("API Payload:", payload);
+      const response = await api.post("customer/request/", payload, {
+        skipAuth: true,
+      });
 
-    const requestIdentifier = requestSnapshot.id ?? response.data?.id ?? response.data?.public_token;
-    navigate(`/ticket-request/status/${requestIdentifier}`, { state: { request: requestSnapshot } });
-    return;
+      console.log("Response :", response.data);
+
+      const requestSnapshot = buildRequestSnapshot(response.data);
+      persistLatestRequest(requestSnapshot);
+
+      setFormData(INITIAL_FORM_DATA);
+      setCaptchaToken("");
+
+      const requestIdentifier = requestSnapshot.id ?? response.data?.id ?? response.data?.public_token;
+      navigate(`/ticket-request/status/${requestIdentifier}`, { state: { request: requestSnapshot } });
+      return;
 
     } catch (error) {
-    console.error(error.response?.data || error);
+      console.error(error.response?.data || error);
 
-    alert(
-      error.response?.data?.message ||
-      "Failed to submit ticket request."
-    );
+      let errorMessage = "Failed to submit ticket request.";
+      const errData = error.response?.data;
+      if (errData) {
+        if (typeof errData === "string") {
+          errorMessage = errData;
+        } else if (errData.message) {
+          errorMessage = errData.message;
+        } else if (errData.detail) {
+          errorMessage = errData.detail;
+        } else if (errData.error) {
+          errorMessage = errData.error;
+        } else if (typeof errData === "object") {
+          const fieldErrors = Object.entries(errData)
+            .map(([field, msgs]) => {
+              const label = field.replace(/_/g, " ");
+              const msgText = Array.isArray(msgs) ? msgs.join(", ") : String(msgs);
+              return `${label}: ${msgText}`;
+            })
+            .join("\n");
+          if (fieldErrors) {
+            errorMessage = fieldErrors;
+          }
+        }
+      }
+
+      alert(errorMessage);
     }
   };
 
@@ -376,11 +411,13 @@ const TicketRequestForm = () => {
               </div> */}
               <label>Total Tickets</label>
               <input
-                type="tel"
+                type="number"
                 name="total_tickets"
+                min="1"
+                step="1"
                 value={formData.total_tickets}
                 onChange={handleChange}
-                placeholder="total ticket"
+                placeholder="Total tickets"
                 required
               />
             </div>
@@ -443,6 +480,8 @@ const TicketRequestForm = () => {
               <input
                 type="number"
                 name="expected_price"
+                min="1"
+                step="any"
                 value={formData.expected_price}
                 onChange={handleChange}
                 placeholder="Enter expected ticket price"

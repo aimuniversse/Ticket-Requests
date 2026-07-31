@@ -71,7 +71,7 @@ class LeadListAPIView(APIView):
         if operator.user.approval_status != "approved":
             return Response({"detail": "Operator is not approved yet."}, status=status.HTTP_400_BAD_REQUEST)
 
-        leads = CustomerRequests.objects.filter(status__in=["PENDING", "NEW"]).order_by("-created_at")
+        leads = CustomerRequests.objects.filter(status__in=["PENDING", "NEW", "EXPIRED"]).order_by("-created_at")
         for lead in leads:
             lead.refresh_status()
         serializer = CustomerRequestSerilaizers(leads, many=True, context={"request": request})
@@ -230,6 +230,7 @@ class AdminCustomerListAPIView(APIView):
                 "mobile": customer.phone_number,
                 "status": customer.status or "—",
                 "role": "Customer",
+                "created_at": customer.created_at.isoformat() if customer.created_at else None,
                 "accepted_by_company": accepted_by_company,
                 "accepted_by_phone": accepted_by_phone,
             })

@@ -6,9 +6,27 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 from .serializers import LoginSerilaizer, ForgotPasswordSerializer, ResetPasswordSerializer
 from operators.serializers import RegistraionOperatorSerilaizers
+from operators.models import Operator
 from accounts.models import User
 
 # Create your views here.
+
+
+def build_user_payload(user):
+    payload = {
+        "id": user.id,
+        "name": user.name,
+        "phone_number": user.phone_number,
+        "email": user.email,
+        "role": user.role,
+        "approval_status": user.approval_status,
+    }
+    if user.role == "operator":
+        try:
+            payload["company_name"] = user.operator.company_name
+        except Operator.DoesNotExist:
+            payload["company_name"] = ""
+    return payload
 
 
 class LoginApiView(APIView):
@@ -25,12 +43,7 @@ class LoginApiView(APIView):
 
                 "refresh": str(refresh),
 
-                "user": {
-                    "id": user.id,
-                    "phone_number": user.phone_number,
-                    "email": user.email,
-                    "role": user.role,
-                },
+                "user": build_user_payload(user),
             },
             status=status.HTTP_200_OK,
         )
@@ -79,10 +92,4 @@ class MeApiView(APIView):
     def get(self, request):
         if not request.user.is_authenticated:
             return response.Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
-        return response.Response({
-            "id": request.user.id,
-            "phone_number": request.user.phone_number,
-            "email": request.user.email,
-            "role": request.user.role,
-            "approval_status": request.user.approval_status,
-        }, status=status.HTTP_200_OK)
+        return response.Response(build_user_payload(request.user), status=status.HTTP_200_OK)

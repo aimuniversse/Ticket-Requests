@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+import time
 
 User = get_user_model()
 
@@ -28,6 +29,10 @@ class PasswordResetTests(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        for _ in range(100):
+            if mail.outbox:
+                break
+            time.sleep(0.05)
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn("reset your password", mail.outbox[0].subject.lower())
 

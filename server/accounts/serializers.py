@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
@@ -70,23 +71,24 @@ class ForgotPasswordSerializer(serializers.Serializer):
         token = signing.dumps(user.pk)
         reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
-        logger.info("Before send_mail")
+        def send_email():
+            try:
+                send_mail(
+                    subject="Reset your password",
+                    message=(
+                        f"Hello {user.name or user.phone_number},\n\n"
+                        f"Use the following link to reset your password:\n{reset_link}\n\n"
+                        "If you did not request this, please ignore this email."
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+                logger.info("Reset email sent to %s", email)
+            except Exception as exc:
+                logger.warning("Password reset email failed for %s: %s", email, exc)
 
-        try:
-            send_mail(
-                subject="Reset your password",
-                message=(
-                    f"Hello {user.name or user.phone_number},\n\n"
-                    f"Use the following link to reset your password:\n{reset_link}\n\n"
-                    "If you did not request this, please ignore this email."
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
-            )
-            logger.info("After send_mail")
-        except Exception as exc:
-            logger.warning("Password reset email failed for %s: %s", email, exc)
+        threading.Thread(target=send_email, daemon=True).start()
 
         return user
 

@@ -16,7 +16,12 @@ const ForgotPassword = () => {
     setLoading(true);
     try {
       const response = await API.post("auth/password/forgot/", { email: email.trim() }, { skipAuth: true });
-      setMessage(response.data?.message || "Password reset email sent successfully.");
+      const data = response.data || {};
+      if (data.reset_link) {
+        setMessage(`${data.message} Use this link: ${data.reset_link}`);
+      } else {
+        setMessage(data.message || "Password reset email sent successfully.");
+      }
     } catch (err) {
       const data = err.response?.data;
       setError(data?.email?.[0] || data?.detail || "Unable to send the reset email. Please try again.");

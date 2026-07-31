@@ -28,22 +28,33 @@ ALLOWED_HOSTS = os.getenv(
 
 # CORS / CSRF
 
-CSRF_TRUSTED_ORIGINS = [
+DEFAULT_CORS_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://ticket-requests.onrender.com",
     "https://ticekt-requests.vercel.app",
+    "https://ticket-requests.vercel.app",
     "https://ticekt-requests-nch5cf4v0-aimuniversses-projects.vercel.app",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        ",".join(DEFAULT_CORS_ORIGINS),
+    ).split(",") if origin
+]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://ticekt-requests.vercel.app",
-    "https://ticekt-requests-nch5cf4v0-aimuniversses-projects.vercel.app",
+    origin for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        ",".join(DEFAULT_CORS_ORIGINS),
+    ).split(",") if origin
 ]
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+    r"^http://localhost(:\d+)?$",
+]
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 

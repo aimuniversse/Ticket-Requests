@@ -59,3 +59,15 @@ class PasswordResetTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("email", response.json())
+
+    def test_forgot_password_includes_cors_header_for_vercel_origin(self):
+        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
+            response = self.client.post(
+                "/api/auth/password/forgot/",
+                {"email": self.user.email},
+                content_type="application/json",
+                HTTP_ORIGIN="https://ticekt-requests.vercel.app",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Access-Control-Allow-Origin"], "https://ticekt-requests.vercel.app")

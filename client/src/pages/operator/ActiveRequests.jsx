@@ -6,6 +6,10 @@ import "../../styles/ActiveRequests.css";
 const REQUEST_STORAGE_KEY = "latestTicketRequest";
 
 const formatDate = (date) => date ? new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${date}T00:00:00`)) : "\u2014";
+const formatDateTime = (date) => {
+  if (!date) return "\u2014";
+  return new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(date));
+};
 
 const formatPhoneDisplay = (item) => {
   if (!item?.phone_number) return "\u2014";
@@ -298,6 +302,7 @@ const ActiveRequests = ({ initialFilter }) => {
                     <th>Gender</th>
                     <th>Phone</th>
                     <th>Time left</th>
+                    <th>Requested at</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
@@ -327,6 +332,7 @@ const ActiveRequests = ({ initialFilter }) => {
                         )}
                       </td>
                       <td data-label="Time left"><span className="time-cell"><FaClock /> {formatTimeLeft(item.expires_at, item.status)}</span></td>
+                      <td data-label="Requested at"><span className="time-cell">{formatDateTime(item.created_at)}</span></td>
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
@@ -369,6 +375,7 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                       <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
+                      <span className="request-card-mobile__detail"><strong>Requested:</strong> {formatDateTime(item.created_at)}</span>
                       
                     </div>
                     <div className="request-card-mobile__col request-card-mobile__col--right">

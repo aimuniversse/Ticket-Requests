@@ -40,11 +40,14 @@ class ForgotPasswordApiView(APIView):
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return response.Response(
-            {"message": "Password reset email sent successfully."},
-            status=status.HTTP_200_OK,
-        )
+        user, reset_link, email_sent = serializer.save()
+        data = {"message": "Password reset email sent successfully."}
+        if not email_sent:
+            data = {
+                "message": "Email could not be sent. Use the reset link below.",
+                "reset_link": reset_link,
+            }
+        return response.Response(data, status=status.HTTP_200_OK)
 
 
 class ResetPasswordConfirmApiView(APIView):

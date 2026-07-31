@@ -18,6 +18,8 @@ class CustomerRequestCreateView(CreateAPIView):
     serializer_class = CustomerRequestSerilaizers
 
     def create(self, request, *args, **kwargs):
+        if not settings.TURNSTILE_SECRET_KEY:
+            return super().create(request, *args, **kwargs)
         captcha_token = request.data.get("turnstile_token")
         if not captcha_token:
             return Response(

@@ -78,6 +78,7 @@ const OperatorDashboardNew = () => {
   const [hasNewRequests, setHasNewRequests] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [leadPoolCount, setLeadPoolCount] = useState(0);
+  const [expiredCount, setExpiredCount] = useState(0);
   const [toasts, setToasts] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
@@ -163,7 +164,7 @@ const OperatorDashboardNew = () => {
       const assignedItems = assignedRes.data || [];
       const leadItems = leadsRes.data || [];
 
-      const counts = { NEW: 0, PENDING: 0, ACCEPTED: 0, ASSIGNED: 0 };
+      const counts = { NEW: 0, PENDING: 0, ACCEPTED: 0, ASSIGNED: 0, EXPIRED: 0, COMPLETED: 0 };
       assignedItems.forEach((item) => {
         const s = item.status?.toUpperCase();
         if (s in counts) counts[s]++;
@@ -174,7 +175,16 @@ const OperatorDashboardNew = () => {
         return s === "PENDING" || s === "NEW";
       });
 
+      const expiredIds = new Set();
+      leadItems.forEach((r) => {
+        if (r.status?.toUpperCase() === "EXPIRED") expiredIds.add(String(r.id ?? r.request_id));
+      });
+      assignedItems.forEach((r) => {
+        if (r.status?.toUpperCase() === "EXPIRED") expiredIds.add(String(r.id ?? r.request_id));
+      });
+
       setLeadPoolCount(availableLeads.length);
+      setExpiredCount(expiredIds.size);
 
       const currentLeadIds = new Set(availableLeads.map((r) => String(r.id ?? r.request_id)));
 
@@ -320,6 +330,12 @@ const OperatorDashboardNew = () => {
           <FaCheckCircle className="card-icon" />
           <span>Accepted</span>
           <h2>{acceptedCounts.ACCEPTED ?? 0}</h2>
+        </div>
+
+        <div className="dashboard-card dashboard-card--expired dashboard-card--clickable" role="button" tabIndex={0} onClick={() => handleCardClick("active", "EXPIRED")} onKeyDown={(e) => e.key === "Enter" && handleCardClick("active", "EXPIRED")}>
+          <FaClock className="card-icon" />
+          <span>Expired Requests</span>
+          <h2>{expiredCount}</h2>
         </div>
 
         <div className="dashboard-card dashboard-card--clickable" role="button" tabIndex={0} onClick={() => handleCardClick("account")} onKeyDown={(e) => e.key === "Enter" && handleCardClick("account")}>

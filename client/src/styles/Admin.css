@@ -1804,6 +1804,22 @@
   background: #f8fafc;
 }
 
+.admin-phone-link {
+  color: #2563eb;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.admin-phone-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
 .tx-credit {
   color: #16a34a;
   font-weight: 700;

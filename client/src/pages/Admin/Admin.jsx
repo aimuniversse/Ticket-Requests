@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaEnvelope, FaHistory, FaCheckCircle, FaCog } from "react-icons/fa";
+import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaEnvelope, FaHistory, FaCheckCircle, FaCog, FaPhone } from "react-icons/fa";
 import API from "../../api/axios";
 import Footer from "../../components/Footer";
 import "../../styles/Admin.css";
@@ -74,7 +74,9 @@ function UserCard({ user, isSelected, onClick }) {
           <span className="user-card__detail"><strong>Email:</strong> {user.email}</span>
         )}
         {user.mobile && (
-          <span className="user-card__detail"><strong>Phone:</strong> {user.mobile}</span>
+          <span className="user-card__detail"><strong>Phone:</strong> {user.role === "Customer" && user.status === "EXPIRED" ? (
+            <a href={`tel:${user.mobile}`} className="admin-phone-link"><FaPhone /> {user.mobile}</a>
+          ) : user.mobile}</span>
         )}
       </div>
     </article>
@@ -84,6 +86,11 @@ function UserCard({ user, isSelected, onClick }) {
 function formatDate(str) {
   if (!str) return "—";
   return new Date(str).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function formatDateTime(str) {
+  if (!str) return "—";
+  return new Date(str).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 /* ── Operator Detail Panel ──────────────────────────────────────────── */
@@ -184,11 +191,13 @@ function OperatorPanel({ user, data, loading, error }) {
 
 /* ── Customer Detail Panel ──────────────────────────────────────────── */
 function CustomerPanel({ user, data, loading, error }) {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("history");
   if (loading) return <PanelSkeleton />;
   if (error) return <p className="panel-error">{error}</p>;
 
-  const requests = data || [];
+  const requests = [...(data || [])].sort(
+    (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
+  );
   const statusCounts = requests.reduce((acc, r) => {
     acc[r.status] = (acc[r.status] || 0) + 1;
     return acc;
@@ -198,8 +207,8 @@ function CustomerPanel({ user, data, loading, error }) {
   return (
     <>
       <div className="panel-tabs">
-        <button className={`panel-tab ${activeTab === "overview" ? "active" : ""}`} onClick={() => setActiveTab("overview")}>Overview</button>
         <button className={`panel-tab ${activeTab === "history" ? "active" : ""}`} onClick={() => setActiveTab("history")}>Request History ({requests.length})</button>
+        <button className={`panel-tab ${activeTab === "overview" ? "active" : ""}`} onClick={() => setActiveTab("overview")}>Overview</button>
       </div>
 
       {activeTab === "overview" && (
@@ -247,6 +256,7 @@ function CustomerPanel({ user, data, loading, error }) {
                     <th>Request ID</th>
                     <th>Route</th>
                     <th>Date</th>
+                    <th>Date/Time</th>
                     <th>Bus Type</th>
                     <th>Tickets</th>
                     <th>Price</th>
@@ -261,6 +271,7 @@ function CustomerPanel({ user, data, loading, error }) {
                       <td>{req.request_id || req.id || "—"}</td>
                       <td>{req.from_location} → {req.to_location}</td>
                       <td>{formatDate(req.journey_date)}</td>
+                      <td>{formatDateTime(req.created_at)}</td>
                       <td>{req.bus_type ? req.bus_type.replace(/_/g, " ") : "—"}</td>
                       <td>{req.total_tickets}</td>
                       <td>₹{req.expected_price || "—"}</td>
@@ -602,12 +613,14 @@ function Admin() {
                       ...(section === "Operators" || section === "Customers" ? [{ label: "S.No", render: (_r, idx) => idx + 1 }] : []),
                       { label: "Name", key: "name" },
                       ...(section === "Operators" ? [{ label: "Company", key: "company_name" }] : []),
-                      ...(section === "Customers" ? [{ label: "Accepted By", render: (r) => r.accepted_by_company !== "Nil" ? `${r.accepted_by_company} (${r.accepted_by_phone})` : "Nil" }] : []),
                       { label: "ID", key: "id" },
                       ...(section === "Operators" ? [{ label: "Email", key: "email" }] : []),
-                      { label: "Mobile", key: "mobile" },
+                      { label: "Mobile", render: (r) => r.status === "EXPIRED" && r.mobile ? (
+                        <a href={`tel:${r.mobile}`} className="admin-phone-link"><FaPhone /> {r.mobile}</a>
+                      ) : r.mobile || "—" },
+                      ...(section === "Customers" ? [{ label: "Date/Time", render: (r) => formatDateTime(r.created_at) }] : []),
                       { label: "Status", render: (r) => <StatusPill status={r.status} /> },
-                      { label: "Role", key: "role" },
+                      ...(section === "Customers" ? [{ label: "Accepted By", render: (r) => r.accepted_by_company !== "Nil" ? `${r.accepted_by_company} (${r.accepted_by_phone})` : "Nil" }] : []),
                     ],
                     selectUser,
                   )}

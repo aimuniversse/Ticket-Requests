@@ -230,6 +230,7 @@ class AdminCustomerListAPIView(APIView):
                 "mobile": customer.phone_number,
                 "status": customer.status or "—",
                 "role": "Customer",
+                "created_at": customer.created_at.isoformat() if customer.created_at else None,
                 "accepted_by_company": accepted_by_company,
                 "accepted_by_phone": accepted_by_phone,
             })

@@ -369,14 +369,15 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                       <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
-                      <span className="request-card-mobile__detail"><strong>Phone:</strong> {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
-                        <a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a>
-                      ) : formatPhoneDisplay(item)}</span>
+                      
                     </div>
                     <div className="request-card-mobile__col request-card-mobile__col--right">
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Time</strong>{formatTimeLeft(item.expires_at, item.status)}</span>
+                      <span className="request-card-mobile__detail"><strong>Phone:</strong> {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
+                        <a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a>
+                      ) : formatPhoneDisplay(item)}</span>
                     </div>
                   </div>
                   {isAccepted(item) ? (

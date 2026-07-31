@@ -462,6 +462,7 @@
     max-width: 700px;
     min-height: auto;
     margin-top: 18px;
+    gap: 20px;
   }
 
   .journey-promo {
@@ -477,7 +478,7 @@
 
 @media (max-width: 600px) {
   .ticket-wrapper {
-    padding: 0 6px 0;
+    padding: 0 4px 6px;
     background: linear-gradient(135deg, rgba(229, 44, 44, 0.85), rgba(59, 49, 214, 0.85));
   }
 
@@ -486,15 +487,15 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin: 0 auto 0;
+    margin: 0 auto 2px;
     text-decoration: none;
   }
 
   .mobile-logo-img {
     display: block;
-    width: 48px;
+    width: 32px;
     height: auto;
-    border-radius: 6px;
+    border-radius: 4px;
   }
 
   .mobile-logo-text {
@@ -514,40 +515,38 @@
 
   .ticket-page-layout {
     margin-top: 0;
+    gap: 2px;
   }
 
   .form-panel {
-    padding: 4px;
+    padding: 3px;
     border-radius: 6px;
+    background: rgba(248, 252, 255, 0.95);
+    box-shadow: 0 6px 18px rgba(50, 84, 134, 0.18);
   }
 
   .form-card-intro {
-    margin-bottom: 0px;
-    gap: 3px;
-  }
-
-  .form-card-icon {
-    width: 18px;
-    height: 18px;
-    font-size: 0.58rem;
-  }
-
-  .form-card-intro strong {
-    font-size: 0.85rem;
-  }
-
-  .form-card-intro p {
-    font-size: 0.76rem;
+    display: none;
   }
 
   .form-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
+    gap: 2px 2px;
+  }
+
+  .input-group {
+    margin-bottom: 0;
   }
 
   .input-group label {
-    font-size: 0.90rem;
-    margin-bottom: 0px;
+    font-size: 0.6rem;
+    margin-bottom: 0;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .input-group label::before {
+    display: none;
   }
 
   .input-group input,
@@ -557,17 +556,20 @@
     min-height: 30px; 
     max-height: 20px;
     max-width: 100%;
-    padding: 1px 4px;
-    font-size: 1rem;
+    padding: 2px 4px;
+    font-size: 0.68rem;
+    border-radius: 4px;
+    border: 1px solid #c7d2e2;
+    background: rgba(255, 255, 255, 0.95);
   }
 
   .input-group select {
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23666'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 5px center;
-    padding-right: 18px;
+    background-position: right 4px center;
+    padding-right: 14px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -582,77 +584,75 @@
 
   .submit-btn {
     min-height: 24px;
-    font-size: 0.58rem;
+    font-size: 0.65rem;
+    border-radius: 4px;
+    margin-top: 0;
   }
 
   .agree-box {
-    font-size: 0.68rem;
+    font-size: 0.55rem;
+    margin-bottom: 0;
+  }
+
+  .agree-box input {
+    width: 10px;
+    height: 10px;
   }
 
   .form-actions {
-    gap: 3px;
-    padding-top: 0px;
+    gap: 1px;
+    padding-top: 2px;
+    margin-top: 0;
   }
 
   .booking-benefits {
     grid-template-columns: repeat(2, 1fr);
+    margin-top: 4px;
   }
 
-  .booking-benefits>div:nth-child(2) {
+  .booking-benefits > div {
+    padding: 4px 6px;
+    min-height: auto;
+  }
+
+  .booking-benefits > div:nth-child(2) {
     border-right: 0;
   }
 
-  .booking-benefits>div:nth-child(-n + 2) {
+  .booking-benefits > div:nth-child(-n + 2) {
     border-bottom: 0px solid #e0e8f2;
   }
 
   .ticket-wrapper::before {
     display: none;
   }
+
+  .field-error {
+    font-size: 0.5rem;
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 360px) {
   .ticket-wrapper {
-    padding: 0 3px 0;
+    padding: 0 3px 4px;
   }
 
   .mobile-logo-img {
-    width: 36px;
-  }
-
-  .mobile-logo-text {
-    font-size: 0.75rem;
+    width: 26px;
   }
 
   .form-panel {
-    padding: 3px;
-    border-radius: 5px;
-  }
-
-  .form-card-intro {
-    gap: 2px;
-  }
-
-  .form-card-icon {
-    width: 16px;
-    height: 16px;
-    font-size: 0.5rem;
-  }
-
-  .form-card-intro strong {
-    font-size: 0.75rem;
-  }
-
-  .form-card-intro p {
-    font-size: 0.65rem;
+    padding: 2px;
+    border-radius: 4px;
   }
 
   .form-grid {
-    gap: 1px;
+    gap: 2px 2px;
   }
 
   .input-group label {
-    font-size: 0.8rem;
+    font-size: 0.56rem;
   }
 
   .input-group input,
@@ -662,25 +662,67 @@
     min-height: 18px;
     max-height: 18px;
     padding: 1px 3px;
-    font-size: 0.9rem;
+    font-size: 0.62rem;
   }
 
   .submit-btn {
     min-height: 22px;
-    font-size: 0.52rem;
+    font-size: 0.6rem;
   }
 
   .agree-box {
-    font-size: 0.6rem;
+    font-size: 0.5rem;
   }
 
   .form-actions {
     gap: 1px;
-    padding-top: 1px;
+    padding-top: 2px;
   }
 
   .city-suggestions {
-    max-height: 150px;
-    font-size: 0.7rem;
+    max-height: 140px;
+    font-size: 0.65rem;
+  }
+}
+
+/* Additional mobile optimizations for single-view form */
+@media (max-width: 600px) {
+  .ticket-form {
+    width: 100%;
+  }
+  
+  .form-card {
+    width: 100%;
+  }
+  
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .city-suggestions {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: 200px;
+    z-index: 1000;
+  }
+  
+  .captcha-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .captcha-question {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .captcha-box input {
+    flex: none;
+    width: 100%;
   }
 }

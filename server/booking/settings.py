@@ -2,7 +2,7 @@
 Django settings for booking project.
 """
 
-from pathlib import Path
+from pathlib import Path 
 import os
 
 from dotenv import load_dotenv
@@ -28,24 +28,37 @@ ALLOWED_HOSTS = os.getenv(
 
 # CORS / CSRF
 
-CSRF_TRUSTED_ORIGINS = [
+DEFAULT_CORS_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://ticket-requests.onrender.com",
     "https://ticekt-requests.vercel.app",
+    "https://ticket-requests.vercel.app",
     "https://ticekt-requests-nch5cf4v0-aimuniversses-projects.vercel.app",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        ",".join(DEFAULT_CORS_ORIGINS),
+    ).split(",") if origin
+]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://ticekt-requests.vercel.app",
-    "https://ticekt-requests-nch5cf4v0-aimuniversses-projects.vercel.app",
+    origin for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        ",".join(DEFAULT_CORS_ORIGINS),
+    ).split(",") if origin
 ]
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+    r"^http://localhost(:\d+)?$",
+]
 
-FRONTEND_URL = "https://ticekt-requests.vercel.app"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+TURNSTILE_SECRET_KEY = os.getenv("TURNSTILE_SECRET_KEY")
 
 
 # Email Configuration
@@ -58,8 +71,9 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", 10))
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "aimuniverssedevelopers@gmail.com")
 
 
 # Applications
@@ -87,14 +101,13 @@ INSTALLED_APPS = [
 # Middleware
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
 
     "django.middleware.security.SecurityMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
 
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
-    "corsheaders.middleware.CorsMiddleware",
 
     "django.middleware.common.CommonMiddleware",
 

@@ -1,5 +1,8 @@
+import requests
+
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.conf import settings
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,6 +16,30 @@ from operators.models import Operator, Wallet, Transaction
 class CustomerRequestCreateView(CreateAPIView):
     queryset = CustomerRequests.objects.all()
     serializer_class = CustomerRequestSerilaizers
+
+    def create(self, request, *args, **kwargs):
+        if not settings.TURNSTILE_SECRET_KEY:
+            return super().create(request, *args, **kwargs)
+        captcha_token = request.data.get("turnstile_token")
+        if not captcha_token:
+            return Response(
+                {"error": "Captcha token is required"},
+                status=400,
+            )
+        response = requests.post(
+            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            data={
+                "secret": settings.TURNSTILE_SECRET_KEY,
+                "response": captcha_token,
+            }
+        )
+        result = response.json()
+        if not result.get("success"):
+            return Response(
+                {"error": "Invalid captcha"},
+                status=400,
+            )
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         instance = serializer.save()

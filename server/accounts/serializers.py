@@ -70,6 +70,8 @@ class ForgotPasswordSerializer(serializers.Serializer):
         token = signing.dumps(user.pk)
         reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
+        logger.info("Before send_mail")
+
         try:
             send_mail(
                 subject="Reset your password",
@@ -82,6 +84,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
                 recipient_list=[email],
                 fail_silently=False,
             )
+            logger.info("After send_mail")
         except Exception as exc:
             logger.warning("Password reset email failed for %s: %s", email, exc)
 

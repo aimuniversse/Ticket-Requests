@@ -148,10 +148,23 @@ const OperatorRegister = () => {
          
       navigate("/operator-login");
     } catch (error) {
+      const status = error.response?.status;
       const apiError = error.response?.data;
       let message = "Registration failed. Please try again.";
 
-      if (typeof apiError === "string") {
+      const isDuplicate =
+        status === 500 ||
+        (typeof apiError === "string" &&
+          /IntegrityError|UNIQUE constraint failed|already (?:exists|registered)/i.test(
+            apiError
+          )) ||
+        (apiError &&
+          (apiError.phone_number || apiError.email || apiError.non_field_errors));
+
+      if (isDuplicate) {
+        message =
+          "This phone number and email address are already registered.";
+      } else if (typeof apiError === "string") {
         message = apiError;
       } else if (apiError?.detail) {
         message = apiError.detail;

@@ -255,8 +255,7 @@ function CustomerPanel({ user, data, loading, error }) {
                     <th>#</th>
                     <th>Request ID</th>
                     <th>Route</th>
-                    <th>Date</th>
-                    <th>Date/Time</th>
+                    <th>Journey Date</th>
                     <th>Bus Type</th>
                     <th>Tickets</th>
                     <th>Price</th>
@@ -268,10 +267,12 @@ function CustomerPanel({ user, data, loading, error }) {
                   {requests.map((req, idx) => (
                     <tr key={req.id}>
                       <td>{idx + 1}</td>
-                      <td>{req.request_id || req.id || "—"}</td>
+                      <td>
+                        <div className="panel-req-id">{req.request_id || req.id || "—"}</div>
+                        <div className="panel-req-datetime">{formatDateTime(req.created_at)}</div>
+                      </td>
                       <td>{req.from_location} → {req.to_location}</td>
                       <td>{formatDate(req.journey_date)}</td>
-                      <td>{formatDateTime(req.created_at)}</td>
                       <td>{req.bus_type ? req.bus_type.replace(/_/g, " ") : "—"}</td>
                       <td>{req.total_tickets}</td>
                       <td>₹{req.expected_price || "—"}</td>

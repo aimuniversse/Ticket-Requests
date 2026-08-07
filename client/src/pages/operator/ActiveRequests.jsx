@@ -134,6 +134,12 @@ const ActiveRequests = ({ initialFilter }) => {
   };
 
   useEffect(() => {
+    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    if (role === "admin") {
+      window.location.replace("/admin/dashboard");
+      return;
+    }
+
     const persistedRequests = readPersistedRequests();
     if (persistedRequests.length) {
       setRequests(persistedRequests);
@@ -302,7 +308,6 @@ const ActiveRequests = ({ initialFilter }) => {
                     <th>Gender</th>
                     <th>Phone</th>
                     <th>Time left</th>
-                    <th>Requested at</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
@@ -310,7 +315,10 @@ const ActiveRequests = ({ initialFilter }) => {
                 <tbody>
                   {sortedRequests.map((item) => (
                     <tr key={item.id} className={getRowClass(item)}>
-                      <td data-label="Request ID"><span className="request-id">{item.request_id || `#${item.id}`}</span></td>
+                      <td data-label="Request ID">
+                        <span className="request-id">{item.request_id || `#${item.id}`}</span>
+                        <span className="request-id-time">{formatDateTime(item.created_at)}</span>
+                      </td>
                       <td data-label="Route"><strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong></td>
                       <td data-label="Journey date">{formatDate(item.journey_date)}</td>
                       <td data-label="Seats">{item.total_tickets}</td>
@@ -320,7 +328,7 @@ const ActiveRequests = ({ initialFilter }) => {
                         {(item.contact_unlocked || isAccepted(item)) ? (
                           <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
                         ) : (
-                          <span className="time-cell">{formatPhoneDisplay(item)}</span>
+                          <span className="time-cell"><FaUser /> {item.name || "\u2014"}</span>
                         )}
                       </td>
                       <td data-label="Gender">{item.gender || "\u2014"}</td>
@@ -332,7 +340,6 @@ const ActiveRequests = ({ initialFilter }) => {
                         )}
                       </td>
                       <td data-label="Time left"><span className="time-cell"><FaClock /> {formatTimeLeft(item.expires_at, item.status)}</span></td>
-                      <td data-label="Requested at"><span className="time-cell">{formatDateTime(item.created_at)}</span></td>
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
@@ -365,6 +372,7 @@ const ActiveRequests = ({ initialFilter }) => {
                   <div className="request-card-mobile__top">
                     <div className="request-card-mobile__route">
                       <span className="request-card-mobile__id">{item.request_id || `#${item.id}`}</span>
+                      <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
                       <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
                     </div>
                     <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
@@ -375,8 +383,7 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                       <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
-                      <span className="request-card-mobile__detail"><strong>Requested:</strong> {formatDateTime(item.created_at)}</span>
-                      
+
                     </div>
                     <div className="request-card-mobile__col request-card-mobile__col--right">
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>

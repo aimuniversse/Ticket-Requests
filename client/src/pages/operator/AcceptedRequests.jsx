@@ -156,14 +156,16 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                     <th>Price</th>
                     <th>Customer name</th>
                     <th>Phone number</th>
-                    <th>Requested at</th>
                     <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRequests.map((item) => (
                     <tr key={item.id} className={getRowClass(item.status)}>
-                      <td data-label="Request ID"><span className="request-id">{item.request_id || `#${item.id}`}</span></td>
+                      <td data-label="Request ID">
+                        <span className="request-id">{item.request_id || `#${item.id}`}</span>
+                        <span className="request-id-time">{formatDateTime(item.created_at)}</span>
+                      </td>
                       <td data-label="Route"><strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong></td>
                       <td data-label="Journey date">{formatDate(item.journey_date)}</td>
                       <td data-label="Seats">{item.total_tickets}</td>
@@ -183,7 +185,6 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                           <span className="customer-locked">Locked</span>
                         )}
                       </td>
-                      <td data-label="Requested at"><span className="time-cell">{formatDateTime(item.created_at)}</span></td>
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
@@ -203,6 +204,7 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                   <div className="request-card-mobile__top">
                     <div className="request-card-mobile__route">
                       <span className="request-card-mobile__id">{item.request_id || `#${item.id}`}</span>
+                      <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
                       <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
                     </div>
                     <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
@@ -213,7 +215,6 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                       <span className="request-card-mobile__detail"><strong>Phone:</strong> {item.contact_unlocked && item.phone_number ? <a href={`tel:${item.phone_number}`} className="phone-link"><FaPhone /> {item.phone_number}</a> : <span className="customer-locked">Locked</span>}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                       <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
-                      <span className="request-card-mobile__detail"><strong>Requested:</strong> {formatDateTime(item.created_at)}</span>
                     </div>
                     <div className="request-card-mobile__col request-card-mobile__col--right">
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>

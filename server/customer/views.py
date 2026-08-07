@@ -74,8 +74,22 @@ class LeadListAPIView(APIView):
         leads = CustomerRequests.objects.filter(status__in=["PENDING", "NEW", "EXPIRED"]).order_by("-created_at")
         for lead in leads:
             lead.refresh_status()
-        serializer = CustomerRequestSerilaizers(leads, many=True, context={"request": request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        taken = CustomerRequests.objects.filter(
+            status__in=["ACCEPTED", "ASSIGNED"]
+        ).exclude(assigned_operator=operator).order_by("-created_at")
+
+        instances = list(leads) + list(taken)
+        serializer = CustomerRequestSerilaizers(instances, many=True, context={"request": request})
+
+        data = serializer.data
+        for item, instance in zip(data, instances):
+            if instance.status in ("ACCEPTED", "ASSIGNED"):
+                item["status"] = "EXPIRED"
+            else:
+                item["name"] = instance.name
+
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class MyLeadsAPIView(APIView):

@@ -309,7 +309,6 @@ const ActiveRequests = ({ initialFilter }) => {
                     <th>Phone</th>
                     <th>Time left</th>
                     <th>Status</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -344,22 +343,19 @@ const ActiveRequests = ({ initialFilter }) => {
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
                           {item.status === "EXPIRED" && <span className="expired-badge">Request expired</span>}
-                          {isAccepted(item) && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
+                          {isAccepted(item) ? (
+                            <span className="accepted-label"><FaCheck /> Booking confirmed</span>
+                          ) : (
+                            <button
+                              type="button"
+                              className="table-action table-action--accept"
+                              disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
+                              onClick={() => handleAccept(item)}
+                            >
+                              <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                            </button>
+                          )}
                         </div>
-                      </td>
-                      <td data-label="Action">
-                        {isAccepted(item) ? (
-                          <span className="accepted-label"><FaCheck /> Accepted</span>
-                        ) : (
-                          <button
-                            type="button"
-                            className="table-action table-action--accept"
-                            disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
-                            onClick={() => handleAccept(item)}
-                          >
-                            <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
-                          </button>
-                        )}
                       </td>
                     </tr>
                   ))}
@@ -375,7 +371,21 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
                       <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
                     </div>
-                    <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                    <div className="request-card-mobile__status">
+                      <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                      {isAccepted(item) ? (
+                        <span className="accepted-label"><FaCheck /> Booking confirmed</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="table-action table-action--accept"
+                          disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
+                          onClick={() => handleAccept(item)}
+                        >
+                          <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="request-card-mobile__details">
                     <div className="request-card-mobile__col request-card-mobile__col--left">
@@ -394,22 +404,6 @@ const ActiveRequests = ({ initialFilter }) => {
                       ) : formatPhoneDisplay(item)}</span>
                     </div>
                   </div>
-                  {isAccepted(item) ? (
-                    <div className="request-card-mobile__action request-card-mobile__action--accepted">
-                      <span className="accepted-label"><FaCheck /> Booking confirmed</span>
-                    </div>
-                  ) : (
-                    <div className="request-card-mobile__action">
-                      <button
-                        type="button"
-                        className="table-action table-action--accept"
-                        disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
-                        onClick={() => handleAccept(item)}
-                      >
-                        <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
-                      </button>
-                    </div>
-                  )}
                 </article>
               ))}
             </div>

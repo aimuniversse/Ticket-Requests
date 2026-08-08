@@ -223,11 +223,11 @@ const ActiveRequests = ({ initialFilter }) => {
       return matchesStatus && haystack.includes(search);
     });
 
-    const statusOrder = { NEW: 0, PENDING: 1, ASSIGNED: 2, ACCEPTED: 3, EXPIRED: 4 };
     return [...filtered].sort((a, b) => {
-      const aOrder = statusOrder[a.status] ?? 5;
-      const bOrder = statusOrder[b.status] ?? 5;
-      return aOrder - bOrder;
+      const aTime = new Date(a.created_at || 0).getTime();
+      const bTime = new Date(b.created_at || 0).getTime();
+      if (aTime !== bTime) return bTime - aTime;
+      return Number(b.id || 0) - Number(a.id || 0);
     });
   }, [requests, query, statusFilter]);
 

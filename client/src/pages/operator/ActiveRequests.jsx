@@ -22,7 +22,7 @@ const formatPhoneDisplay = (item) => {
 };
 
 const formatTimeLeft = (expiresAt, status) => {
-  if (status === "EXPIRED") return "Expired";
+  if (status === "EXPIRED") return "Already taken";
   if (status === "ACCEPTED" || status === "ASSIGNED") return "Booked";
   if (!expiresAt) return "Available now";
   const minutes = Math.max(0, Math.ceil((new Date(expiresAt) - Date.now()) / 60000));
@@ -134,6 +134,12 @@ const ActiveRequests = ({ initialFilter }) => {
   };
 
   useEffect(() => {
+    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    if (role === "admin") {
+      window.location.replace("/admin/dashboard");
+      return;
+    }
+
     const persistedRequests = readPersistedRequests();
     if (persistedRequests.length) {
       setRequests(persistedRequests);
@@ -217,11 +223,11 @@ const ActiveRequests = ({ initialFilter }) => {
       return matchesStatus && haystack.includes(search);
     });
 
-    const statusOrder = { NEW: 0, PENDING: 1, ASSIGNED: 2, ACCEPTED: 3, EXPIRED: 4 };
     return [...filtered].sort((a, b) => {
-      const aOrder = statusOrder[a.status] ?? 5;
-      const bOrder = statusOrder[b.status] ?? 5;
-      return aOrder - bOrder;
+      const aTime = new Date(a.created_at || 0).getTime();
+      const bTime = new Date(b.created_at || 0).getTime();
+      if (aTime !== bTime) return bTime - aTime;
+      return Number(b.id || 0) - Number(a.id || 0);
     });
   }, [requests, query, statusFilter]);
 
@@ -247,7 +253,7 @@ const ActiveRequests = ({ initialFilter }) => {
     switch (status) {
       case "ACCEPTED": return "Accepted";
       case "ASSIGNED": return "Assigned";
-      case "EXPIRED": return "Expired";
+      case "EXPIRED": return "Already taken";
       case "NEW": return "New";
       default: return "Pending";
     }
@@ -278,7 +284,7 @@ const ActiveRequests = ({ initialFilter }) => {
               <option value="PENDING">Pending ({statusCounts.PENDING})</option>
               <option value="ACCEPTED">Accepted ({statusCounts.ACCEPTED})</option>
               <option value="ASSIGNED">Assigned ({statusCounts.ASSIGNED})</option>
-              <option value="EXPIRED">Expired ({statusCounts.EXPIRED})</option>
+              <option value="EXPIRED">Already taken ({statusCounts.EXPIRED})</option>
             </select>
           </div>
         </div>
@@ -302,15 +308,16 @@ const ActiveRequests = ({ initialFilter }) => {
                     <th>Gender</th>
                     <th>Phone</th>
                     <th>Time left</th>
-                    <th>Requested at</th>
                     <th>Status</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sortedRequests.map((item) => (
                     <tr key={item.id} className={getRowClass(item)}>
-                      <td data-label="Request ID"><span className="request-id">{item.request_id || `#${item.id}`}</span></td>
+                      <td data-label="Request ID">
+                        <span className="request-id">{item.request_id || `#${item.id}`}</span>
+                        <span className="request-id-time">{formatDateTime(item.created_at)}</span>
+                      </td>
                       <td data-label="Route"><strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong></td>
                       <td data-label="Journey date">{formatDate(item.journey_date)}</td>
                       <td data-label="Seats">{item.total_tickets}</td>
@@ -320,7 +327,7 @@ const ActiveRequests = ({ initialFilter }) => {
                         {(item.contact_unlocked || isAccepted(item)) ? (
                           <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
                         ) : (
-                          <span className="time-cell">{formatPhoneDisplay(item)}</span>
+                          <span className="time-cell"><FaUser /> {item.name || "\u2014"}</span>
                         )}
                       </td>                  
                       
@@ -333,27 +340,23 @@ const ActiveRequests = ({ initialFilter }) => {
                         )}
                       </td>
                       <td data-label="Time left"><span className="time-cell"><FaClock /> {formatTimeLeft(item.expires_at, item.status)}</span></td>
-                      <td data-label="Requested at"><span className="time-cell">{formatDateTime(item.created_at)}</span></td>
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                          {item.status === "EXPIRED" && <span className="expired-badge">Request expired</span>}
-                          {isAccepted(item) && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
+                          {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
+                          {isAccepted(item) ? (
+                            <span className="accepted-label"><FaCheck /> Booking confirmed</span>
+                          ) : (
+                            <button
+                              type="button"
+                              className="table-action table-action--accept"
+                              disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
+                              onClick={() => handleAccept(item)}
+                            >
+                              <FaCheck /> {item.status === "EXPIRED" ? "Already taken" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                            </button>
+                          )}
                         </div>
-                      </td>
-                      <td data-label="Action">
-                        {isAccepted(item) ? (
-                          <span className="accepted-label"><FaCheck /> Accepted</span>
-                        ) : (
-                          <button
-                            type="button"
-                            className="table-action table-action--accept"
-                            disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
-                            onClick={() => handleAccept(item)}
-                          >
-                            <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
-                          </button>
-                        )}
                       </td>
                     </tr>
                   ))}
@@ -366,9 +369,24 @@ const ActiveRequests = ({ initialFilter }) => {
                   <div className="request-card-mobile__top">
                     <div className="request-card-mobile__route">
                       <span className="request-card-mobile__id">{item.request_id || `#${item.id}`}</span>
+                      <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
                       <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
                     </div>
-                    <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                    <div className="request-card-mobile__status">
+                      <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                      {isAccepted(item) ? (
+                        <span className="accepted-label"><FaCheck /> Booking confirmed</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="table-action table-action--accept"
+                          disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
+                          onClick={() => handleAccept(item)}
+                        >
+                          <FaCheck /> {item.status === "EXPIRED" ? "Already taken" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="request-card-mobile__details">
                     <div className="request-card-mobile__col request-card-mobile__col--left">
@@ -376,8 +394,7 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                       <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
-                      <span className="request-card-mobile__detail"><strong>Requested:</strong> {formatDateTime(item.created_at)}</span>
-                      
+
                     </div>
                     <div className="request-card-mobile__col request-card-mobile__col--right">
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
@@ -388,22 +405,6 @@ const ActiveRequests = ({ initialFilter }) => {
                       ) : formatPhoneDisplay(item)}</span>
                     </div>
                   </div>
-                  {isAccepted(item) ? (
-                    <div className="request-card-mobile__action request-card-mobile__action--accepted">
-                      <span className="accepted-label"><FaCheck /> Booking confirmed</span>
-                    </div>
-                  ) : (
-                    <div className="request-card-mobile__action">
-                      <button
-                        type="button"
-                        className="table-action table-action--accept"
-                        disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
-                        onClick={() => handleAccept(item)}
-                      >
-                        <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
-                      </button>
-                    </div>
-                  )}
                 </article>
               ))}
             </div>

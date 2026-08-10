@@ -124,6 +124,12 @@ const OperatorDashboardNew = () => {
   };
 
   useEffect(() => {
+    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    if (role === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+      return;
+    }
+
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -218,7 +224,7 @@ const OperatorDashboardNew = () => {
                 type: "request",
                 title: "New Ticket Request",
                 message: `${r.from_location || "?"} \u2192 ${r.to_location || "?"}`,
-                detail: `${r.name || "Customer"} \u2022 ${r.total_tickets || "?"} seats \u2022 ${r.bus_type || ""}`,
+                detail: `${r.phone_number ? `${r.phone_number} \u2022 ` : ""}${r.total_tickets || "?"} seats \u2022 ${r.bus_type || ""}`,
                 request: r,
               },
             ]);
@@ -334,7 +340,7 @@ const OperatorDashboardNew = () => {
 
         <div className="dashboard-card dashboard-card--expired dashboard-card--clickable" role="button" tabIndex={0} onClick={() => handleCardClick("active", "EXPIRED")} onKeyDown={(e) => e.key === "Enter" && handleCardClick("active", "EXPIRED")}>
           <FaClock className="card-icon" />
-          <span>Expired Requests</span>
+          <span>Already taken</span>
           <h2>{expiredCount}</h2>
         </div>
 

@@ -13,9 +13,9 @@
 .request-table-card__bar strong{margin-right:4px;color:#172033;font-size:1rem}
 
 .request-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.request-table{width:100%;min-width:1100px;border-collapse:collapse;text-align:left}
-.request-table th{padding:13px 16px;background:#f8fafc;color:#64748b;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.request-table td{padding:17px 16px;border-top:1px solid #eef1f5;color:#475569;font-size:.83rem;vertical-align:middle}
+.request-table{width:100%;min-width:960px;border-collapse:collapse;text-align:left}
+.request-table th{padding:12px 12px;background:#f8fafc;color:#64748b;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.request-table td{padding:15px 12px;border-top:1px solid #eef1f5;color:#475569;font-size:.83rem;vertical-align:middle}
 .request-table tbody tr{transition:background .18s ease}
 .request-table tbody tr:hover{background:#fffafb}
 .request-row--active{background:#ffffff}
@@ -36,6 +36,7 @@
 .request-row--new .route-cell span{color:#2563eb}
 
 .request-id{color:#8b1e3f;font-size:.75rem;font-weight:700;white-space:nowrap}
+.request-id-time{display:block;margin-top:4px;font-size:.66rem;font-weight:500;color:#94a3b8;white-space:nowrap}
 .route-cell{display:inline-flex;align-items:center;gap:7px;color:#253047;white-space:nowrap}
 .route-cell span{color:#be123c;font-size:1rem}
 .type-pill{display:inline-flex;padding:4px 12px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:.72rem;font-weight:700;text-transform:capitalize}
@@ -47,6 +48,7 @@
 .status-pill--completed{background:#dcfce7;color:#166534}
 .status-pill--expired{background:#fee2e2;color:#991b1b}
 .status-stack{display:flex;flex-direction:column;gap:5px}
+.status-stack .table-action{width:100%;justify-content:center}
 .expired-badge{font-size:.68rem;color:#991b1b;font-weight:600}
 .time-cell{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .phone-link{color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-weight:600;transition:color .15s}
@@ -69,8 +71,8 @@
 /* ── Desktop: hide mobile card list ── */
 .request-cards-list{display:none}
 
-/* ── Mobile: Card layout replaces table ── */
-@media(max-width:760px){
+/* ── Mobile / small desktop: Card layout replaces table ── */
+@media(max-width:1050px){
   .requests-page{padding:0 0 12px}
   .requests-page__header{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:10px}
   .requests-page__tools{width:100%;justify-content:space-between}
@@ -110,6 +112,7 @@
   }
 
   .request-card-mobile__id{font-size:.68rem;font-weight:700;color:#8b1e3f;letter-spacing:.03em}
+  .request-card-mobile__id-time{font-size:.6rem;font-weight:500;color:#94a3b8}
   .request-card-mobile__route .route-cell{font-size:.88rem;white-space:nowrap}
 
   .request-card-mobile__details{
@@ -145,13 +148,14 @@
     letter-spacing:.04em;
   }
 
-  .request-card-mobile__action{
-    margin-top:.5rem;
-    padding-top:.45rem;
-    border-top:1px solid #f1f5f9;
+  .request-card-mobile__status{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+    min-width:0;
   }
-  .request-card-mobile__action .table-action{width:100%;justify-content:center;padding:8px}
-  .request-card-mobile__action--accepted{display:flex;justify-content:center}
+  .request-card-mobile__status .table-action{justify-content:center;padding:8px 14px}
 
   .status-pill{font-size:.66rem;padding:3px 10px}
 }

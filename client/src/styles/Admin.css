@@ -1804,6 +1804,19 @@
   background: #f8fafc;
 }
 
+.panel-req-id {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.panel-req-datetime {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
 .admin-phone-link {
   color: #2563eb;
   text-decoration: none;

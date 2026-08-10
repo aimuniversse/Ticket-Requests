@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorLogin.css";
 import tickMyBusLogo from "../assets/logoc.png";
@@ -7,8 +7,6 @@ import logoImage from "../assets/logo.jpeg";
 
 
 const OperatorLogin = () => {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     phone_number: "",
     password: "",
@@ -91,12 +89,12 @@ const OperatorLogin = () => {
 
       if (role === "admin") {
         localStorage.setItem("userRole", "admin");
-        navigate("/admin/dashboard");
+        window.open("/admin/dashboard", "_blank");
         return;
       }
 
       localStorage.setItem("userRole", role || "operator");
-      navigate("/operator/dashboard");
+      window.open("/operator/dashboard", "_blank");
     } catch (error) {
       const apiError = error.response?.data;
       let message = "Login failed. Please try again.";

@@ -280,10 +280,8 @@ const ActiveRequests = ({ initialFilter }) => {
             <label className="accepted-filter"><FaSearch /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search requests..." /></label>
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="ALL">All ({statusCounts.ALL})</option>
-              <option value="NEW">New ({statusCounts.NEW})</option>
               <option value="PENDING">Pending ({statusCounts.PENDING})</option>
               <option value="ACCEPTED">Accepted ({statusCounts.ACCEPTED})</option>
-              <option value="ASSIGNED">Assigned ({statusCounts.ASSIGNED})</option>
               <option value="EXPIRED">Already taken ({statusCounts.EXPIRED})</option>
             </select>
           </div>
@@ -343,19 +341,18 @@ const ActiveRequests = ({ initialFilter }) => {
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                          {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
                           {isAccepted(item) ? (
                             <span className="accepted-label"><FaCheck /> Booking confirmed</span>
-                          ) : (
+                          ) : item.status !== "EXPIRED" ? (
                             <button
                               type="button"
                               className="table-action table-action--accept"
-                              disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
+                              disabled={acceptingId === item.id || walletLoading || walletBalance === null || walletBalance <= 0}
                               onClick={() => handleAccept(item)}
                             >
-                              <FaCheck /> {item.status === "EXPIRED" ? "Already taken" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                              <FaCheck /> {acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
                             </button>
-                          )}
+                          ) : null}
                         </div>
                       </td>
                     </tr>
@@ -376,16 +373,16 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
                       {isAccepted(item) ? (
                         <span className="accepted-label"><FaCheck /> Booking confirmed</span>
-                      ) : (
+                      ) : item.status !== "EXPIRED" ? (
                         <button
                           type="button"
                           className="table-action table-action--accept"
-                          disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
+                          disabled={acceptingId === item.id || walletLoading || walletBalance === null || walletBalance <= 0}
                           onClick={() => handleAccept(item)}
                         >
-                          <FaCheck /> {item.status === "EXPIRED" ? "Already taken" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                          <FaCheck /> {acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
                         </button>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                   <div className="request-card-mobile__details">

@@ -99,7 +99,7 @@ const OperatorDashboardNew = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        navigate("/operator-login");
+        navigate("/operator-login", { replace: true });
         return;
       }
 
@@ -249,7 +249,7 @@ const OperatorDashboardNew = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
-    navigate("/operator-login");
+    navigate("/operator-login", { replace: true });
   };
 
   const requestPoints = walletLoading ? "--" : wallet?.current_balance ?? 0;

@@ -93,7 +93,7 @@ api.interceptors.response.use(
           localStorage.removeItem("token");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("userRole");
-          window.location.assign("/operator-login");
+          window.location.replace("/operator-login");
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
@@ -116,7 +116,7 @@ api.interceptors.response.use(
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userRole");
-      window.location.assign("/operator-login");
+      window.location.replace("/operator-login");
     }
 
     return Promise.reject(err);

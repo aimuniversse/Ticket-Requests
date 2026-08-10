@@ -408,7 +408,7 @@ function Admin() {
       const statusCode = err.response?.status;
       if (statusCode === 401 || statusCode === 403) {
         localStorage.clear();
-        navigate("/operator-login");
+        navigate("/operator-login", { replace: true });
         return;
       }
       setError(err.response?.data?.detail || "Unable to load the admin dashboard.");
@@ -430,7 +430,7 @@ function Admin() {
         const statusCode = err?.response?.status;
         if (statusCode === 401 || statusCode === 403) {
           localStorage.clear();
-          navigate("/operator-login");
+          navigate("/operator-login", { replace: true });
         }
       });
   }, [navigate]);
@@ -440,7 +440,7 @@ function Admin() {
     catch (err) { setError(err.response?.data?.detail || `Unable to ${action} this operator.`); }
   };
 
-  const logout = () => { localStorage.clear(); navigate("/operator-login"); };
+  const logout = () => { localStorage.clear(); navigate("/operator-login", { replace: true }); };
 
   const addCredit = async (event) => {
     event.preventDefault();

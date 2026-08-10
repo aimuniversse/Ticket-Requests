@@ -27,7 +27,7 @@ const getStatusLabel = (status) => {
     case "ACCEPTED": return "Accepted";
     case "ASSIGNED": return "Assigned";
     case "COMPLETED": return "Completed";
-    case "EXPIRED": return "Expired";
+    case "EXPIRED": return "Already taken";
     case "NEW": return "New";
     case "CANCELLED": return "Cancelled";
     default: return "Pending";
@@ -134,7 +134,7 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
               <option value="ACCEPTED">Accepted ({statusCounts.ACCEPTED})</option>
               <option value="ASSIGNED">Assigned ({statusCounts.ASSIGNED})</option>
               <option value="COMPLETED">Completed ({statusCounts.COMPLETED})</option>
-              <option value="EXPIRED">Expired ({statusCounts.EXPIRED})</option>
+              <option value="EXPIRED">Already taken ({statusCounts.EXPIRED})</option>
             </select>
           </div>
         </div>
@@ -188,7 +188,7 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                          {item.status === "EXPIRED" && <span className="expired-badge">Request expired</span>}
+                          {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
                           {item.status === "ACCEPTED" && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
                           {item.status === "COMPLETED" && <span className="accepted-label"><FaCheckCircle /> Trip completed</span>}
                         </div>
@@ -225,7 +225,7 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
                     {item.status === "ACCEPTED" && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
                     {item.status === "ASSIGNED" && <span className="accepted-label"><FaCheck /> Assigned to you</span>}
                     {item.status === "COMPLETED" && <span className="accepted-label"><FaCheckCircle /> Trip completed</span>}
-                    {item.status === "EXPIRED" && <span className="expired-badge">Request expired</span>}
+                    {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
                     {item.status === "CANCELLED" && <span className="expired-badge">Cancelled</span>}
                     {!["ACCEPTED", "ASSIGNED", "COMPLETED", "EXPIRED", "CANCELLED"].includes(item.status) && <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>}
                   </div>

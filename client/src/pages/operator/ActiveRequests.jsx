@@ -22,7 +22,7 @@ const formatPhoneDisplay = (item) => {
 };
 
 const formatTimeLeft = (expiresAt, status) => {
-  if (status === "EXPIRED") return "Expired";
+  if (status === "EXPIRED") return "Already taken";
   if (status === "ACCEPTED" || status === "ASSIGNED") return "Booked";
   if (!expiresAt) return "Available now";
   const minutes = Math.max(0, Math.ceil((new Date(expiresAt) - Date.now()) / 60000));
@@ -253,7 +253,7 @@ const ActiveRequests = ({ initialFilter }) => {
     switch (status) {
       case "ACCEPTED": return "Accepted";
       case "ASSIGNED": return "Assigned";
-      case "EXPIRED": return "Expired";
+      case "EXPIRED": return "Already taken";
       case "NEW": return "New";
       default: return "Pending";
     }
@@ -284,7 +284,7 @@ const ActiveRequests = ({ initialFilter }) => {
               <option value="PENDING">Pending ({statusCounts.PENDING})</option>
               <option value="ACCEPTED">Accepted ({statusCounts.ACCEPTED})</option>
               <option value="ASSIGNED">Assigned ({statusCounts.ASSIGNED})</option>
-              <option value="EXPIRED">Expired ({statusCounts.EXPIRED})</option>
+              <option value="EXPIRED">Already taken ({statusCounts.EXPIRED})</option>
             </select>
           </div>
         </div>
@@ -342,7 +342,7 @@ const ActiveRequests = ({ initialFilter }) => {
                       <td data-label="Status">
                         <div className="status-stack">
                           <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                          {item.status === "EXPIRED" && <span className="expired-badge">Request expired</span>}
+                          {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
                           {isAccepted(item) ? (
                             <span className="accepted-label"><FaCheck /> Booking confirmed</span>
                           ) : (
@@ -352,7 +352,7 @@ const ActiveRequests = ({ initialFilter }) => {
                               disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
                               onClick={() => handleAccept(item)}
                             >
-                              <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                              <FaCheck /> {item.status === "EXPIRED" ? "Already taken" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
                             </button>
                           )}
                         </div>
@@ -382,7 +382,7 @@ const ActiveRequests = ({ initialFilter }) => {
                           disabled={acceptingId === item.id || item.status === "EXPIRED" || walletLoading || walletBalance === null || walletBalance <= 0}
                           onClick={() => handleAccept(item)}
                         >
-                          <FaCheck /> {item.status === "EXPIRED" ? "Expired" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                          <FaCheck /> {item.status === "EXPIRED" ? "Already taken" : acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
                         </button>
                       )}
                     </div>

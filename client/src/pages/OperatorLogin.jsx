@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorLogin.css";
 import tickMyBusLogo from "../assets/logoc.png";
+import logoImage from "../assets/logo.jpeg";
+
 
 const OperatorLogin = () => {
   const [formData, setFormData] = useState({
@@ -114,8 +116,36 @@ const OperatorLogin = () => {
   };
 
   return (
+    
     <div className="operator-login-page">
-      <div className="login-container">
+      <div className="top-branding">TICKMYBUS</div>
+
+      <div className="top-branding-animation">
+        <div className="promo-illustration promo-bus">
+          <div className="tickmybus-text">TICKMYBUS</div>
+          <svg className="animated-bus" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated bus illustration"> <path d="M28 136 h184" stroke="rgba(236, 18, 18, 0.35)" strokeWidth="3" strokeLinecap="round" /> <rect x="34" y="50" width="158" height="58" rx="13" fill="rgba(44, 41, 41, 0.93)" /> <polygon points="192,50 208,60 208,100 192,108" fill="rgba(145, 76, 162, 0.91)" /> <rect x="46" y="22" width="24" height="22" rx="6" fill="rgba(231, 23, 23, 0.92)" /> <rect x="78" y="22" width="24" height="22" rx="6" fill="rgba(235, 19, 19, 0.92)" /> <rect x="110" y="22" width="24" height="22" rx="6" fill="rgba(232, 27, 27, 0.92)" /> <rect x="142" y="22" width="24" height="22" rx="6" fill="rgba(237, 19, 19, 0.92)" /> <rect x="44" y="80" width="34" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <rect x="92" y="80" width="88" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <circle cx="36" cy="70" r="4.5" fill="#ffd23f" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="16" fill="rgba(5, 5, 5, 0.42)" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="7" fill="rgba(18, 17, 17, 0.9)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="16" fill="rgba(7, 7, 7, 0.42)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="7" fill="rgba(14, 14, 14, 0.9)" /> </svg>
+        </div>
+      </div>
+
+      <div className="login-layout">
+        <aside className="promo-panel promo-left">
+          <div>
+            <span className="promo-eyebrow">For Bus Operators</span>
+            <h2 className="promo-heading">Grow Your Bus Business with TickMyBus</h2>
+
+            <ul className="promo-features">
+              <li><span className="promo-check">✓</span> More Bookings &amp; More Revenue</li>
+              <li><span className="promo-check">✓</span> Secure Wallet Transactions</li>
+              <li><span className="promo-check">✓</span> 24/7 Operator Support</li>
+              <li><span className="promo-check">✓</span> Smart Reports &amp; Insights</li>
+            </ul>
+
+            <button type="button" className="promo-cta" onClick={() => window.location.href = "https://demo.tickmybus.com/"}>Join TickMyBus Today!</button>
+          </div>
+          <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <svg className="animated-bus" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated bus illustration" > <path d="M28 136 h184" stroke="rgba(255,255,255,0.35)" strokeWidth="3" strokeLinecap="round" /> <rect x="34" y="50" width="158" height="58" rx="13" fill="rgba(255,255,255,0.18)" /> <polygon points="192,50 208,60 208,100 192,108" fill="rgba(255,255,255,0.45)" /> <rect x="46" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="78" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="110" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="142" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="44" y="80" width="34" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <rect x="92" y="80" width="88" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <circle cx="36" cy="70" r="4.5" fill="#ffd23f" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> </svg> </div>
+        </aside>
+
+        <div className="login-container">
         <div className="login-left">
           <div className="operator-brand">
             <img src={tickMyBusLogo} alt="TickMyBus" />
@@ -210,6 +240,27 @@ const OperatorLogin = () => {
 
           </div>
         </div>
+      </div>
+
+        <aside className="promo-panel promo-right">
+          <div>
+            <h2 className="promo-heading">Simplify. Manage. Succeed.</h2>
+            <p className="promo-text">
+              Everything you need to run your bus business in one powerful platform.
+            </p>
+
+            <ul className="promo-features">
+              <li><span className="promo-check">✓</span> Easy Ticket Management</li>
+              <li><span className="promo-check">✓</span> Instant Notifications</li>
+              <li><span className="promo-check">✓</span> Track Earnings in Real-time</li>
+              <li><span className="promo-check">✓</span> Trusted by Operators</li>
+            </ul>
+          </div>
+           <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <svg className="animated-bus" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated bus illustration" > <path d="M28 136 h184" stroke="rgba(255,255,255,0.35)" strokeWidth="3" strokeLinecap="round" /> <rect x="34" y="50" width="158" height="58" rx="13" fill="rgba(255,255,255,0.18)" /> <polygon points="192,50 208,60 208,100 192,108" fill="rgba(255,255,255,0.45)" /> <rect x="46" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="78" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="110" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="142" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="44" y="80" width="34" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <rect x="92" y="80" width="88" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <circle cx="36" cy="70" r="4.5" fill="#ffd23f" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> </svg> </div>
+
+
+          <div className="promo-brand-line">TickMyBus — Your Growth Partner</div>
+        </aside>
       </div>
     </div>
   );

@@ -596,6 +596,9 @@ function Admin() {
                   <span className="section-title">{section}</span>
                   <p className="section-subtitle">Click any row to view details.</p>
                 </div>
+                {section === "Customers" && (
+                  <span className="live-indicator"><i /> Auto-refreshing</span>
+                )}
               </div>
 
               <label className="users-search-label">
@@ -614,7 +617,7 @@ function Admin() {
                       ...(section === "Operators" || section === "Customers" ? [{ label: "S.No", render: (_r, idx) => idx + 1 }] : []),
                       { label: "Name", key: "name" },
                       ...(section === "Operators" ? [{ label: "Company", key: "company_name" }] : []),
-                      { label: "ID", key: "id" },
+                      ...(section === "Operators" ? [{ label: "ID", key: "id" }] : [{ label: "Request ID", key: "request_id" }]),
                       ...(section === "Operators" ? [{ label: "Email", key: "email" }] : []),
                       { label: "Mobile", render: (r) => r.status === "EXPIRED" && r.mobile ? (
                         <a href={`tel:${r.mobile}`} className="admin-phone-link"><FaPhone /> {r.mobile}</a>

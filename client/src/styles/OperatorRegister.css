@@ -1,6 +1,54 @@
 /* Removed remote Google Font import for offline support. */
 
-.operator-register-page { min-height: 100vh; display: grid; place-items: center; padding: 18px; background: #f4f7fb; font-family: "Poppins", sans-serif; }
+.operator-register-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3.5rem 1.25rem 4rem; gap: 34px; background: linear-gradient(180deg, rgba(225, 229, 232, 0.92) 0%, rgba(253, 251, 251, 0.92) 100%), url("../assets/route-bg.png"); background-size: cover; background-position: center; font-family: "Poppins", sans-serif; }
+
+.top-branding { font-family: "Poppins", sans-serif; color: #dc2525; font-size: 34px; font-weight: 800; letter-spacing: 9px; line-height: 1; text-align: center; text-shadow: 0 2px 12px rgba(220, 37, 37, 0.16); }
+
+.top-branding-animation { display: none; }
+
+.register-layout { display: flex; align-items: stretch; justify-content: center; gap: 30px; width: 100%; max-width: 1620px; }
+
+.promo-panel { width: 270px; flex: 0 0 270px; display: flex; flex-direction: column; padding: 30px 26px; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 45px rgba(25, 49, 80, 0.10); }
+
+.promo-left { background: linear-gradient(155deg, #bd3a3a, #4b6e8e); color: #fff; justify-content: space-between; }
+
+.promo-right { background: linear-gradient(180deg, #bd3a3a, #4b6e8e); border: 1px solid #d9e8f7; color: #e7ebef; }
+
+.promo-eyebrow { display: inline-block; margin-bottom: 12px; padding: 4px 11px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
+
+.promo-left .promo-heading { margin: 0 0 18px; font-size: 21px; line-height: 1.32; font-weight: 700; }
+
+.promo-right .promo-heading { margin: 0 0 10px; font-size: 20px; line-height: 1.3; font-weight: 700; color: #ebecee; }
+
+.promo-right .promo-text { margin: 0 0 18px; font-size: 12.5px; line-height: 1.6; color: #e1e6ec; }
+
+.promo-features { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+
+.promo-features li { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; line-height: 1.45; }
+
+.promo-check { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 18px; height: 18px; margin-top: 1px; border-radius: 50%; font-size: 11px; font-weight: 700; }
+
+.promo-left .promo-check { background: #ffd23f; color: #0b3d75; }
+.promo-right .promo-check { background: #e5f1fe; color: #1266bd; }
+
+.promo-cta { width: 100%; margin-top: 24px; padding: 11px 14px; border: 0; border-radius: 10px; background: #ffd23f; color: #0b3d75; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+
+.promo-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(255, 210, 63, 0.35); }
+
+.promo-illustration { margin-top: auto; }
+.promo-bus svg, .promo-mobile svg { width: 100%; height: auto; display: block; }
+
+.promo-brand-line { margin-top: 20px; padding-top: 14px; border-top: 1px dashed #d5e5f5; color: #f3f5f6; font-size: 11.5px; font-weight: 700; letter-spacing: 0.2px; text-align: center; }
+
+@media (min-width: 1281px) and (max-width: 1500px) {
+  .register-layout { gap: 24px; }
+  .promo-panel { width: 230px; flex-basis: 230px; }
+}
+
+@media (max-width: 1280px) {
+  .promo-panel { display: none; }
+}
+
 .register-container { width: min(880px, 100%); display: grid; grid-template-columns: 255px minmax(0, 1fr); overflow: hidden; background: #fff; border: 1px solid #e6ebf2; border-radius: 16px; box-shadow: 0 14px 36px rgba(25,49,80,.11); }
 .register-left { display: flex; flex-direction: column; justify-content: center; padding: 28px 24px; color: #fff; background: linear-gradient(155deg, #075bb7, #167dd8); }
 .operator-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
@@ -31,7 +79,10 @@
 .login-link a { margin-left: 5px; color: #1167c2; font-weight: 600; text-decoration: none; }
 
 @media (max-width: 760px) {
-  .operator-register-page { padding: 16px; }
+  .operator-register-page { padding: 16px; gap: 26px; }
+  .top-branding { display: none; }
+  .top-branding-animation { display: flex; justify-content: center; }
+  .top-branding-animation .promo-bus { width: 200px; height: 150px; }
   .register-container { display: block; border-radius: 15px; }
   .register-left { display: none; }
   .register-right { padding: 30px 24px; }
@@ -41,3 +92,8 @@
   .register-right { padding: 28px 18px; }
   .register-card .two-column { grid-template-columns: 1fr; gap: 0; }
 }
+
+
+
+
+.promo-bus { position: relative; width: 240px; height: 180px; overflow: hidden; } /* TICKMYBUS animation */ .tickmybus-text { position: absolute; top: 0; left: 50%; transform: translateX(-50%); color: #dc2525; font-size: 20px; font-weight: 900; letter-spacing: 3px; white-space: nowrap; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 210, 63, 0.8); animation: tickmybusGlow 2s ease-in-out infinite; z-index: 2; } /* Bus moving animation */ .animated-bus { position: absolute; left: 0; bottom: 0; animation: busMove 3s ease-in-out infinite, busBounce 0.35s ease-in-out infinite alternate; } /* Bus moves left → right */ @keyframes busMove { 0% { transform: translateX(-15px); } 50% { transform: translateX(12px); } 100% { transform: translateX(-15px); } } /* Small road-bump effect */ @keyframes busBounce { from { margin-top: 0; } to { margin-top: 3px; } } /* TICKMYBUS glowing effect */ @keyframes tickmybusGlow { 0%, 100% { opacity: 0.75; transform: translateX(-50%) scale(1); text-shadow: 0 0 5px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 210, 63, 0.5); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); text-shadow: 0 0 8px #fff, 0 0 18px #ffd23f, 0 0 30px rgba(255, 210, 63, 0.8); } } /* Rotating wheels */ .bus-wheel { transform-box: fill-box; transform-origin: center; animation: wheelSpin 0.7s linear infinite; } @keyframes wheelSpin { to { transform: rotate(360deg); } } /* Accessibility */ @media (prefers-reduced-motion: reduce) { .animated-bus, .tickmybus-text, .bus-wheel { animation: none; } }

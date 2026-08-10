@@ -340,7 +340,7 @@ const OperatorDashboardNew = () => {
 
         <div className="dashboard-card dashboard-card--expired dashboard-card--clickable" role="button" tabIndex={0} onClick={() => handleCardClick("active", "EXPIRED")} onKeyDown={(e) => e.key === "Enter" && handleCardClick("active", "EXPIRED")}>
           <FaClock className="card-icon" />
-          <span>Expired Requests</span>
+          <span>Already taken</span>
           <h2>{expiredCount}</h2>
         </div>
 

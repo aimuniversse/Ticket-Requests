@@ -239,6 +239,7 @@ class AdminCustomerListAPIView(APIView):
 
             data.append({
                 "id": f"CUST-{customer.phone_number}",
+                "request_id": customer.request_id,
                 "name": customer.name,
                 "email": "—",
                 "mobile": customer.phone_number,

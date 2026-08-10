@@ -370,8 +370,8 @@
 }
 
 .agree-box input {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   margin: 10px;
   accent-color: #5742d5;
 }
@@ -596,8 +596,8 @@
   }
 
   .agree-box input {
-    width: 10px;
-    height: 10px;
+    width: 14px;
+    height: 14px;
    
   }
 

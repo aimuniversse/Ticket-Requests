@@ -52,7 +52,7 @@ const Profile = () => {
           <FaUserCircle className="profile-avatar" />
         </div>
         <div>
-          <h1>{profile.company_name || profile.name || "Operator Profile"}</h1>
+          <h1>{profile.name || profile.company_name || "Operator Profile"}</h1>
           <p>{profile.name ? `${profile.name}'s profile` : "Profile details captured at registration are shown here."}</p>
         </div>
       </div>

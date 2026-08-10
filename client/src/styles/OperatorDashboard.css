@@ -1197,9 +1197,21 @@ input {
     background: transparent
   }
 
-  .profile-trigger>span,
   .profile-trigger>svg:last-child {
     display: none
+  }
+
+  .profile-trigger>span {
+    display: grid;
+    max-width: 90px
+  }
+
+  .profile-trigger small {
+    display: none
+  }
+
+  .profile-trigger strong {
+    font-size: 12px
   }
 
   .profile-trigger>svg:first-child {

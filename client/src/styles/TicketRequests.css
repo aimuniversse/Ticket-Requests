@@ -591,12 +591,14 @@
 
   .agree-box {
     font-size: 0.89rem;
-    margin-bottom: 0;
+    margin-bottom: 10px;
+    
   }
 
   .agree-box input {
     width: 10px;
     height: 10px;
+   
   }
 
   .form-actions {

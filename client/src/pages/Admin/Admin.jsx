@@ -596,6 +596,9 @@ function Admin() {
                   <span className="section-title">{section}</span>
                   <p className="section-subtitle">Click any row to view details.</p>
                 </div>
+                {section === "Customers" && (
+                  <span className="live-indicator"><i /> Auto-refreshing</span>
+                )}
               </div>
 
               <label className="users-search-label">

@@ -90,7 +90,7 @@
 
 @media (max-width: 500px) {
   .register-right { padding: 28px 18px; }
-  .register-card .two-column { grid-template-columns: 1fr; gap: 0; }
+  .register-card .two-column { grid-template-columns: 1fr; gap: 10px; }
 }
 
 

@@ -247,7 +247,7 @@ const OperatorRegister = () => {
             <form onSubmit={handleSubmit}>
 
               <div className="input-group">
-                <label>Operator Name</label>
+                <label>Name</label>
 
                 <input
                   type="text"

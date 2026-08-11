@@ -202,7 +202,7 @@ const OperatorRegister = () => {
               <li><span className="promo-check">✓</span> Smart Reports &amp; Insights</li>
             </ul>
 
-            <button type="button" className="promo-cta" onClick={() => window.location.href = "https://demo.tickmybus.com/"}>Join TickMyBus Today!</button>
+            <button type="button" className="promo-cta" onClick={() => window.open("https://demo.tickmybus.com/", "_blank")}>Join TickMyBus Today!</button>
           </div>
           <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" /> </div>
         </aside>

@@ -104,22 +104,12 @@ const OperatorLogin = () => {
 
       if (role === "admin") {
         localStorage.setItem("userRole", "admin");
-<<<<<<< HEAD
-        navigate("/", { replace: true });
-        window.open("/admin/dashboard", "_blank");
-=======
         navigate(next || "/admin/dashboard", { replace: true });
->>>>>>> a7bad54a2b789824bb5814c724c15e842f9ab87a
         return;
       }
 
       localStorage.setItem("userRole", role || "operator");
-<<<<<<< HEAD
-      navigate("/", { replace: true });
-      window.open("/operator/dashboard", "_blank");
-=======
       navigate(next || "/operator/dashboard", { replace: true });
->>>>>>> a7bad54a2b789824bb5814c724c15e842f9ab87a
     } catch (error) {
       const apiError = error.response?.data;
       let message = "Login failed. Please try again.";

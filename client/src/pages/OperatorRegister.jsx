@@ -375,6 +375,9 @@ const OperatorRegister = () => {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       placeholder="Confirm Password"
+                      pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
+                      title="Password must contain at least 8 characters, including uppercase, lowercase, number, and symbol."
+
                     />
 
                     <button

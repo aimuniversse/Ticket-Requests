@@ -91,6 +91,7 @@ const OperatorDashboardNew = () => {
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const prevLeadIdsRef = { current: new Set() };
   const initializedRef = { current: false };
+  const seenNotifIdsRef = { current: new Set() };
   const toastIdRef = useRef(0);
   const notifDropdownRef = useRef(null);
 
@@ -137,6 +138,51 @@ const OperatorDashboardNew = () => {
     }
   };
 
+  const fetchNotifications = async (initial = false) => {
+    try {
+      const response = await API.get("auth/notifications/");
+      const items = response.data || [];
+
+      const fresh = items.filter((item) => !seenNotifIdsRef.current.has(item.id));
+      fresh.forEach((item) => seenNotifIdsRef.current.add(item.id));
+      if (!fresh.length) return;
+
+      const built = fresh.map((item) => ({
+        id: `notif-${item.id}`,
+        type: item.type || "info",
+        title: item.title,
+        message: item.message,
+        time: new Date(item.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
+        read: item.is_read,
+      }));
+
+      setNotifications((prev) => [...built, ...prev]);
+
+      if (!initial) {
+        built.forEach((item) => {
+          const toastId = `toast-${++toastIdRef.current}`;
+          setToasts((prev) => [
+            ...prev,
+            {
+              id: toastId,
+              type: item.type,
+              title: item.title,
+              message: item.message,
+              detail: "",
+            },
+          ]);
+          setTimeout(() => {
+            setToasts((prev) => prev.filter((t) => t.id !== toastId));
+          }, 6000);
+        });
+        setUnreadCount((prev) => prev + built.length);
+        playNotificationSound();
+      }
+    } catch {
+      // silent
+    }
+  };
+
   useEffect(() => {
     // Sync URL tab → state when user navigates with browser back/forward
     const urlTab = searchParams.get("tab") || "overview";
@@ -161,8 +207,10 @@ const OperatorDashboardNew = () => {
     fetchAssignedRequests();
     loadWallet();
     fetchCounts();
+    fetchNotifications(true);
     const pollTimer = window.setInterval(() => {
       fetchCounts();
+      fetchNotifications();
     }, 10000);
     return () => window.clearInterval(pollTimer);
   }, [navigate]);
@@ -487,7 +535,8 @@ const OperatorDashboardNew = () => {
                             {item.type === "request" && <FaTicketAlt />}
                             {item.type === "accepted" && <FaCheckCircle />}
                             {item.type === "expired" && <FaClock />}
-                            {!["request", "accepted", "expired"].includes(item.type) && <FaBell />}
+                            {(item.type === "credit" || item.type === "wallet") && <FaWallet />}
+                            {!["request", "accepted", "expired", "credit", "wallet"].includes(item.type) && <FaBell />}
                           </div>
                           <div className="notif-dropdown__text">
                             <strong>{item.title}</strong>
@@ -537,7 +586,7 @@ const OperatorDashboardNew = () => {
         {toasts.map((toast) => (
           <div key={toast.id} className="toast-notification">
             <div className="toast-notification__icon">
-              <FaTicketAlt />
+              {toast.type === "credit" || toast.type === "wallet" ? <FaWallet /> : <FaTicketAlt />}
             </div>
             <div className="toast-notification__body">
               <strong>{toast.title}</strong>

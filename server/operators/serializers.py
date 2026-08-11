@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Operator, OperatorService, Wallet, Transaction, PointRequest
+from .models import Operator, OperatorService, Wallet, Transaction, PointRequest, Notification
 from accounts.models import User
 from django.db import transaction
 
@@ -159,6 +159,12 @@ class PointRequestSerializer(serializers.ModelSerializer):
         model = PointRequest
         fields = ["id", "operator", "operator_name", "company_name", "points_requested", "reason", "status", "admin_response", "created_at", "updated_at"]
         read_only_fields = ["id", "operator", "status", "admin_response", "created_at", "updated_at"]
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["id", "type", "title", "message", "is_read", "created_at"]
 
 
 class PointRequestActionSerializer(serializers.Serializer):

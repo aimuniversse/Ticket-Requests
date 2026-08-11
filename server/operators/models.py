@@ -83,6 +83,33 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ("credit", "Credit"),
+        ("request", "Request"),
+        ("accepted", "Accepted"),
+        ("expired", "Expired"),
+        ("info", "Info"),
+    )
+
+    operator = models.ForeignKey(
+        Operator,
+        related_name="notifications",
+        on_delete=models.CASCADE,
+    )
+    type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default="info")
+    title = models.CharField(max_length=200)
+    message = models.TextField(blank=True, default="")
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.operator_id} - {self.title}"
+
+
 class PointRequest(models.Model):
     REQUEST_STATUS_CHOICES = (
         ("PENDING", "Pending"),

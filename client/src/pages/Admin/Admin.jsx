@@ -438,6 +438,26 @@ function Admin() {
     }
   }, [cache]);
 
+  useEffect(() => {
+    if (!selectedUser) return;
+    const refreshDetails = async () => {
+      try {
+        const res =
+          selectedUser.role === "Operator"
+            ? await API.get(`auth/admin/operators/${selectedUser.id}/transactions/`)
+            : await API.get(`customer/admin/customers/${selectedUser.mobile}/requests/`);
+        setDetailsData(res.data);
+      } catch (err) {
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          localStorage.clear();
+          navigate("/operator-login", { replace: true });
+        }
+      }
+    };
+    const timer = window.setInterval(refreshDetails, 15000);
+    return () => window.clearInterval(timer);
+  }, [selectedUser, navigate]);
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -551,6 +571,7 @@ function Admin() {
       setSuccess(`Points credited successfully! Amount: ₹${creditForm.credits} | Operator ID: ${creditForm.operator_id} | Company: ${op?.company_name || "—"}`);
       setTimeout(() => setSuccess(""), 8000);
     } catch (err) {
+      setCreditSuccess("");
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
     } finally {
       setCrediting(false);

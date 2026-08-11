@@ -305,6 +305,7 @@ const ActiveRequests = ({ initialFilter }) => {
         ) : sortedRequests.length === 0 ? (
           <div className="requests-empty"><FaClock className="requests-empty__icon" /><h2>No requests</h2><p>New customer requests will appear here automatically.</p></div>
         ) : (
+<<<<<<< HEAD
           <>
             <div className="request-table-wrap">
               <table className="request-table">
@@ -421,6 +422,19 @@ const ActiveRequests = ({ initialFilter }) => {
               ))}
             </div>
           </>
+=======
+          <ActiveRequestsTablePaginated
+            sortedRequests={sortedRequests}
+            acceptingId={acceptingId}
+            walletLoading={walletLoading}
+            walletBalance={walletBalance}
+            handleAccept={handleAccept}
+            isAccepted={isAccepted}
+            getRowClass={getRowClass}
+            getStatusPillClass={getStatusPillClass}
+            getStatusLabel={getStatusLabel}
+          />
+>>>>>>> a7bad54a2b789824bb5814c724c15e842f9ab87a
         )}
       </div>
     </section>
@@ -533,16 +547,18 @@ function ActiveRequestsTablePaginated({
               <div className="request-card-mobile__col request-card-mobile__col--left">
                 <span className="request-card-mobile__detail"><strong>Passenger:</strong> {item.name || "Customer"}</span>
                 <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
-                <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
                 <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
+                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Time</strong>{formatTimeLeft(item.expires_at, item.status)}</span>
+
               </div>
               <div className="request-card-mobile__col request-card-mobile__col--right">
-                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
-                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
-                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Time</strong>{formatTimeLeft(item.expires_at, item.status)}</span>
                 <span className="request-card-mobile__detail"><strong>Phone:</strong> {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
                   <a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a>
                 ) : formatPhoneDisplay(item)}</span>
+                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
+                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
+                <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
+
               </div>
             </div>
           </article>

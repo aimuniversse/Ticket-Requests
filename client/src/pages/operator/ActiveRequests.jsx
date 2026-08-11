@@ -399,8 +399,8 @@ const ActiveRequests = ({ initialFilter }) => {
                       ) : formatPhoneDisplay(item)}</span>
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
-                      <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
-           
+                     <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
+                        {/* ff */}
                     </div>
                   </div>
                 </article>

@@ -8,6 +8,10 @@
 .search-box input{border:none;outline:none;width:100%;font-size:15px}
 .transaction-filters select{padding:12px 18px;border:none;border-radius:12px;background:#fff;box-shadow:0 10px 25px rgba(0,0,0,.08);cursor:pointer;font-size:.88rem}
 
+.refresh-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:none;border-radius:12px;background:#1d3557;color:#fff;font-size:.88rem;font-weight:600;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.08);transition:background-color .2s ease}
+.refresh-btn:hover{background:#14253d}
+.refresh-btn svg{font-size:.95rem}
+
 .transaction-table{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 12px 35px rgba(0,0,0,.08)}
 table{width:100%;border-collapse:collapse}
 thead{background:#d32f2f;color:#fff}

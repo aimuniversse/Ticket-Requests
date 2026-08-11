@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../../api/axios";
+import { useCache } from "../../hooks/useCache";
 import "../../styles/OperatorDashboard.css";
 import logo from "../../assets/logo.jpeg";
 import {
@@ -63,8 +64,14 @@ const accountLinks = [
 
 const OperatorDashboardNew = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("overview");
-  const [cardFilter, setCardFilter] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const cache = useCache();
+
+  // Restore tab from URL on mount (enables browser back/forward)
+  const tabFromUrl = searchParams.get("tab") || "overview";
+  const filterFromUrl = searchParams.get("status") || null;
+  const [activeSection, setActiveSection] = useState(tabFromUrl);
+  const [cardFilter, setCardFilter] = useState(filterFromUrl);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -84,6 +91,7 @@ const OperatorDashboardNew = () => {
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const prevLeadIdsRef = { current: new Set() };
   const initializedRef = { current: false };
+  const seenNotifIdsRef = { current: new Set() };
   const toastIdRef = useRef(0);
   const notifDropdownRef = useRef(null);
 
@@ -92,7 +100,11 @@ const OperatorDashboardNew = () => {
     setError("");
 
     try {
+      // Serve cached assigned requests immediately (non-blocking UX)
+      const cached = cache.get("dashboard_assigned_requests");
+      if (cached) setRequests(cached);
       const response = await API.get("auth/requests/assigned/");
+      cache.set("dashboard_assigned_requests", response.data || [], 30_000);
       setRequests(response.data || []);
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
@@ -123,12 +135,62 @@ const OperatorDashboardNew = () => {
     }
   };
 
-  useEffect(() => {
-    const role = (localStorage.getItem("userRole") || "").toLowerCase();
-    if (role === "admin") {
-      navigate("/admin/dashboard", { replace: true });
-      return;
+  const fetchNotifications = async (initial = false) => {
+    try {
+      const response = await API.get("auth/notifications/");
+      const items = response.data || [];
+
+      const fresh = items.filter((item) => !seenNotifIdsRef.current.has(item.id));
+      fresh.forEach((item) => seenNotifIdsRef.current.add(item.id));
+      if (!fresh.length) return;
+
+      const built = fresh.map((item) => ({
+        id: `notif-${item.id}`,
+        type: item.type || "info",
+        title: item.title,
+        message: item.message,
+        time: new Date(item.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
+        read: item.is_read,
+      }));
+
+      setNotifications((prev) => [...built, ...prev]);
+
+      if (!initial) {
+        built.forEach((item) => {
+          const toastId = `toast-${++toastIdRef.current}`;
+          setToasts((prev) => [
+            ...prev,
+            {
+              id: toastId,
+              type: item.type,
+              title: item.title,
+              message: item.message,
+              detail: "",
+            },
+          ]);
+          setTimeout(() => {
+            setToasts((prev) => prev.filter((t) => t.id !== toastId));
+          }, 6000);
+        });
+        setUnreadCount((prev) => prev + built.length);
+        playNotificationSound();
+      }
+    } catch {
+      // silent
     }
+  };
+
+  useEffect(() => {
+    // Sync URL tab → state when user navigates with browser back/forward
+    const urlTab = searchParams.get("tab") || "overview";
+    const urlFilter = searchParams.get("status") || null;
+    if (urlTab !== activeSection || urlFilter !== cardFilter) {
+      setActiveSection(urlTab);
+      setCardFilter(urlFilter);
+    }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
 
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -142,8 +204,10 @@ const OperatorDashboardNew = () => {
     fetchAssignedRequests();
     loadWallet();
     fetchCounts();
+    fetchNotifications(true);
     const pollTimer = window.setInterval(() => {
       fetchCounts();
+      fetchNotifications();
     }, 10000);
     return () => window.clearInterval(pollTimer);
   }, [navigate]);
@@ -259,6 +323,12 @@ const OperatorDashboardNew = () => {
     setCardFilter(filter);
     setMenuOpen(false);
     setOpenDropdown(null);
+    // Write tab (and optional status filter) to URL so browser back/forward
+    // restores the exact view.
+    setSearchParams(
+      filter ? { tab: section, status: filter } : { tab: section },
+      { replace: false },
+    );
   };
 
   const handleCardClick = (section, filter) => {
@@ -459,7 +529,8 @@ const OperatorDashboardNew = () => {
                             {item.type === "request" && <FaTicketAlt />}
                             {item.type === "accepted" && <FaCheckCircle />}
                             {item.type === "expired" && <FaClock />}
-                            {!["request", "accepted", "expired"].includes(item.type) && <FaBell />}
+                            {(item.type === "credit" || item.type === "wallet") && <FaWallet />}
+                            {!["request", "accepted", "expired", "credit", "wallet"].includes(item.type) && <FaBell />}
                           </div>
                           <div className="notif-dropdown__text">
                             <strong>{item.title}</strong>
@@ -509,7 +580,7 @@ const OperatorDashboardNew = () => {
         {toasts.map((toast) => (
           <div key={toast.id} className="toast-notification">
             <div className="toast-notification__icon">
-              <FaTicketAlt />
+              {toast.type === "credit" || toast.type === "wallet" ? <FaWallet /> : <FaTicketAlt />}
             </div>
             <div className="toast-notification__body">
               <strong>{toast.title}</strong>

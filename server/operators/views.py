@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import RegistraionOperatorSerilaizers, PendingOpeartorSerializer, AddCreditSerializer, WalletSerializer, TransactionSerializer, PointRequestSerializer, PointRequestActionSerializer
-from .models import Operator, Wallet, Transaction, PointRequest
+from .serializers import RegistraionOperatorSerilaizers, PendingOpeartorSerializer, AddCreditSerializer, WalletSerializer, TransactionSerializer, PointRequestSerializer, PointRequestActionSerializer, NotificationSerializer
+from .models import Operator, Wallet, Transaction, PointRequest, Notification
 from customer.models import CustomerRequests
 from customer.serializers import mask_phone_number
 
@@ -189,6 +189,14 @@ class AddCreditAPIView(APIView):
                 balance_after_transaction=wallet.current_balance,
                 description=description,
             )
+            default_descriptions = {"Admin Request credit", "Admin wallet credit"}
+            extra = f" {description}" if description and description not in default_descriptions else ""
+            Notification.objects.create(
+                operator=operator,
+                type="credit",
+                title="Wallet credits added",
+                message=f"Admin added {credits} point(s) to your wallet.{extra}",
+            )
 
         return Response({"message": "Credits added successfully."}, status=status.HTTP_200_OK)
 
@@ -229,6 +237,29 @@ class AdminOperatorTransactionsAPIView(APIView):
             "wallet": WalletSerializer(wallet).data,
             "transactions": TransactionSerializer(transactions, many=True).data,
         }, status=status.HTTP_200_OK)
+
+
+class OperatorNotificationListAPIView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        operator = get_object_or_404(Operator, user=request.user)
+        notifications = Notification.objects.filter(operator=operator).order_by("-created_at")[:50]
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class OperatorNotificationMarkReadAPIView(APIView):
+    def post(self, request, notification_id):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        operator = get_object_or_404(Operator, user=request.user)
+        notification = get_object_or_404(Notification, id=notification_id, operator=operator)
+        notification.is_read = True
+        notification.save(update_fields=["is_read"])
+        return Response({"message": "Notification marked as read."}, status=status.HTTP_200_OK)
 
 
 class AdminTransactionsAPIView(APIView):
@@ -317,9 +348,21 @@ class AdminPointRequestActionView(APIView):
                 balance_after_transaction=wallet.current_balance,
                 description=f"Points approved: {point_request.reason or 'Operator request'}",
             )
+            Notification.objects.create(
+                operator=operator,
+                type="credit",
+                title="Point request approved",
+                message=f"Your request for {point_request.points_requested} point(s) has been approved and added to your wallet.",
+            )
         else:
             point_request.status = "REJECTED"
             point_request.admin_response = admin_response or "Rejected by admin"
             point_request.save(update_fields=["status", "admin_response", "updated_at"])
+            Notification.objects.create(
+                operator=point_request.operator,
+                type="info",
+                title="Point request rejected",
+                message=f"Your request for {point_request.points_requested} point(s) was rejected." + (f" {admin_response}" if admin_response and admin_response != "Rejected by admin" else ""),
+            )
 
         return Response({"message": f"Request {action}d successfully."}, status=status.HTTP_200_OK)

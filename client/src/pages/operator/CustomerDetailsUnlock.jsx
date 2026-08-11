@@ -15,6 +15,10 @@ import {
   FaVenusMars,
 } from "react-icons/fa";
 import API from "../../api/axios";
+import Pagination from "../../components/Pagination";
+import { usePagination } from "../../hooks/usePagination";
+import { useUrlState } from "../../hooks/useUrlState";
+import { useCache } from "../../hooks/useCache";
 import "../../styles/CustomerDetailsUnlock.css";
 import "../../styles/ActiveRequests.css";
 
@@ -28,16 +32,24 @@ const formatDate = (date) =>
     : "—";
 
 const CustomerDetailsUnlock = () => {
+  const cache = useCache();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [query, setQuery] = useUrlState("q", "");
+  const [statusFilter, setStatusFilter] = useUrlState("status", "ALL");
 
   const loadRequests = async (showLoader = false) => {
     if (showLoader) setLoading(true);
     try {
+      // Serve cached data immediately to avoid a blank flash
+      const cached = cache.get("customer_details_requests");
+      if (cached && showLoader) {
+        setRequests(cached);
+        setLoading(false);
+      }
       const response = await API.get("auth/requests/assigned/");
+      cache.set("customer_details_requests", response.data || [], 30_000);
       setRequests(response.data || []);
       setError("");
     } catch (err) {
@@ -148,106 +160,117 @@ const CustomerDetailsUnlock = () => {
             </p>
           </div>
         ) : (
-          <div className="customer-cards-grid">
-            {filteredRequests.map((item) => (
-              <div
-                key={item.id}
-                className={`customer-detail-card ${item.contact_unlocked ? "customer-detail-card--unlocked" : "customer-detail-card--locked"}`}
-              >
-                <div className="customer-detail-card__header">
-                  <div className="customer-detail-card__id">
-                    <FaTicketAlt />
-                    <span>{item.request_id || `#${item.id}`}</span>
-                  </div>
-                  <span
-                    className={`status-pill ${
-                      item.status === "ACCEPTED"
-                        ? "status-pill--accepted"
-                        : item.status === "COMPLETED"
-                          ? "status-pill--completed"
-                          : item.status === "ASSIGNED"
-                            ? "status-pill--assigned"
-                            : "status-pill--pending"
-                    }`}
-                  >
-                    {item.status
-                      ? `${item.status[0]}${item.status.slice(1).toLowerCase()}`
-                      : "—"}
-                  </span>
-                </div>
-
-                <div className="customer-detail-card__route">
-                  <FaMapMarkerAlt />
-                  <strong>
-                    {item.from_location} → {item.to_location}
-                  </strong>
-                </div>
-
-                <div className="customer-detail-card__meta">
-                  <span>
-                    <FaCalendarAlt /> {formatDate(item.journey_date)}
-                    {item.journey_time ? ` • ${item.journey_time}` : ""}
-                  </span>
-                  <span>
-                    <FaBus />{" "}
-                    {item.bus_type?.replaceAll("_", " ") || "—"}
-                  </span>
-                  <span>
-                    <FaMoneyBillWave /> ₹{item.expected_price}
-                  </span>
-                  <span>Seats: {item.total_tickets}</span>
-                </div>
-
-                <div className="customer-detail-card__contact">
-                  {item.contact_unlocked ? (
-                    <>
-                      <div className="customer-detail-card__unlock-badge">
-                        <FaUnlock /> Details Unlocked
-                      </div>
-                      <div className="customer-detail-card__info">
-                        <div className="customer-detail-card__field">
-                          <FaUser />
-                          <div>
-                            <span>Customer Name</span>
-                            <h4>{item.name || "\u2014"}</h4>
-                          </div>
-                        </div>
-                        <div className="customer-detail-card__field">
-                          <FaVenusMars />
-                          <div>
-                            <span>Gender</span>
-                            <h4>{item.gender || "\u2014"}</h4>
-                          </div>
-                        </div>
-                        <div className="customer-detail-card__field">
-                          <FaPhone />
-                          <div>
-                            <span>Phone Number</span>
-                            {item.phone_number ? (
-                              <h4><a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a></h4>
-                            ) : (
-                              <h4>\u2014</h4>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="customer-detail-card__locked">
-                      <FaLock />
-                      <span>
-                        Accept this lead to unlock customer contact details
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <CustomerCardsPaginated requests={filteredRequests} />
         )}
       </div>
     </section>
   );
 };
+
+function CustomerCardsPaginated({ requests }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(requests, 9, { paramKey: "page" });
+
+  return (
+    <>
+      <div className="customer-cards-grid">
+        {paginatedData.map((item) => (
+          <div
+            key={item.id}
+            className={`customer-detail-card ${item.contact_unlocked ? "customer-detail-card--unlocked" : "customer-detail-card--locked"}`}
+          >
+            <div className="customer-detail-card__header">
+              <div className="customer-detail-card__id">
+                <FaTicketAlt />
+                <span>{item.request_id || `#${item.id}`}</span>
+              </div>
+              <span
+                className={`status-pill ${
+                  item.status === "ACCEPTED"
+                    ? "status-pill--accepted"
+                    : item.status === "COMPLETED"
+                      ? "status-pill--completed"
+                      : item.status === "ASSIGNED"
+                        ? "status-pill--assigned"
+                        : "status-pill--pending"
+                }`}
+              >
+                {item.status
+                  ? `${item.status[0]}${item.status.slice(1).toLowerCase()}`
+                  : "—"}
+              </span>
+            </div>
+
+            <div className="customer-detail-card__route">
+              <FaMapMarkerAlt />
+              <strong>
+                {item.from_location} → {item.to_location}
+              </strong>
+            </div>
+
+            <div className="customer-detail-card__meta">
+              <span>
+                <FaCalendarAlt /> {formatDate(item.journey_date)}
+                {item.journey_time ? ` • ${item.journey_time}` : ""}
+              </span>
+              <span>
+                <FaBus />{" "}
+                {item.bus_type?.replaceAll("_", " ") || "—"}
+              </span>
+              <span>
+                <FaMoneyBillWave /> ₹{item.expected_price}
+              </span>
+              <span>Seats: {item.total_tickets}</span>
+            </div>
+
+            <div className="customer-detail-card__contact">
+              {item.contact_unlocked ? (
+                <>
+                  <div className="customer-detail-card__unlock-badge">
+                    <FaUnlock /> Details Unlocked
+                  </div>
+                  <div className="customer-detail-card__info">
+                    <div className="customer-detail-card__field">
+                      <FaUser />
+                      <div>
+                        <span>Customer Name</span>
+                        <h4>{item.name || "\u2014"}</h4>
+                      </div>
+                    </div>
+                    <div className="customer-detail-card__field">
+                      <FaVenusMars />
+                      <div>
+                        <span>Gender</span>
+                        <h4>{item.gender || "\u2014"}</h4>
+                      </div>
+                    </div>
+                    <div className="customer-detail-card__field">
+                      <FaPhone />
+                      <div>
+                        <span>Phone Number</span>
+                        {item.phone_number ? (
+                          <h4><a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a></h4>
+                        ) : (
+                          <h4>{"\u2014"}</h4>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="customer-detail-card__locked">
+                  <FaLock />
+                  <span>
+                    Accept this lead to unlock customer contact details
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+    </>
+  );
+}
 
 export default CustomerDetailsUnlock;

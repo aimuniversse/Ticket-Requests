@@ -303,6 +303,7 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
+  const [success, setSuccess] = useState("");
   const [historySearch, setHistorySearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [operatorSearch, setOperatorSearch] = useState("");
@@ -446,7 +447,9 @@ function Admin() {
     event.preventDefault();
     if (!creditForm.operator_id || !creditForm.credits) { setError("Select an operator and enter wallet points."); return; }
     setCrediting(true);
+    setSuccess("");
     try {
+      const op = walletOperators.find((item) => String(item.id) === String(creditForm.operator_id));
       await API.post("auth/wallet/add-credit/", {
         operator_ids: [Number(creditForm.operator_id)],
         credits: Number(creditForm.credits),
@@ -454,6 +457,8 @@ function Admin() {
       });
       setCreditForm({ operator_id: "", credits: "", description: "Admin wallet credit" });
       setError("");
+      setSuccess(`Points credited successfully! Amount: ₹${creditForm.credits} | Operator ID: ${creditForm.operator_id} | Company: ${op?.company_name || "—"}`);
+      setTimeout(() => setSuccess(""), 8000);
     } catch (err) {
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
     } finally {
@@ -806,6 +811,7 @@ function Admin() {
                   <p className="section-subtitle">Only administrators can add points. Operators spend one point when accepting a request.</p>
                 </div>
               </div>
+              {success && <p className="status-success">{success}</p>}
               <form className="wallet-credit-form" onSubmit={addCredit}>
                 <label className="operator-autocomplete-label">
                   Operator
@@ -882,7 +888,8 @@ function Admin() {
                   Description
                   <input value={creditForm.description} onChange={(e) => setCreditForm({ ...creditForm, description: e.target.value })} />
                 </label>
-                <button className="action-btn success" disabled={crediting}>{crediting ? "Adding..." : "Add points"}</button>
+                 <button className="action-btn success" disabled={crediting}>{crediting ? "Adding..." : "Add points"}</button>
+
               </form>
             </section>
           )}

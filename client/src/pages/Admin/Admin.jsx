@@ -335,11 +335,7 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
-<<<<<<< HEAD
-  const [creditSuccess, setCreditSuccess] = useState("");
-=======
   const [success, setSuccess] = useState("");
->>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
   const [historySearch, setHistorySearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [operatorSearch, setOperatorSearch] = useState("");
@@ -562,30 +558,18 @@ function Admin() {
     event.preventDefault();
     if (!creditForm.operator_id || !creditForm.credits) { setError("Select an operator and enter wallet points."); return; }
     setCrediting(true);
-<<<<<<< HEAD
-    setError("");
-    setCreditSuccess("");
-    try {
-      const res = await API.post("auth/wallet/add-credit/", {
-=======
     setSuccess("");
     try {
       const op = walletOperators.find((item) => String(item.id) === String(creditForm.operator_id));
       await API.post("auth/wallet/add-credit/", {
->>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
         operator_ids: [Number(creditForm.operator_id)],
         credits: Number(creditForm.credits),
         description: creditForm.description,
       });
       setCreditForm({ operator_id: "", credits: "", description: "Admin wallet credit" });
-<<<<<<< HEAD
-      setOperatorSearch("");
-      setCreditSuccess(res?.data?.message || "Credit sent successfully.");
-=======
       setError("");
       setSuccess(`Points credited successfully! Amount: ₹${creditForm.credits} | Operator ID: ${creditForm.operator_id} | Company: ${op?.company_name || "—"}`);
       setTimeout(() => setSuccess(""), 8000);
->>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
     } catch (err) {
       setCreditSuccess("");
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
@@ -862,11 +846,7 @@ function Admin() {
                   <p className="section-subtitle">Only administrators can add points. Operators spend one point when accepting a request.</p>
                 </div>
               </div>
-<<<<<<< HEAD
-              {creditSuccess && <p className="status-success">{creditSuccess}</p>}
-=======
               {success && <p className="status-success">{success}</p>}
->>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
               <form className="wallet-credit-form" onSubmit={addCredit}>
                 <label className="operator-autocomplete-label">
                   Operator

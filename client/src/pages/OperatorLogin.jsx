@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+import { useEffect, useState } from "react";
+=======
 import { useState } from "react";
+>>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorLogin.css";
@@ -17,6 +21,17 @@ const OperatorLogin = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+
+  // Already signed in? Send the user straight to the right dashboard.
+  useEffect(() => {
+    const token =
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("access") ||
+      localStorage.getItem("token");
+    if (!token) return;
+    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    navigate(role === "admin" ? "/admin/dashboard" : "/operator/dashboard", { replace: true });
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,16 +103,27 @@ const OperatorLogin = () => {
         localStorage.setItem("user", JSON.stringify(user));
       }
 
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get("next");
+
       if (role === "admin") {
         localStorage.setItem("userRole", "admin");
+<<<<<<< HEAD
+        navigate(next || "/admin/dashboard", { replace: true });
+=======
         navigate("/", { replace: true });
         window.open("/admin/dashboard", "_blank");
+>>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
         return;
       }
 
       localStorage.setItem("userRole", role || "operator");
+<<<<<<< HEAD
+      navigate(next || "/operator/dashboard", { replace: true });
+=======
       navigate("/", { replace: true });
       window.open("/operator/dashboard", "_blank");
+>>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
     } catch (error) {
       const apiError = error.response?.data;
       let message = "Login failed. Please try again.";
@@ -126,7 +152,7 @@ const OperatorLogin = () => {
       <div className="top-branding-animation">
         <div className="promo-illustration promo-bus">
           <div className="tickmybus-text">TICKMYBUS</div>
-          <svg className="animated-bus" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated bus illustration"> <path d="M28 136 h184" stroke="rgba(236, 18, 18, 0.35)" strokeWidth="3" strokeLinecap="round" /> <rect x="34" y="50" width="158" height="58" rx="13" fill="rgba(44, 41, 41, 0.93)" /> <polygon points="192,50 208,60 208,100 192,108" fill="rgba(145, 76, 162, 0.91)" /> <rect x="46" y="22" width="24" height="22" rx="6" fill="rgba(231, 23, 23, 0.92)" /> <rect x="78" y="22" width="24" height="22" rx="6" fill="rgba(235, 19, 19, 0.92)" /> <rect x="110" y="22" width="24" height="22" rx="6" fill="rgba(232, 27, 27, 0.92)" /> <rect x="142" y="22" width="24" height="22" rx="6" fill="rgba(237, 19, 19, 0.92)" /> <rect x="44" y="80" width="34" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <rect x="92" y="80" width="88" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <circle cx="36" cy="70" r="4.5" fill="#ffd23f" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="16" fill="rgba(5, 5, 5, 0.42)" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="7" fill="rgba(18, 17, 17, 0.9)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="16" fill="rgba(7, 7, 7, 0.42)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="7" fill="rgba(14, 14, 14, 0.9)" /> </svg>
+          <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" />
         </div>
       </div>
 
@@ -142,10 +168,11 @@ const OperatorLogin = () => {
               <li><span className="promo-check">✓</span> 24/7 Operator Support</li>
               <li><span className="promo-check">✓</span> Smart Reports &amp; Insights</li>
             </ul>
-
-            <button type="button" className="promo-cta" onClick={() => window.location.href = "https://demo.tickmybus.com/"}>Join TickMyBus Today!</button>
+              
+            <button type="button" className="promo-cta" onClick={() => window.open("https://demo.tickmybus.com/", "_blank")}>Join TickMyBus Today!</button>
+            
           </div>
-          <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <svg className="animated-bus" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated bus illustration" > <path d="M28 136 h184" stroke="rgba(255,255,255,0.35)" strokeWidth="3" strokeLinecap="round" /> <rect x="34" y="50" width="158" height="58" rx="13" fill="rgba(255,255,255,0.18)" /> <polygon points="192,50 208,60 208,100 192,108" fill="rgba(255,255,255,0.45)" /> <rect x="46" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="78" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="110" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="142" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="44" y="80" width="34" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <rect x="92" y="80" width="88" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <circle cx="36" cy="70" r="4.5" fill="#ffd23f" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> </svg> </div>
+          <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" /> </div>
         </aside>
 
         <div className="login-container">
@@ -259,7 +286,7 @@ const OperatorLogin = () => {
               <li><span className="promo-check">✓</span> Trusted by Operators</li>
             </ul>
           </div>
-           <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <svg className="animated-bus" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated bus illustration" > <path d="M28 136 h184" stroke="rgba(255,255,255,0.35)" strokeWidth="3" strokeLinecap="round" /> <rect x="34" y="50" width="158" height="58" rx="13" fill="rgba(255,255,255,0.18)" /> <polygon points="192,50 208,60 208,100 192,108" fill="rgba(255,255,255,0.45)" /> <rect x="46" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="78" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="110" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="142" y="22" width="24" height="22" rx="6" fill="rgba(255,255,255,0.92)" /> <rect x="44" y="80" width="34" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <rect x="92" y="80" width="88" height="28" rx="5" fill="rgba(255,255,255,0.30)" /> <circle cx="36" cy="70" r="4.5" fill="#ffd23f" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-left" cx="72" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="16" fill="rgba(255,255,255,0.42)" /> <circle className="bus-wheel wheel-right" cx="168" cy="120" r="7" fill="rgba(255,255,255,0.9)" /> </svg> </div>
+           <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" /> </div>
 
 
           <div className="promo-brand-line">TickMyBus — Your Growth Partner</div>

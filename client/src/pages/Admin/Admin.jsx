@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaEnvelope, FaHistory, FaCheckCircle, FaCog, FaPhone } from "react-icons/fa";
 import API from "../../api/axios";
 import Footer from "../../components/Footer";
+import Pagination from "../../components/Pagination";
+import { usePagination } from "../../hooks/usePagination";
+import { useCache } from "../../hooks/useCache";
 import "../../styles/Admin.css";
 import logoImage from "../../assets/logoc.png";
 
@@ -17,6 +20,9 @@ const SECTION_ICONS = {
   Approvals: FaCheckCircle,
   Settings: FaCog,
 };
+
+const PAGE_SIZE = 10;
+const HISTORY_PAGE_SIZE = 15;
 
 const Empty = ({ label }) => (
   <div className="empty-card">
@@ -141,49 +147,59 @@ function OperatorPanel({ user, data, loading, error }) {
       )}
 
       {activeTab === "transactions" && (
+        <PaginatedTransactions transactions={transactions} />
+      )}
+    </>
+  );
+}
+
+function PaginatedTransactions({ transactions }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(transactions, PAGE_SIZE);
+  return (
+    <>
+      <div className="panel-section-label">Request History</div>
+      {transactions.length ? (
         <>
-          <div className="panel-section-label">Request History</div>
-          {transactions.length ? (
-            <div style={{ overflowX: "auto" }}>
-              <table className="panel-mini-table">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Credits</th>
-                    <th>Balance After</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                    <th>Customer</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Journey Date</th>
+          <div style={{ overflowX: "auto" }}>
+            <table className="panel-mini-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Credits</th>
+                  <th>Balance After</th>
+                  <th>Description</th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Journey Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData.map((tx, i) => (
+                  <tr key={i}>
+                    <td>
+                      <span className={tx.transaction_type === "CREDIT" ? "tx-credit" : "tx-debit"}>
+                        {tx.transaction_type === "CREDIT" ? "+" : "−"}{tx.credits}
+                      </span>
+                    </td>
+                    <td>{tx.credits}</td>
+                    <td>{tx.balance_after_transaction}</td>
+                    <td>{tx.description || "—"}</td>
+                    <td>{formatDate(tx.created_at)}</td>
+                    <td>{tx.customer_name || "—"}</td>
+                    <td>{tx.customer_from || "—"}</td>
+                    <td>{tx.customer_to || "—"}</td>
+                    <td>{formatDate(tx.request_date)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((tx, i) => (
-                    <tr key={i}>
-                      <td>
-                        <span className={tx.transaction_type === "CREDIT" ? "tx-credit" : "tx-debit"}>
-                          {tx.transaction_type === "CREDIT" ? "+" : "−"}{tx.credits}
-                        </span>
-                      </td>
-                      <td>{tx.credits}</td>
-                      <td>{tx.balance_after_transaction}</td>
-                      <td>{tx.description || "—"}</td>
-                      <td>{formatDate(tx.created_at)}</td>
-                      <td>{tx.customer_name || "—"}</td>
-                      <td>{tx.customer_from || "—"}</td>
-                      <td>{tx.customer_to || "—"}</td>
-                      <td>{formatDate(tx.request_date)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="panel-empty">No transactions yet.</p>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
         </>
+      ) : (
+        <p className="panel-empty">No transactions yet.</p>
       )}
     </>
   );
@@ -246,47 +262,57 @@ function CustomerPanel({ user, data, loading, error }) {
       )}
 
       {activeTab === "history" && (
+        <PaginatedCustomerRequests requests={requests} />
+      )}
+    </>
+  );
+}
+
+function PaginatedCustomerRequests({ requests }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(requests, PAGE_SIZE);
+  return (
+    <>
+      {requests.length ? (
         <>
-          {requests.length ? (
-            <div style={{ overflowX: "auto" }}>
-              <table className="panel-mini-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Request ID</th>
-                    <th>Route</th>
-                    <th>Journey Date</th>
-                    <th>Bus Type</th>
-                    <th>Tickets</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Operator</th>
+          <div style={{ overflowX: "auto" }}>
+            <table className="panel-mini-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Request ID</th>
+                  <th>Route</th>
+                  <th>Journey Date</th>
+                  <th>Bus Type</th>
+                  <th>Tickets</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Operator</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData.map((req, idx) => (
+                  <tr key={req.id}>
+                    <td>{(page - 1) * PAGE_SIZE + idx + 1}</td>
+                    <td>
+                      <div className="panel-req-id">{req.request_id || req.id || "—"}</div>
+                      <div className="panel-req-datetime">{formatDateTime(req.created_at)}</div>
+                    </td>
+                    <td>{req.from_location} → {req.to_location}</td>
+                    <td>{formatDate(req.journey_date)}</td>
+                    <td>{req.bus_type ? req.bus_type.replace(/_/g, " ") : "—"}</td>
+                    <td>{req.total_tickets}</td>
+                    <td>₹{req.expected_price || "—"}</td>
+                    <td><StatusPill status={req.status} /></td>
+                    <td>{req.assigned_operator_name || "—"}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {requests.map((req, idx) => (
-                    <tr key={req.id}>
-                      <td>{idx + 1}</td>
-                      <td>
-                        <div className="panel-req-id">{req.request_id || req.id || "—"}</div>
-                        <div className="panel-req-datetime">{formatDateTime(req.created_at)}</div>
-                      </td>
-                      <td>{req.from_location} → {req.to_location}</td>
-                      <td>{formatDate(req.journey_date)}</td>
-                      <td>{req.bus_type ? req.bus_type.replace(/_/g, " ") : "—"}</td>
-                      <td>{req.total_tickets}</td>
-                      <td>₹{req.expected_price || "—"}</td>
-                      <td><StatusPill status={req.status} /></td>
-                      <td>{req.assigned_operator_name || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="panel-empty">No requests found for this customer.</p>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
         </>
+      ) : (
+        <p className="panel-empty">No requests found for this customer.</p>
       )}
     </>
   );
@@ -295,7 +321,13 @@ function CustomerPanel({ user, data, loading, error }) {
 /* ── Main Admin Component ───────────────────────────────────────────── */
 function Admin() {
   const navigate = useNavigate();
-  const [section, setSection] = useState("Dashboard");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Restore section from URL query param (supports browser back/forward)
+  const sectionFromUrl = searchParams.get("section");
+  const initialSection = SECTIONS.includes(sectionFromUrl) ? sectionFromUrl : "Dashboard";
+
+  const [section, setSection] = useState(initialSection);
   const [data, setData] = useState({ operators: [], customers: [], approvals: [], requests: [], wallets: [], history: [], pointRequests: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -303,7 +335,11 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
+<<<<<<< HEAD
   const [creditSuccess, setCreditSuccess] = useState("");
+=======
+  const [success, setSuccess] = useState("");
+>>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
   const [historySearch, setHistorySearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [operatorSearch, setOperatorSearch] = useState("");
@@ -318,6 +354,15 @@ function Admin() {
   const [detailsData, setDetailsData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsError, setDetailsError] = useState("");
+
+  // Cache instance
+  const cache = useCache();
+
+  // Update URL when section changes (enables browser history)
+  const changeSection = useCallback((newSection) => {
+    setSection(newSection);
+    setSearchParams({ section: newSection }, { replace: false });
+  }, [setSearchParams]);
 
   const closePanel = useCallback(() => {
     setSelectedUser(null);
@@ -369,10 +414,24 @@ function Admin() {
     }
     try {
       if (user.role === "Operator") {
+        const cacheKey = `operator_detail_${user.id}`;
+        const cached = cache.get(cacheKey);
+        if (cached) {
+          setDetailsData(cached);
+          setDetailsLoading(false);
+        }
         const res = await API.get(`auth/admin/operators/${user.id}/transactions/`);
+        cache.set(cacheKey, res.data, 30_000);
         setDetailsData(res.data);
       } else {
+        const cacheKey = `customer_detail_${user.mobile}`;
+        const cached = cache.get(cacheKey);
+        if (cached) {
+          setDetailsData(cached);
+          setDetailsLoading(false);
+        }
         const res = await API.get(`customer/admin/customers/${user.mobile}/requests/`);
+        cache.set(cacheKey, res.data, 30_000);
         setDetailsData(res.data);
       }
     } catch (err) {
@@ -381,7 +440,7 @@ function Admin() {
     } finally {
       setDetailsLoading(false);
     }
-  }, []);
+  }, [cache]);
 
   useEffect(() => {
     if (!selectedUser) return;
@@ -406,6 +465,25 @@ function Admin() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      // Serve from cache immediately for non-blocking UX
+      const cachedOperators = cache.get("admin_operators");
+      const cachedApprovals = cache.get("admin_approvals");
+      const cachedCustomers = cache.get("admin_customers");
+      const cachedHistory = cache.get("admin_history");
+      const cachedPointReqs = cache.get("admin_point_requests");
+
+      if (cachedOperators || cachedCustomers) {
+        setData((prev) => ({
+          ...prev,
+          operators: cachedOperators || prev.operators,
+          approvals: cachedApprovals || prev.approvals,
+          customers: cachedCustomers || prev.customers,
+          history: cachedHistory || prev.history,
+          pointRequests: cachedPointReqs || prev.pointRequests,
+        }));
+        setLoading(false);
+      }
+
       const [operatorsResponse, approvalsResponse, customersResponse, historyResponse, pointRequestsResponse] = await Promise.all([
         API.get("operators/"),
         API.get("auth/admin/operators/pending/"),
@@ -423,6 +501,14 @@ function Admin() {
       const customers = customersResponse.data || [];
       const history = historyResponse.data || [];
       const pointRequests = pointRequestsResponse.data || [];
+
+      // Store in cache (30 s TTL)
+      cache.set("admin_operators", operators, 30_000);
+      cache.set("admin_approvals", approvals, 30_000);
+      cache.set("admin_customers", customers, 30_000);
+      cache.set("admin_history", history, 30_000);
+      cache.set("admin_point_requests", pointRequests, 30_000);
+
       setData({ operators, customers, approvals, requests: [], wallets: [], history, pointRequests });
       setError("");
     } catch (err) {
@@ -436,11 +522,11 @@ function Admin() {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, cache]);
 
   useEffect(() => {
     load();
-    const timer = window.setInterval(load, 15000);
+    const timer = window.setInterval(load, 30000);
     return () => { window.clearInterval(timer); document.body.style.overflow = ""; };
   }, [load]);
 
@@ -456,6 +542,15 @@ function Admin() {
       });
   }, [navigate]);
 
+  // Sync URL → section when user navigates with browser back/forward
+  useEffect(() => {
+    const s = searchParams.get("section");
+    if (s && SECTIONS.includes(s) && s !== section) {
+      setSection(s);
+      closePanel();
+    }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const approve = async (id, action) => {
     try { await API.post(`auth/admin/operators/${id}/${action}/`); await load(); }
     catch (err) { setError(err.response?.data?.detail || `Unable to ${action} this operator.`); }
@@ -467,17 +562,30 @@ function Admin() {
     event.preventDefault();
     if (!creditForm.operator_id || !creditForm.credits) { setError("Select an operator and enter wallet points."); return; }
     setCrediting(true);
+<<<<<<< HEAD
     setError("");
     setCreditSuccess("");
     try {
       const res = await API.post("auth/wallet/add-credit/", {
+=======
+    setSuccess("");
+    try {
+      const op = walletOperators.find((item) => String(item.id) === String(creditForm.operator_id));
+      await API.post("auth/wallet/add-credit/", {
+>>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
         operator_ids: [Number(creditForm.operator_id)],
         credits: Number(creditForm.credits),
         description: creditForm.description,
       });
       setCreditForm({ operator_id: "", credits: "", description: "Admin wallet credit" });
+<<<<<<< HEAD
       setOperatorSearch("");
       setCreditSuccess(res?.data?.message || "Credit sent successfully.");
+=======
+      setError("");
+      setSuccess(`Points credited successfully! Amount: ₹${creditForm.credits} | Operator ID: ${creditForm.operator_id} | Company: ${op?.company_name || "—"}`);
+      setTimeout(() => setSuccess(""), 8000);
+>>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
     } catch (err) {
       setCreditSuccess("");
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
@@ -497,27 +605,34 @@ function Admin() {
 
   const requestCounts = data.requests.reduce((all, item) => ({ ...all, [item.status]: (all[item.status] || 0) + 1 }), {});
 
-  const renderTable = (rows, columns, onRowClick) =>
-    rows.length ? (
-      <div className="table-wrapper">
-        <table className="admin-table">
-          <thead><tr>{columns.map((c) => <th key={c.label}>{c.label}</th>)}</tr></thead>
-          <tbody>
-            {rows.map((row, idx) => (
-              <tr
-                key={row.id}
-                onClick={onRowClick ? () => onRowClick(row) : undefined}
-                className={`${onRowClick ? "clickable-row" : ""} ${selectedUser?.id === row.id ? "selected-row" : ""}`}
-              >
-                {columns.map((c) => (
-                  <td key={c.label} data-label={c.label}>{c.render ? c.render(row, idx) : row[c.key] || "—"}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  /* ── Paginated table renderer ──────────────────────────────────────── */
+  function PaginatedTable({ rows, columns, onRowClick, pageSize = PAGE_SIZE }) {
+    const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(rows, pageSize);
+
+    return rows.length ? (
+      <>
+        <div className="table-wrapper">
+          <table className="admin-table">
+            <thead><tr>{columns.map((c) => <th key={c.label}>{c.label}</th>)}</tr></thead>
+            <tbody>
+              {paginatedData.map((row, idx) => (
+                <tr
+                  key={row.id}
+                  onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  className={`${onRowClick ? "clickable-row" : ""} ${selectedUser?.id === row.id ? "selected-row" : ""}`}
+                >
+                  {columns.map((c) => (
+                    <td key={c.label} data-label={c.label}>{c.render ? c.render(row, (page - 1) * pageSize + idx) : row[c.key] || "—"}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+      </>
     ) : <Empty label="records" />;
+  }
 
   return (
     <div className="admin-page">
@@ -532,7 +647,7 @@ function Admin() {
               key={label}
               type="button"
               className={`component-chip ${section === label ? "active" : ""}`}
-              onClick={() => { setSection(label); closePanel(); }}
+              onClick={() => { changeSection(label); closePanel(); }}
             >
               {label}
             </button>
@@ -562,7 +677,7 @@ function Admin() {
                     <button
                       type="button"
                       className={`admin-drawer-item ${section === label ? "active" : ""}`}
-                      onClick={() => { setSection(label); closePanel(); setDrawerOpen(false); }}
+                      onClick={() => { changeSection(label); closePanel(); setDrawerOpen(false); }}
                     >
                       <Icon />
                       <span>{label}</span>
@@ -602,13 +717,13 @@ function Admin() {
                     <p className="section-subtitle">Live request and assignment status. Admins cannot accept requests.</p>
                   </div>
                 </div>
-                {renderTable(data.requests, [
+                <PaginatedTable rows={data.requests} columns={[
                   { label: "Request", key: "id" },
                   { label: "Customer", key: "customer" },
                   { label: "Route", key: "route" },
                   { label: "Status", render: (r) => <span className="badge badge-active">{r.status}</span> },
                   { label: "Operator", key: "operator" },
-                ])}
+                ]} />
               </section>
             </>
           )}
@@ -636,9 +751,9 @@ function Admin() {
 
                 {/* Desktop: Table */}
                 <div className="users-table-wrap">
-                  {renderTable(
-                    shownUsers,
-                    [
+                  <PaginatedTable
+                    rows={shownUsers}
+                    columns={[
                       ...(section === "Operators" || section === "Customers" ? [{ label: "S.No", render: (_r, idx) => idx + 1 }] : []),
                       { label: "Name", key: "name" },
                       ...(section === "Operators" ? [{ label: "Company", key: "company_name" }] : []),
@@ -650,22 +765,13 @@ function Admin() {
                       ...(section === "Customers" ? [{ label: "Date/Time", render: (r) => formatDateTime(r.created_at) }] : []),
                       { label: "Status", render: (r) => <StatusPill status={r.status} /> },
                       ...(section === "Customers" ? [{ label: "Accepted By", render: (r) => r.accepted_by_company !== "Nil" ? `${r.accepted_by_company} (${r.accepted_by_phone})` : "Nil" }] : []),
-                    ],
-                    selectUser,
-                  )}
+                    ]}
+                    onRowClick={selectUser}
+                  />
                 </div>
 
-                {/* Mobile: Cards */}
-                <div className="users-cards-list">
-                  {shownUsers.length ? shownUsers.map((user) => (
-                    <UserCard
-                      key={user.id}
-                      user={user}
-                      isSelected={selectedUser?.id === user.id}
-                      onClick={() => selectUser(user)}
-                    />
-                  )) : <Empty label="records" />}
-                </div>
+                {/* Mobile: Cards (paginated) */}
+                <MobileCardList users={shownUsers} selectedUser={selectedUser} selectUser={selectUser} />
 
                 {/* Detail Panel */}
                 {selectedUser && (
@@ -731,70 +837,10 @@ function Admin() {
                   />
                 </div>
               )}
-              {(() => {
-                const q = historySearch.toLowerCase();
-                const filtered = data.history.filter((item) =>
-                  (item.operator_company || "").toLowerCase().includes(q) ||
-                  (item.operator_phone || "").toLowerCase().includes(q) ||
-                  String(item.operator_id || "").includes(q)
-                );
-                return filtered.length ? (
-                  <>
-                    <div className="table-wrapper history-table-wrap">
-                      <table className="admin-table">
-                        <thead>
-                          <tr>
-                            <th>S.No</th>
-                            <th>Operator</th>
-                            <th>Company (Phone / ID)</th>
-                            <th>Points</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filtered.map((item, index) => (
-                            <tr key={item.id}>
-                              <td>{index + 1}</td>
-                              <td>{item.operator_name || "—"}</td>
-                              <td>{item.operator_company || "—"} ({item.operator_phone || "—"} / {item.operator_id || "—"})</td>
-                              <td>{item.credits}</td>
-                              <td>{formatDate(item.created_at)}</td>
-                              <td>{item.description || "—"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="history-cards-list">
-                      {filtered.map((item, index) => (
-                        <article key={item.id} className="history-card-mobile">
-                          <div className="history-card-mobile__top">
-                            <div className="history-card-mobile__avatar">
-                              <FaBus />
-                            </div>
-                            <div className="history-card-mobile__identity">
-                              <span className="history-card-mobile__name">{index + 1}. {item.operator_name || "—"}</span>
-                              <span className="history-card-mobile__company">{item.operator_company || "—"} ({item.operator_phone || "—"} / ID: {item.operator_id || "—"})</span>
-                            </div>
-                            <span className="history-card-mobile__points">+{item.credits}</span>
-                          </div>
-                          <div className="history-card-mobile__details">
-                            <span className="history-card-mobile__detail"><strong>Date:</strong> {formatDate(item.created_at)}</span>
-                            {item.description && (
-                              <span className="history-card-mobile__detail"><strong>Note:</strong> {item.description}</span>
-                            )}
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <Empty label="transactions" />
-                );
-              })()}
+              <HistoryTable data={data.history} search={historySearch} />
             </section>
           )}
+
           {section === "Approvals" && (
             <section className="admin-section">
               <div className="section-header">
@@ -803,22 +849,7 @@ function Admin() {
                   <p className="section-subtitle">Approve or reject registrations in real time.</p>
                 </div>
               </div>
-              {data.approvals.length ? (
-                <div className="approval-list">
-                  {data.approvals.map((item) => (
-                    <article key={item.id} className="approval-card">
-                      <div>
-                        <p className="approval-name">Name: {item.name}</p>
-                        <p className="approval-meta"><strong>Company Name:</strong> {item.company_name} · <strong>PH.NO:</strong> {item.mobile} · <strong>Email ID:</strong> {item.email}</p>
-                      </div>
-                      <div className="approval-actions">
-                        <button className="action-btn success" onClick={() => approve(item.id, "approve")}>Approve</button>
-                        <button className="action-btn secondary" onClick={() => approve(item.id, "reject")}>Reject</button>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              ) : <Empty label="pending approvals" />}
+              <ApprovalList approvals={data.approvals} approve={approve} pageSize={PAGE_SIZE} />
             </section>
           )}
 
@@ -831,7 +862,11 @@ function Admin() {
                   <p className="section-subtitle">Only administrators can add points. Operators spend one point when accepting a request.</p>
                 </div>
               </div>
+<<<<<<< HEAD
               {creditSuccess && <p className="status-success">{creditSuccess}</p>}
+=======
+              {success && <p className="status-success">{success}</p>}
+>>>>>>> 0649a0eac71c02816c036df74b5a97fe63e9a7ed
               <form className="wallet-credit-form" onSubmit={addCredit}>
                 <label className="operator-autocomplete-label">
                   Operator
@@ -908,7 +943,8 @@ function Admin() {
                   Description
                   <input value={creditForm.description} onChange={(e) => setCreditForm({ ...creditForm, description: e.target.value })} />
                 </label>
-                <button className="action-btn success" disabled={crediting}>{crediting ? "Adding..." : "Add points"}</button>
+                 <button className="action-btn success" disabled={crediting}>{crediting ? "Adding..." : "Add points"}</button>
+
               </form>
             </section>
           )}
@@ -924,6 +960,120 @@ function Admin() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+/* ── Mobile card list with pagination ───────────────────────────────── */
+function MobileCardList({ users, selectedUser, selectUser }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(users, PAGE_SIZE);
+  return (
+    <div className="users-cards-list">
+      {users.length ? (
+        <>
+          {paginatedData.map((user) => (
+            <UserCard
+              key={user.id}
+              user={user}
+              isSelected={selectedUser?.id === user.id}
+              onClick={() => selectUser(user)}
+            />
+          ))}
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+        </>
+      ) : <Empty label="records" />}
+    </div>
+  );
+}
+
+/* ── History table with pagination ──────────────────────────────────── */
+function HistoryTable({ data, search }) {
+  const q = search.toLowerCase();
+  const filtered = (data || []).filter((item) =>
+    (item.operator_company || "").toLowerCase().includes(q) ||
+    (item.operator_phone || "").toLowerCase().includes(q) ||
+    String(item.operator_id || "").includes(q)
+  );
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(filtered, HISTORY_PAGE_SIZE);
+
+  if (!filtered.length) return <Empty label="transactions" />;
+
+  return (
+    <>
+      <div className="table-wrapper history-table-wrap">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Operator</th>
+              <th>Company (Phone / ID)</th>
+              <th>Points</th>
+              <th>Date</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((item, index) => (
+              <tr key={item.id}>
+                <td>{(page - 1) * HISTORY_PAGE_SIZE + index + 1}</td>
+                <td>{item.operator_name || "—"}</td>
+                <td>{item.operator_company || "—"} ({item.operator_phone || "—"} / {item.operator_id || "—"})</td>
+                <td>{item.credits}</td>
+                <td>{formatDate(item.created_at)}</td>
+                <td>{item.description || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+      <div className="history-cards-list">
+        {paginatedData.map((item, index) => (
+          <article key={item.id} className="history-card-mobile">
+            <div className="history-card-mobile__top">
+              <div className="history-card-mobile__avatar">
+                <FaBus />
+              </div>
+              <div className="history-card-mobile__identity">
+                <span className="history-card-mobile__name">{(page - 1) * HISTORY_PAGE_SIZE + index + 1}. {item.operator_name || "—"}</span>
+                <span className="history-card-mobile__company">{item.operator_company || "—"} ({item.operator_phone || "—"} / ID: {item.operator_id || "—"})</span>
+              </div>
+              <span className="history-card-mobile__points">+{item.credits}</span>
+            </div>
+            <div className="history-card-mobile__details">
+              <span className="history-card-mobile__detail"><strong>Date:</strong> {formatDate(item.created_at)}</span>
+              {item.description && (
+                <span className="history-card-mobile__detail"><strong>Note:</strong> {item.description}</span>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/* ── Approvals list with pagination ─────────────────────────────────── */
+function ApprovalList({ approvals, approve, pageSize }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(approvals, pageSize);
+  if (!approvals.length) return <Empty label="pending approvals" />;
+  return (
+    <>
+      <div className="approval-list">
+        {paginatedData.map((item) => (
+          <article key={item.id} className="approval-card">
+            <div>
+              <p className="approval-name">Name: {item.name}</p>
+              <p className="approval-meta"><strong>Company Name:</strong> {item.company_name} · <strong>PH.NO:</strong> {item.mobile} · <strong>Email ID:</strong> {item.email}</p>
+            </div>
+            <div className="approval-actions">
+              <button className="action-btn success" onClick={() => approve(item.id, "approve")}>Approve</button>
+              <button className="action-btn secondary" onClick={() => approve(item.id, "reject")}>Reject</button>
+            </div>
+          </article>
+        ))}
+      </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+    </>
   );
 }
 

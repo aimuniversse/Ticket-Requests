@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaCheck, FaCheckCircle, FaClock, FaPhone, FaSearch, FaSyncAlt, FaTimes, FaUser } from "react-icons/fa";
 import API from "../../api/axios";
+import Pagination from "../../components/Pagination";
+import { usePagination } from "../../hooks/usePagination";
+import { useUrlState } from "../../hooks/useUrlState";
+import { useCache } from "../../hooks/useCache";
 import "../../styles/AcceptedRequests.css";
 import "../../styles/ActiveRequests.css";
 
@@ -46,17 +50,26 @@ const getRowClass = (status) => {
 };
 
 const AcceptedRequests = ({ onCountChange, initialFilter }) => {
+  const cache = useCache();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState(initialFilter || "ALL");
+  const [query, setQuery] = useUrlState("q", "");
+  const [statusFilter, setStatusFilter] = useUrlState("status", initialFilter || "ALL");
 
   const loadRequests = async (showLoader = false) => {
     if (showLoader) setLoading(true);
     try {
+      // Serve cached data immediately to avoid blank flash
+      const cached = cache.get("accepted_requests");
+      if (cached && showLoader) {
+        setRequests(cached);
+        setLoading(false);
+      }
       const response = await API.get("auth/requests/assigned/");
-      setRequests(response.data || []);
+      const fresh = response.data || [];
+      cache.set("accepted_requests", fresh, 30_000);
+      setRequests(fresh);
       setError("");
     } catch (err) {
       setError(err?.response?.status === 401 ? "Please sign in again as an operator to view accepted requests." : "Unable to load accepted requests.");
@@ -143,99 +156,109 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
         ) : filteredRequests.length === 0 ? (
           <div className="requests-empty"><FaCheckCircle className="requests-empty__icon" /><h2>No accepted requests</h2><p>Requests you accept from the active queue will appear here.</p></div>
         ) : (
-          <>
-            <div className="request-table-wrap">
-              <table className="request-table">
-                <thead>
-                  <tr>
-                    <th>Request ID</th>
-                    <th>Route</th>
-                    <th>Journey date</th>
-                    <th>Seats</th>
-                    <th>Bus type</th>
-                    <th>Price</th>
-                    <th>Customer name</th>
-                    <th>Phone number</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredRequests.map((item) => (
-                    <tr key={item.id} className={getRowClass(item.status)}>
-                      <td data-label="Request ID">
-                        <span className="request-id">{item.request_id || `#${item.id}`}</span>
-                        <span className="request-id-time">{formatDateTime(item.created_at)}</span>
-                      </td>
-                      <td data-label="Route"><strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong></td>
-                      <td data-label="Journey date">{formatDate(item.journey_date)}</td>
-                      <td data-label="Seats">{item.total_tickets}</td>
-                      <td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "\u2014"}</span></td>
-                      <td data-label="Price"><strong>&#8377;{item.expected_price}</strong></td>
-                      <td data-label="Customer name">
-                        {item.contact_unlocked ? (
-                          <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
-                        ) : (
-                          <span className="customer-locked">Locked</span>
-                        )}
-                      </td>
-                      <td data-label="Phone number">
-                        {item.contact_unlocked && item.phone_number ? (
-                          <a href={`tel:${item.phone_number}`} className="customer-unlocked phone-link"><FaPhone /> {item.phone_number}</a>
-                        ) : (
-                          <span className="customer-locked">Locked</span>
-                        )}
-                      </td>
-                      <td data-label="Status">
-                        <div className="status-stack">
-                          <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                          {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
-                          {item.status === "ACCEPTED" && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
-                          {item.status === "COMPLETED" && <span className="accepted-label"><FaCheckCircle /> Trip completed</span>}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="request-cards-list">
-              {filteredRequests.map((item) => (
-                <article key={`card-${item.id}`} className={`request-card-mobile ${getRowClass(item.status)}`}>
-                  <div className="request-card-mobile__top">
-                    <div className="request-card-mobile__route">
-                      <span className="request-card-mobile__id">{item.request_id || `#${item.id}`}</span>
-                      <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
-                      <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
-                    </div>
-                    <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                  </div>
-                  <div className="request-card-mobile__details">
-                    <div className="request-card-mobile__col request-card-mobile__col--left">
-                      <span className="request-card-mobile__detail"><strong>Passenger:</strong> {item.contact_unlocked ? <span className="customer-unlocked"><FaUser /> {item.name || "Customer"}</span> : <span className="customer-locked">Locked</span>}</span>
-                      <span className="request-card-mobile__detail"><strong>Phone:</strong> {item.contact_unlocked && item.phone_number ? <a href={`tel:${item.phone_number}`} className="phone-link"><FaPhone /> {item.phone_number}</a> : <span className="customer-locked">Locked</span>}</span>
-                      <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
-                      <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
-                    </div>
-                    <div className="request-card-mobile__col request-card-mobile__col--right">
-                      <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
-                      <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
-                    </div>
-                  </div>
-                  <div className="request-card-mobile__action request-card-mobile__action--accepted">
-                    {item.status === "ACCEPTED" && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
-                    {item.status === "ASSIGNED" && <span className="accepted-label"><FaCheck /> Assigned to you</span>}
-                    {item.status === "COMPLETED" && <span className="accepted-label"><FaCheckCircle /> Trip completed</span>}
-                    {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
-                    {item.status === "CANCELLED" && <span className="expired-badge">Cancelled</span>}
-                    {!["ACCEPTED", "ASSIGNED", "COMPLETED", "EXPIRED", "CANCELLED"].includes(item.status) && <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </>
+          <AcceptedRequestsTable filteredRequests={filteredRequests} />
         )}
       </div>
     </section>
   );
 };
+
+function AcceptedRequestsTable({ filteredRequests }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(filteredRequests, 10, { paramKey: "page" });
+
+  return (
+    <>
+      <div className="request-table-wrap">
+        <table className="request-table">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Route</th>
+              <th>Journey date</th>
+              <th>Seats</th>
+              <th>Bus type</th>
+              <th>Price</th>
+              <th>Customer name</th>
+              <th>Phone number</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((item) => (
+              <tr key={item.id} className={getRowClass(item.status)}>
+                <td data-label="Request ID">
+                  <span className="request-id">{item.request_id || `#${item.id}`}</span>
+                  <span className="request-id-time">{formatDateTime(item.created_at)}</span>
+                </td>
+                <td data-label="Route"><strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong></td>
+                <td data-label="Journey date">{formatDate(item.journey_date)}</td>
+                <td data-label="Seats">{item.total_tickets}</td>
+                <td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "\u2014"}</span></td>
+                <td data-label="Price"><strong>&#8377;{item.expected_price}</strong></td>
+                <td data-label="Customer name">
+                  {item.contact_unlocked ? (
+                    <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
+                  ) : (
+                    <span className="customer-locked">Locked</span>
+                  )}
+                </td>
+                <td data-label="Phone number">
+                  {item.contact_unlocked && item.phone_number ? (
+                    <a href={`tel:${item.phone_number}`} className="customer-unlocked phone-link"><FaPhone /> {item.phone_number}</a>
+                  ) : (
+                    <span className="customer-locked">Locked</span>
+                  )}
+                </td>
+                <td data-label="Status">
+                  <div className="status-stack">
+                    <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                    {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
+                    {item.status === "ACCEPTED" && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
+                    {item.status === "COMPLETED" && <span className="accepted-label"><FaCheckCircle /> Trip completed</span>}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+      <div className="request-cards-list">
+        {filteredRequests.map((item) => (
+          <article key={`card-${item.id}`} className={`request-card-mobile ${getRowClass(item.status)}`}>
+            <div className="request-card-mobile__top">
+              <div className="request-card-mobile__route">
+                <span className="request-card-mobile__id">{item.request_id || `#${item.id}`}</span>
+                <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
+                <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
+              </div>
+              <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+            </div>
+            <div className="request-card-mobile__details">
+              <div className="request-card-mobile__col request-card-mobile__col--left">
+                <span className="request-card-mobile__detail"><strong>Passenger:</strong> {item.contact_unlocked ? <span className="customer-unlocked"><FaUser /> {item.name || "Customer"}</span> : <span className="customer-locked">Locked</span>}</span>
+                <span className="request-card-mobile__detail"><strong>Phone:</strong> {item.contact_unlocked && item.phone_number ? <a href={`tel:${item.phone_number}`} className="phone-link"><FaPhone /> {item.phone_number}</a> : <span className="customer-locked">Locked</span>}</span>
+                <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
+                <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
+              </div>
+              <div className="request-card-mobile__col request-card-mobile__col--right">
+                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
+                <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
+              </div>
+            </div>
+            <div className="request-card-mobile__action request-card-mobile__action--accepted">
+              {item.status === "ACCEPTED" && <span className="accepted-label"><FaCheck /> Booking confirmed</span>}
+              {item.status === "ASSIGNED" && <span className="accepted-label"><FaCheck /> Assigned to you</span>}
+              {item.status === "COMPLETED" && <span className="accepted-label"><FaCheckCircle /> Trip completed</span>}
+              {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
+              {item.status === "CANCELLED" && <span className="expired-badge">Cancelled</span>}
+              {!["ACCEPTED", "ASSIGNED", "COMPLETED", "EXPIRED", "CANCELLED"].includes(item.status) && <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>}
+            </div>
+          </article>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export default AcceptedRequests;

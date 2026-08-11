@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../../api/axios";
+import { useCache } from "../../hooks/useCache";
 import "../../styles/OperatorDashboard.css";
 import logo from "../../assets/logo.jpeg";
 import {
@@ -63,8 +64,14 @@ const accountLinks = [
 
 const OperatorDashboardNew = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("overview");
-  const [cardFilter, setCardFilter] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const cache = useCache();
+
+  // Restore tab from URL on mount (enables browser back/forward)
+  const tabFromUrl = searchParams.get("tab") || "overview";
+  const filterFromUrl = searchParams.get("status") || null;
+  const [activeSection, setActiveSection] = useState(tabFromUrl);
+  const [cardFilter, setCardFilter] = useState(filterFromUrl);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -93,7 +100,11 @@ const OperatorDashboardNew = () => {
     setError("");
 
     try {
+      // Serve cached assigned requests immediately (non-blocking UX)
+      const cached = cache.get("dashboard_assigned_requests");
+      if (cached) setRequests(cached);
       const response = await API.get("auth/requests/assigned/");
+      cache.set("dashboard_assigned_requests", response.data || [], 30_000);
       setRequests(response.data || []);
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
@@ -170,11 +181,16 @@ const OperatorDashboardNew = () => {
   };
 
   useEffect(() => {
-    const role = (localStorage.getItem("userRole") || "").toLowerCase();
-    if (role === "admin") {
-      navigate("/admin/dashboard", { replace: true });
-      return;
+    // Sync URL tab → state when user navigates with browser back/forward
+    const urlTab = searchParams.get("tab") || "overview";
+    const urlFilter = searchParams.get("status") || null;
+    if (urlTab !== activeSection || urlFilter !== cardFilter) {
+      setActiveSection(urlTab);
+      setCardFilter(urlFilter);
     }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
 
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -307,6 +323,12 @@ const OperatorDashboardNew = () => {
     setCardFilter(filter);
     setMenuOpen(false);
     setOpenDropdown(null);
+    // Write tab (and optional status filter) to URL so browser back/forward
+    // restores the exact view.
+    setSearchParams(
+      filter ? { tab: section, status: filter } : { tab: section },
+      { replace: false },
+    );
   };
 
   const handleCardClick = (section, filter) => {

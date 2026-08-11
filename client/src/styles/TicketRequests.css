@@ -366,13 +366,13 @@
   align-items: center;
   gap: 7px;
   color: #0e0e0f;
-  font-size: 0.65rem;
+  font-size: 0.85rem;
 }
 
 .agree-box input {
-  width: 14px;
-  height: 14px;
-  margin: 0;
+  width: 18px;
+  height: 18px;
+  margin: 10px;
   accent-color: #5742d5;
 }
 
@@ -590,13 +590,15 @@
   }
 
   .agree-box {
-    font-size: 0.89rem;
-    margin-bottom: 0;
+    font-size: 0.99rem;
+    margin-bottom: 10px;
+    
   }
 
   .agree-box input {
-    width: 10px;
-    height: 10px;
+    width: 14px;
+    height: 14px;
+   
   }
 
   .form-actions {

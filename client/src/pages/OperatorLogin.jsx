@@ -131,7 +131,7 @@ const OperatorLogin = () => {
   };
 
   return (
-    
+
     <div className="operator-login-page">
       <div className="top-branding">TICKMYBUS</div>
 
@@ -154,109 +154,109 @@ const OperatorLogin = () => {
               <li><span className="promo-check">✓</span> 24/7 Operator Support</li>
               <li><span className="promo-check">✓</span> Smart Reports &amp; Insights</li>
             </ul>
-              
+
             <button type="button" className="promo-cta" onClick={() => window.open("https://demo.tickmybus.com/", "_blank")}>Join TickMyBus Today!</button>
-            
+
           </div>
           <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" /> </div>
         </aside>
 
         <div className="login-container">
-        <div className="login-left">
-          <div className="operator-brand">
-            <img src={tickMyBusLogo} alt="TickMyBus" />
-            <span>TickMyBus</span>
+          <div className="login-left">
+            <div className="operator-brand">
+              <img src={tickMyBusLogo} alt="TickMyBus" />
+              <span>TickMyBus</span>
+            </div>
+
+            <h1>Operator portal</h1>
+
+            <p>
+              Manage ticket requests,
+              send quotations,
+              track wallet balance,
+              and grow your bookings.
+            </p>
+
+            <div className="features">
+              <div>✔ Receive Route Requests</div>
+              <div>✔ Submit Ticket Quotes</div>
+              <div>✔ Wallet & Earnings</div>
+              <div>✔ Real-time Notifications</div>
+            </div>
           </div>
 
-          <h1>Operator portal</h1>
+          <div className="login-right">
+            <div className="login-card">
+              <h2>Welcome Back</h2>
+              <p>Sign in to manage your bus ticket requests.</p>
 
-          <p>
-            Manage ticket requests,
-            send quotations,
-            track wallet balance,
-            and grow your bookings.
-          </p>
+              <form onSubmit={handleSubmit}>
+                <div className="input-group">
+                  <label>Phone Number</label>
 
-          <div className="features">
-            <div>✔ Receive Route Requests</div>
-            <div>✔ Submit Ticket Quotes</div>
-            <div>✔ Wallet & Earnings</div>
-            <div>✔ Real-time Notifications</div>
-          </div>
-        </div>
-
-        <div className="login-right">
-          <div className="login-card">
-            <h2>Welcome Back</h2>
-            <p>Sign in to manage your bus ticket requests.</p>
-
-            <form onSubmit={handleSubmit}>
-              <div className="input-group">
-                <label>Phone Number</label>
-
-                <input
-                  type="tel"
-                  name="phone_number"
-                  placeholder="Enter your registered phone number"
-                  value={formData.phone_number}
-                  onChange={handleChange}
-                />
-
-                {errors.phone_number && (
-                  <span className="error">{errors.phone_number}</span>
-                )}
-              </div>
-
-              <div className="input-group">
-                <label>Password</label>
-
-                <div className="password-box">
                   <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Enter Password"
-                    value={formData.password}
+                    type="tel"
+                    name="phone_number"
+                    placeholder="Enter your registered phone number"
+                    value={formData.phone_number}
                     onChange={handleChange}
                   />
 
-                  <button
-                    type="button"
-                    className="show-btn"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
+                  {errors.phone_number && (
+                    <span className="error">{errors.phone_number}</span>
+                  )}
                 </div>
 
-                {errors.password && (
-                  <span className="error">{errors.password}</span>
-                )}
-              </div>
+                <div className="input-group">
+                  <label>Password</label>
 
-              {serverError && <span className="error">{serverError}</span>}
+                  <div className="password-box">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Enter Password"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
 
-              <div className="login-options">
-                <label>
-                  <input type="checkbox" />
-                  Remember Me
-                </label>
+                    <button
+                      type="button"
+                      className="show-btn"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
 
-                <Link to="/forgot-password">Forgot Password?</Link>
-              </div>
+                  {errors.password && (
+                    <span className="error">{errors.password}</span>
+                  )}
+                </div>
 
-              <button className="login-btn" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </button>
+                {serverError && <span className="error">{serverError}</span>}
 
-              <div className="register-text">
-                Don&apos;t have an account?
-                <Link to="/operator-register">Register</Link>
-              </div>
-            </form>
+                <div className="login-options">
+                  <label>
+                    <input type="checkbox" />
+                    Remember Me
+                  </label>
 
+                  <Link to="/forgot-password">Forgot Password?</Link>
+                </div>
+
+                <button className="login-btn" disabled={isLoading}>
+                  {isLoading ? "Logging in..." : "Login"}
+                </button>
+
+                <div className="register-text">
+                  Don&apos;t have an account?
+                  <Link to="/operator-register">Register</Link>
+                </div>
+              </form>
+
+            </div>
           </div>
         </div>
-      </div>
 
         <aside className="promo-panel promo-right">
           <div>
@@ -272,7 +272,7 @@ const OperatorLogin = () => {
               <li><span className="promo-check">✓</span> Trusted by Operators</li>
             </ul>
           </div>
-           <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" /> </div>
+          <div className="promo-illustration promo-bus"> <div className="tickmybus-text">TICKMYBUS</div> <img className="animated-bus" src={tickMyBusLogo} alt="TickMyBus" /> </div>
 
 
           <div className="promo-brand-line">TickMyBus — Your Growth Partner</div>

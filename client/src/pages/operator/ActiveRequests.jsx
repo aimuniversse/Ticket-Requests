@@ -359,7 +359,7 @@ function ActiveRequestsTablePaginated({
                 <td data-label="Seats">{item.total_tickets}</td>
                 <td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "\u2014"}</span></td>
                 <td data-label="Requested price"><strong>&#8377;{item.expected_price}</strong></td>
-                 <td data-label="Customer">
+                <td data-label="Customer">
                   {(item.contact_unlocked || isAccepted(item)) ? (
                     <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
                   ) : (

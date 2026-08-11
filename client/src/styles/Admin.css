@@ -251,6 +251,7 @@
 .header-logo {
   height: 36px;
   width: auto;
+  cursor: pointer;
 }
 
 .header-brand {
@@ -1946,6 +1947,7 @@
 .admin-drawer-logo {
   height: 36px;
   width: auto;
+  cursor: pointer;
 }
 
 .admin-drawer-close {

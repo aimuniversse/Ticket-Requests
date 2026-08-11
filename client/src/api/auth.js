@@ -1,12 +1,13 @@
 // Centralised auth + cache storage.
 //
-// Multi-tab safety:
-//   - Tokens are written to BOTH sessionStorage and localStorage.
-//   - Reads PREFER sessionStorage (per-tab), so two tabs logged into two
-//     different accounts never overwrite each other, and each tab keeps its
-//     own session. localStorage is a persistent fallback + backward compat.
-//   - Logout / login always clear the current tab's cached API data so one
-//     account never sees another account's previously cached data.
+// Per-tab isolation:
+//   - Tokens live ONLY in sessionStorage, which is scoped to a single tab.
+//     Every tab can therefore be logged into a different operator account
+//     independently — no shared localStorage means a new tab never inherits
+//     another tab's session.
+//   - A freshly opened tab shows the login page; open as many operator tabs
+//     as you like, each with its own account.
+//   - Logout clears the current tab's session and cached API data only.
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -17,7 +18,7 @@ const CACHE_PREFIX = "tmb_cache_";
 const read = (key) => {
   if (typeof window === "undefined") return null;
   try {
-    return sessionStorage.getItem(key) || localStorage.getItem(key) || null;
+    return sessionStorage.getItem(key);
   } catch {
     return null;
   }
@@ -26,13 +27,11 @@ const read = (key) => {
 const write = (key, value) => {
   if (typeof window === "undefined") return;
   try { sessionStorage.setItem(key, value); } catch { /* ignore */ }
-  try { localStorage.setItem(key, value); } catch { /* ignore */ }
 };
 
 const remove = (key) => {
   if (typeof window === "undefined") return;
   try { sessionStorage.removeItem(key); } catch { /* ignore */ }
-  try { localStorage.removeItem(key); } catch { /* ignore */ }
 };
 
 const getRawUser = () => {

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { useEffect, useState } from "react";
-=======
-import { useState } from "react";
->>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorLogin.css";
@@ -108,22 +104,12 @@ const OperatorLogin = () => {
 
       if (role === "admin") {
         localStorage.setItem("userRole", "admin");
-<<<<<<< HEAD
         navigate(next || "/admin/dashboard", { replace: true });
-=======
-        navigate("/", { replace: true });
-        window.open("/admin/dashboard", "_blank");
->>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
         return;
       }
 
       localStorage.setItem("userRole", role || "operator");
-<<<<<<< HEAD
       navigate(next || "/operator/dashboard", { replace: true });
-=======
-      navigate("/", { replace: true });
-      window.open("/operator/dashboard", "_blank");
->>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
     } catch (error) {
       const apiError = error.response?.data;
       let message = "Login failed. Please try again.";

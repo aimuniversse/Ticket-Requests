@@ -294,10 +294,8 @@ const ActiveRequests = ({ initialFilter }) => {
             <label className="accepted-filter"><FaSearch /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search requests..." /></label>
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="ALL">All ({statusCounts.ALL})</option>
-              <option value="NEW">New ({statusCounts.NEW})</option>
               <option value="PENDING">Pending ({statusCounts.PENDING})</option>
               <option value="ACCEPTED">Accepted ({statusCounts.ACCEPTED})</option>
-              <option value="ASSIGNED">Assigned ({statusCounts.ASSIGNED})</option>
               <option value="EXPIRED">Already taken ({statusCounts.EXPIRED})</option>
             </select>
           </div>
@@ -307,6 +305,7 @@ const ActiveRequests = ({ initialFilter }) => {
         ) : sortedRequests.length === 0 ? (
           <div className="requests-empty"><FaClock className="requests-empty__icon" /><h2>No requests</h2><p>New customer requests will appear here automatically.</p></div>
         ) : (
+<<<<<<< HEAD
           <ActiveRequestsTablePaginated
             sortedRequests={sortedRequests}
             acceptingId={acceptingId}
@@ -318,6 +317,124 @@ const ActiveRequests = ({ initialFilter }) => {
             getStatusPillClass={getStatusPillClass}
             getStatusLabel={getStatusLabel}
           />
+=======
+          <>
+            <div className="request-table-wrap">
+              <table className="request-table">
+                <thead>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>Route</th>
+                    <th>Journey date</th>
+                    <th>Seats</th>
+                    <th>Bus type</th>
+                    <th>Requested price</th>
+                    <th>Customer</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Time left</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedRequests.map((item) => (
+                    <tr key={item.id} className={getRowClass(item)}>
+                      <td data-label="Request ID">
+                        <span className="request-id">{item.request_id || `#${item.id}`}</span>
+                        <span className="request-id-time">{formatDateTime(item.created_at)}</span>
+                      </td>
+                      <td data-label="Route"><strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong></td>
+                      <td data-label="Journey date">{formatDate(item.journey_date)}</td>
+                      <td data-label="Seats">{item.total_tickets}</td>
+                      <td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "\u2014"}</span></td>
+                      <td data-label="Requested price"><strong>&#8377;{item.expected_price}</strong></td>
+                       <td data-label="Customer">
+                        {(item.contact_unlocked || isAccepted(item)) ? (
+                          <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
+                        ) : (
+                          <span className="time-cell"><FaUser /> {item.name || "\u2014"}</span>
+                        )}
+                      </td>                  
+                      
+                      <td data-label="Gender">{item.gender || "\u2014"}</td>
+                      <td data-label="Phone">
+                        {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
+                          <a href={`tel:${item.phone_number}`} className="customer-unlocked phone-link"><FaPhone /> {item.phone_number}</a>
+                        ) : (
+                          <span className="time-cell">{formatPhoneDisplay(item)}</span>
+                        )}
+                      </td>
+                      <td data-label="Time left"><span className="time-cell"><FaClock /> {formatTimeLeft(item.expires_at, item.status)}</span></td>
+                      <td data-label="Status">
+                        <div className="status-stack">
+                          <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                          {isAccepted(item) ? (
+                            <span className="accepted-label"><FaCheck /> Booking confirmed</span>
+                          ) : item.status !== "EXPIRED" ? (
+                            <button
+                              type="button"
+                              className="table-action table-action--accept"
+                              disabled={acceptingId === item.id || walletLoading || walletBalance === null || walletBalance <= 0}
+                              onClick={() => handleAccept(item)}
+                            >
+                              <FaCheck /> {acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                            </button>
+                          ) : null}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="request-cards-list">
+              {sortedRequests.map((item) => (
+                <article key={`card-${item.id}`} className={`request-card-mobile ${getRowClass(item)}`}>
+                  <div className="request-card-mobile__top">
+                    <div className="request-card-mobile__route">
+                      <span className="request-card-mobile__id">{item.request_id || `#${item.id}`}</span>
+                      <span className="request-card-mobile__id-time">{formatDateTime(item.created_at)}</span>
+                      <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
+                    </div>
+                    <div className="request-card-mobile__status">
+                      <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                      {isAccepted(item) ? (
+                        <span className="accepted-label"><FaCheck /> Booking confirmed</span>
+                      ) : item.status !== "EXPIRED" ? (
+                        <button
+                          type="button"
+                          className="table-action table-action--accept"
+                          disabled={acceptingId === item.id || walletLoading || walletBalance === null || walletBalance <= 0}
+                          onClick={() => handleAccept(item)}
+                        >
+                          <FaCheck /> {acceptingId === item.id ? "Accepting" : walletLoading ? "Checking" : walletBalance <= 0 ? "No credits" : "Accept"}
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="request-card-mobile__details">
+                    <div className="request-card-mobile__col request-card-mobile__col--left">
+                      <span className="request-card-mobile__detail"><strong>Passenger:</strong> {item.name || "Customer"}</span>
+                      <span className="request-card-mobile__detail"><strong>Gender:</strong> {item.gender || "\u2014"}</span>
+                      <span className="request-card-mobile__detail"><strong>Type:</strong> {item.bus_type?.replaceAll("_", " ") || "\u2014"}</span>
+                      <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Time</strong>{formatTimeLeft(item.expires_at, item.status)}</span>
+
+                    </div>
+                    <div className="request-card-mobile__col request-card-mobile__col--right">
+                      <span className="request-card-mobile__detail"><strong>Phone:</strong> {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
+                        <a href={`tel:${item.phone_number}`} className="phone-link">{item.phone_number}</a>
+                      ) : formatPhoneDisplay(item)}</span>
+                      <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
+                      <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
+                      <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
+           
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+>>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
         )}
       </div>
     </section>

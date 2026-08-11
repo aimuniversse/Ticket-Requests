@@ -110,7 +110,7 @@ const OperatorDashboardNew = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        navigate("/operator-login");
+        navigate("/operator-login", { replace: true });
         return;
       }
 
@@ -265,7 +265,7 @@ const OperatorDashboardNew = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
-    navigate("/operator-login");
+    navigate("/operator-login", { replace: true });
   };
 
   const requestPoints = walletLoading ? "--" : wallet?.current_balance ?? 0;
@@ -341,7 +341,7 @@ const OperatorDashboardNew = () => {
           <h2>{loading ? "--" : leadPoolCount}</h2>
         </div>
 
-        <div className={`dashboard-card dashboard-card--new dashboard-card--clickable ${hasNewRequests ? "dashboard-card--alert" : ""}`} role="button" tabIndex={0} onClick={() => handleCardClick("active", "PENDING")} onKeyDown={(e) => e.key === "Enter" && handleCardClick("active", "PENDING")}>
+        <div className={`dashboard-card dashboard-card--new dashboard-card--clickable ${hasNewRequests ? "dashboard-card--alert" : ""}`} role="button" tabIndex={0} onClick={() => handleCardClick("active", null)} onKeyDown={(e) => e.key === "Enter" && handleCardClick("active", null)}>
           <FaClock className="card-icon" />
           <span>New Requests</span>
           <h2>{leadPoolCount}</h2>

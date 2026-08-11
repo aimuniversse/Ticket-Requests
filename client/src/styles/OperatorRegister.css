@@ -58,7 +58,7 @@
 .register-left p { margin: 0 0 18px; color: rgba(255,255,255,.88); font-size: 11px; line-height: 1.65; }
 .register-features { display: grid; gap: 9px; }
 .register-features div { padding: 8px 9px; border-radius: 7px; background: rgba(255,255,255,.13); font-size: 10px; }
-.register-right { padding: 24px 30px; }
+.register-right { padding: 150px 30px; }
 .register-card { width: min(100%, 520px); margin: auto; }
 .register-card h2 { margin: 0 0 5px; color: #12345d; font-size: 22px; line-height: 1.2; }
 .register-card > p { margin: 0 0 17px; color: #718096; font-size: 11px; }
@@ -82,7 +82,7 @@
 .register-success-icon { width: 52px; height: 52px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #ecfdf5; color: #059669; font-size: 26px; font-weight: 800; border: 2px solid #a7f3d0; }
 .register-success h2 { font-size: 18px; color: #102a43; }
 .register-success p { margin: 10px 0 20px; color: #526070; font-size: 12.5px; line-height: 1.6; }
-.register-btn--link { display: block; width: 100%; height: 39px; padding: 0; text-align: center; line-height: 39px; text-decoration: none; margin-top: 3px; border: 0; border-radius: 7px; background: #146dca; color: #fff; font: inherit; font-size: 12px; font-weight: 600; transition: .2s; }
+.register-btn--link { display: flex; align-items: center; justify-content: center; width: 100%; height: 39px; padding: 0; text-align: center; text-decoration: none; margin-top: 10px; border: 0; border-radius: 7px; background: #146dca; color: #fff; font: inherit; font-size: 12px; font-weight: 600; transition: .2s; }
 .register-btn--link:hover { background: #0f5dae; color: #fff; transform: translateY(-1px); }
 
 @media (max-width: 760px) {

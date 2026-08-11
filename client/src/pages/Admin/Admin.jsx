@@ -622,7 +622,7 @@ function Admin() {
     <div className="admin-page">
       <div className="admin-components-header">
         <div className="header-left">
-          <img src={logoImage} alt="Tick My Bus" className="header-logo" />
+          <img src={logoImage} alt="Tick My Bus" className="header-logo" onClick={load} />
           <span className="header-brand" />
         </div>
         <nav className="header-nav">
@@ -648,7 +648,7 @@ function Admin() {
         <div className="admin-drawer-overlay" onClick={() => setDrawerOpen(false)}>
           <nav className="admin-drawer" onClick={(e) => e.stopPropagation()}>
             <div className="admin-drawer-header">
-              <img src={logoImage} alt="Tick My Bus" className="admin-drawer-logo" />
+              <img src={logoImage} alt="Tick My Bus" className="admin-drawer-logo" onClick={load} />
               <button type="button" className="admin-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close menu">
                 &times;
               </button>

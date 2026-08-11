@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { getAccessToken, getUserRole } from "../../api/auth";
 
 /**
  * ProtectedRoute
@@ -11,16 +12,13 @@ import { Navigate } from "react-router-dom";
  * @param {React.ReactNode}          children
  */
 function ProtectedRoute({ role = "any", children }) {
-  const token =
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("access") ||
-    localStorage.getItem("token");
+  const token = getAccessToken();
 
   if (!token) {
     return <Navigate to="/operator-login" replace />;
   }
 
-  const userRole = (localStorage.getItem("userRole") || "").toLowerCase();
+  const userRole = getUserRole();
 
   if (role === "operator" && userRole === "admin") {
     return <Navigate to="/admin/dashboard" replace />;

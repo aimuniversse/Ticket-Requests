@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
+import { clearAppCache, getUserRole, isAuthenticated, storeAuth } from "../api/auth";
 import "../styles/OperatorLogin.css";
 import tickMyBusLogo from "../assets/logoc.png";
 import logoImage from "../assets/logo.jpeg";
@@ -20,12 +21,8 @@ const OperatorLogin = () => {
 
   // Already signed in? Send the user straight to the right dashboard.
   useEffect(() => {
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("access") ||
-      localStorage.getItem("token");
-    if (!token) return;
-    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    if (!isAuthenticated()) return;
+    const role = getUserRole();
     navigate(role === "admin" ? "/admin/dashboard" : "/operator/dashboard", { replace: true });
   }, [navigate]);
 
@@ -85,31 +82,15 @@ const OperatorLogin = () => {
       const { access, refresh, user } = response.data || {};
       const role = (user?.role || response.data?.role || "").toString().toLowerCase();
 
-      if (access) {
-        localStorage.setItem("accessToken", access);
-        localStorage.setItem("access", access);
-        localStorage.setItem("token", access);
-      }
-
-      if (refresh) {
-        localStorage.setItem("refreshToken", refresh);
-      }
-
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
+      // Persist in BOTH storages: sessionStorage isolates this tab, localStorage
+      // keeps the session across restarts. Drop any previous account's cache.
+      storeAuth({ access, refresh, user, role });
+      clearAppCache();
 
       const params = new URLSearchParams(window.location.search);
       const next = params.get("next");
 
-      if (role === "admin") {
-        localStorage.setItem("userRole", "admin");
-        navigate(next || "/admin/dashboard", { replace: true });
-        return;
-      }
-
-      localStorage.setItem("userRole", role || "operator");
-      navigate(next || "/operator/dashboard", { replace: true });
+      navigate(next || (role === "admin" ? "/admin/dashboard" : "/operator/dashboard"), { replace: true });
     } catch (error) {
       const apiError = error.response?.data;
       let message = "Login failed. Please try again.";

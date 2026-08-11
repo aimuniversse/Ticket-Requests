@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaSignOutAlt, FaWallet, FaUser, FaBus, FaBars, FaHome, FaEnvelope, FaHistory, FaCheckCircle, FaCog, FaPhone } from "react-icons/fa";
 import API from "../../api/axios";
+import { clearAppCache, clearAuth, scopedKey } from "../../api/auth";
 import Footer from "../../components/Footer";
 import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
@@ -410,7 +411,7 @@ function Admin() {
     }
     try {
       if (user.role === "Operator") {
-        const cacheKey = `operator_detail_${user.id}`;
+        const cacheKey = scopedKey(`operator_detail_${user.id}`);
         const cached = cache.get(cacheKey);
         if (cached) {
           setDetailsData(cached);
@@ -420,7 +421,7 @@ function Admin() {
         cache.set(cacheKey, res.data, 30_000);
         setDetailsData(res.data);
       } else {
-        const cacheKey = `customer_detail_${user.mobile}`;
+        const cacheKey = scopedKey(`customer_detail_${user.mobile}`);
         const cached = cache.get(cacheKey);
         if (cached) {
           setDetailsData(cached);
@@ -437,7 +438,6 @@ function Admin() {
       setDetailsLoading(false);
     }
   }, [cache]);
-
   useEffect(() => {
     if (!selectedUser) return;
     const refreshDetails = async () => {
@@ -449,7 +449,8 @@ function Admin() {
         setDetailsData(res.data);
       } catch (err) {
         if (err?.response?.status === 401 || err?.response?.status === 403) {
-          localStorage.clear();
+          clearAuth();
+          clearAppCache();
           navigate("/operator-login", { replace: true });
         }
       }
@@ -462,11 +463,11 @@ function Admin() {
     setLoading(true);
     try {
       // Serve from cache immediately for non-blocking UX
-      const cachedOperators = cache.get("admin_operators");
-      const cachedApprovals = cache.get("admin_approvals");
-      const cachedCustomers = cache.get("admin_customers");
-      const cachedHistory = cache.get("admin_history");
-      const cachedPointReqs = cache.get("admin_point_requests");
+      const cachedOperators = cache.get(scopedKey("admin_operators"));
+      const cachedApprovals = cache.get(scopedKey("admin_approvals"));
+      const cachedCustomers = cache.get(scopedKey("admin_customers"));
+      const cachedHistory = cache.get(scopedKey("admin_history"));
+      const cachedPointReqs = cache.get(scopedKey("admin_point_requests"));
 
       if (cachedOperators || cachedCustomers) {
         setData((prev) => ({
@@ -499,18 +500,19 @@ function Admin() {
       const pointRequests = pointRequestsResponse.data || [];
 
       // Store in cache (30 s TTL)
-      cache.set("admin_operators", operators, 30_000);
-      cache.set("admin_approvals", approvals, 30_000);
-      cache.set("admin_customers", customers, 30_000);
-      cache.set("admin_history", history, 30_000);
-      cache.set("admin_point_requests", pointRequests, 30_000);
+      cache.set(scopedKey("admin_operators"), operators, 30_000);
+      cache.set(scopedKey("admin_approvals"), approvals, 30_000);
+      cache.set(scopedKey("admin_customers"), customers, 30_000);
+      cache.set(scopedKey("admin_history"), history, 30_000);
+      cache.set(scopedKey("admin_point_requests"), pointRequests, 30_000);
 
       setData({ operators, customers, approvals, requests: [], wallets: [], history, pointRequests });
       setError("");
     } catch (err) {
       const statusCode = err.response?.status;
       if (statusCode === 401 || statusCode === 403) {
-        localStorage.clear();
+        clearAuth();
+        clearAppCache();
         navigate("/operator-login", { replace: true });
         return;
       }
@@ -532,7 +534,8 @@ function Admin() {
       .catch((err) => {
         const statusCode = err?.response?.status;
         if (statusCode === 401 || statusCode === 403) {
-          localStorage.clear();
+          clearAuth();
+          clearAppCache();
           navigate("/operator-login", { replace: true });
         }
       });
@@ -552,7 +555,7 @@ function Admin() {
     catch (err) { setError(err.response?.data?.detail || `Unable to ${action} this operator.`); }
   };
 
-  const logout = () => { localStorage.clear(); navigate("/operator-login", { replace: true }); };
+  const logout = () => { clearAuth(); clearAppCache(); navigate("/operator-login", { replace: true }); };
 
   const addCredit = async (event) => {
     event.preventDefault();

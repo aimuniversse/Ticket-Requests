@@ -5,6 +5,7 @@ import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import { useUrlState } from "../../hooks/useUrlState";
 import { useCache } from "../../hooks/useCache";
+import { scopedKey } from "../../api/auth";
 import "../../styles/AcceptedRequests.css";
 import "../../styles/ActiveRequests.css";
 
@@ -61,14 +62,14 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
     if (showLoader) setLoading(true);
     try {
       // Serve cached data immediately to avoid blank flash
-      const cached = cache.get("accepted_requests");
+      const cached = cache.get(scopedKey("accepted_requests"));
       if (cached && showLoader) {
         setRequests(cached);
         setLoading(false);
       }
       const response = await API.get("auth/requests/assigned/");
       const fresh = response.data || [];
-      cache.set("accepted_requests", fresh, 30_000);
+      cache.set(scopedKey("accepted_requests"), fresh, 30_000);
       setRequests(fresh);
       setError("");
     } catch (err) {

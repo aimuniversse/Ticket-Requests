@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaUserCircle, FaEnvelope, FaPhone, FaIdBadge, FaBuilding } from "react-icons/fa";
 import API from "../../api/axios";
+import { getStoredUser, scopedKey, storeAuth } from "../../api/auth";
 import { useCache } from "../../hooks/useCache";
 
 import "../../styles/Profile.css";
@@ -26,28 +27,24 @@ const Profile = () => {
       });
     };
 
-    const storedUser = localStorage.getItem("user");
+    const storedUser = getStoredUser();
     if (storedUser) {
       try {
-        applyUser(JSON.parse(storedUser));
+        applyUser(storedUser);
       } catch {
         // ignore malformed storage data
       }
     }
 
     // Serve cached profile instantly (30 s TTL)
-    const cached = cache.get("operator_profile");
+    const cached = cache.get(scopedKey("operator_profile"));
     if (cached) applyUser(cached);
 
     API.get("auth/me/")
       .then((res) => {
-        cache.set("operator_profile", res.data, 30_000);
+        cache.set(scopedKey("operator_profile"), res.data, 30_000);
         applyUser(res.data);
-        try {
-          localStorage.setItem("user", JSON.stringify(res.data));
-        } catch {
-          // ignore storage errors
-        }
+        storeAuth({ user: res.data });
       })
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps

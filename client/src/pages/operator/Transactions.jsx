@@ -5,6 +5,7 @@ import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import { useUrlState } from "../../hooks/useUrlState";
 import { useCache } from "../../hooks/useCache";
+import { scopedKey } from "../../api/auth";
 import "../../styles/Transactions.css";
 
 const Transactions = () => {
@@ -18,10 +19,10 @@ const Transactions = () => {
   const loadTransactions = async () => {
     setLoading(true);
     try {
-      const cached = cache.get("transactions");
+      const cached = cache.get(scopedKey("transactions"));
       if (cached) setTransactions(cached);
       const response = await API.get("auth/wallet/history/");
-      cache.set("transactions", response.data || [], 30_000);
+      cache.set(scopedKey("transactions"), response.data || [], 30_000);
       setTransactions(response.data || []);
       setError("");
     } catch (err) {

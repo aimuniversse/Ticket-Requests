@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../../api/axios";
+import { clearAppCache, clearAuth, getStoredUser, scopedKey } from "../../api/auth";
 import { useCache } from "../../hooks/useCache";
 import "../../styles/OperatorDashboard.css";
 import logo from "../../assets/logo.jpeg";
@@ -101,19 +102,16 @@ const OperatorDashboardNew = () => {
 
     try {
       // Serve cached assigned requests immediately (non-blocking UX)
-      const cached = cache.get("dashboard_assigned_requests");
+      const cacheKey = scopedKey("dashboard_assigned_requests");
+      const cached = cache.get(cacheKey);
       if (cached) setRequests(cached);
       const response = await API.get("auth/requests/assigned/");
-      cache.set("dashboard_assigned_requests", response.data || [], 30_000);
+      cache.set(cacheKey, response.data || [], 30_000);
       setRequests(response.data || []);
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("access");
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("user");
+        clearAuth();
+        clearAppCache();
         navigate("/operator-login", { replace: true });
         return;
       }
@@ -195,10 +193,10 @@ const OperatorDashboardNew = () => {
 
   useEffect(() => {
 
-    const storedUser = localStorage.getItem("user");
+    const storedUser = getStoredUser();
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        setUser(storedUser);
       } catch {
         setUser(null);
       }
@@ -313,12 +311,8 @@ const OperatorDashboardNew = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("access");
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("user");
+    clearAuth();
+    clearAppCache();
     navigate("/operator-login", { replace: true });
   };
 

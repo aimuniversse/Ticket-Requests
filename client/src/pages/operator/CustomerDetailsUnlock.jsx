@@ -19,6 +19,7 @@ import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import { useUrlState } from "../../hooks/useUrlState";
 import { useCache } from "../../hooks/useCache";
+import { scopedKey } from "../../api/auth";
 import "../../styles/CustomerDetailsUnlock.css";
 import "../../styles/ActiveRequests.css";
 
@@ -43,13 +44,13 @@ const CustomerDetailsUnlock = () => {
     if (showLoader) setLoading(true);
     try {
       // Serve cached data immediately to avoid a blank flash
-      const cached = cache.get("customer_details_requests");
+      const cached = cache.get(scopedKey("customer_details_requests"));
       if (cached && showLoader) {
         setRequests(cached);
         setLoading(false);
       }
       const response = await API.get("auth/requests/assigned/");
-      cache.set("customer_details_requests", response.data || [], 30_000);
+      cache.set(scopedKey("customer_details_requests"), response.data || [], 30_000);
       setRequests(response.data || []);
       setError("");
     } catch (err) {

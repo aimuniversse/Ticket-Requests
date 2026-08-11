@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaArrowDown, FaArrowUp, FaHistory, FaPaperPlane, FaWallet } from "react-icons/fa";
 import API from "../../api/axios";
+import Pagination from "../../components/Pagination";
+import { usePagination } from "../../hooks/usePagination";
+import { useCache } from "../../hooks/useCache";
 import "../../styles/Wallet.css";
 
 const Wallet = () => {
+  const cache = useCache();
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [pointRequests, setPointRequests] = useState([]);
@@ -16,14 +20,27 @@ const Wallet = () => {
   const loadWallet = async () => {
     setLoading(true);
     try {
+      // Serve cached data immediately to avoid a blank flash
+      const cachedWallet = cache.get("operator_wallet");
+      const cachedHistory = cache.get("operator_wallet_history");
+      const cachedPointRequests = cache.get("operator_point_requests");
+      if (cachedWallet) setWallet(cachedWallet);
+      if (cachedHistory) setTransactions(cachedHistory);
+      if (cachedPointRequests) setPointRequests(cachedPointRequests);
+
       const [walletResponse, historyResponse, prResponse] = await Promise.all([
         API.get("auth/wallet/"),
         API.get("auth/wallet/history/"),
         API.get("auth/point-requests/").catch(() => ({ data: [] })),
       ]);
+      const freshHistory = historyResponse.data || [];
+      const freshPointRequests = prResponse.data || [];
+      cache.set("operator_wallet", walletResponse.data, 30_000);
+      cache.set("operator_wallet_history", freshHistory, 30_000);
+      cache.set("operator_point_requests", freshPointRequests, 30_000);
       setWallet(walletResponse.data);
-      setTransactions(historyResponse.data || []);
-      setPointRequests(prResponse.data || []);
+      setTransactions(freshHistory);
+      setPointRequests(freshPointRequests);
       setError("");
     } catch (err) {
       setError(err.response?.data?.detail || "Unable to load wallet details.");
@@ -170,26 +187,37 @@ const Wallet = () => {
             <p>Credits added by an admin and points used to accept requests will appear here.</p>
           </div>
         ) : (
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Type</th><th>Points</th><th>Description</th><th>Balance</th></tr>
-            </thead>
-            <tbody>
-              {transactions.map((item, index) => (
-                <tr key={`${item.created_at}-${index}`}>
-                  <td>{new Date(item.created_at).toLocaleString("en-IN")}</td>
-                  <td>{item.transaction_type}</td>
-                  <td>{item.credits}</td>
-                  <td>{item.description}</td>
-                  <td>{item.balance_after_transaction}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <WalletTransactionsTable transactions={transactions} />
         )}
       </section>
     </div>
   );
 };
+
+function WalletTransactionsTable({ transactions }) {
+  const { page, setPage, totalPages, paginatedData, pageInfo } = usePagination(transactions, 10, { paramKey: "page" });
+
+  return (
+    <>
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Type</th><th>Points</th><th>Description</th><th>Balance</th></tr>
+        </thead>
+        <tbody>
+          {paginatedData.map((item, index) => (
+            <tr key={`${item.created_at}-${index}`}>
+              <td>{new Date(item.created_at).toLocaleString("en-IN")}</td>
+              <td>{item.transaction_type}</td>
+              <td>{item.credits}</td>
+              <td>{item.description}</td>
+              <td>{item.balance_after_transaction}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} pageInfo={pageInfo} />
+    </>
+  );
+}
 
 export default Wallet;

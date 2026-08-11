@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaUserCircle, FaEnvelope, FaPhone, FaIdBadge, FaBuilding } from "react-icons/fa";
 import API from "../../api/axios";
+import { useCache } from "../../hooks/useCache";
 
 import "../../styles/Profile.css";
 
 const Profile = () => {
+  const cache = useCache();
   const [profile, setProfile] = useState({
     name: "",
     company_name: "",
@@ -33,8 +35,13 @@ const Profile = () => {
       }
     }
 
+    // Serve cached profile instantly (30 s TTL)
+    const cached = cache.get("operator_profile");
+    if (cached) applyUser(cached);
+
     API.get("auth/me/")
       .then((res) => {
+        cache.set("operator_profile", res.data, 30_000);
         applyUser(res.data);
         try {
           localStorage.setItem("user", JSON.stringify(res.data));
@@ -43,6 +50,7 @@ const Profile = () => {
         }
       })
       .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

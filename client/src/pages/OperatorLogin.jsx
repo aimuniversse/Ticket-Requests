@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorLogin.css";
 import tickMyBusLogo from "../assets/logoc.png";
@@ -7,6 +7,7 @@ import logoImage from "../assets/logo.jpeg";
 
 
 const OperatorLogin = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     phone_number: "",
     password: "",
@@ -16,6 +17,17 @@ const OperatorLogin = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+
+  // Already signed in? Send the user straight to the right dashboard.
+  useEffect(() => {
+    const token =
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("access") ||
+      localStorage.getItem("token");
+    if (!token) return;
+    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    navigate(role === "admin" ? "/admin/dashboard" : "/operator/dashboard", { replace: true });
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,14 +99,17 @@ const OperatorLogin = () => {
         localStorage.setItem("user", JSON.stringify(user));
       }
 
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get("next");
+
       if (role === "admin") {
         localStorage.setItem("userRole", "admin");
-        window.open("/admin/dashboard", "_blank");
+        navigate(next || "/admin/dashboard", { replace: true });
         return;
       }
 
       localStorage.setItem("userRole", role || "operator");
-      window.open("/operator/dashboard", "_blank");
+      navigate(next || "/operator/dashboard", { replace: true });
     } catch (error) {
       const apiError = error.response?.data;
       let message = "Login failed. Please try again.";

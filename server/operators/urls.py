@@ -16,6 +16,8 @@ from .views import (
     AdminPointRequestListView,
     AdminPointRequestActionView,
     AdminTransactionsAPIView,
+    OperatorNotificationListAPIView,
+    OperatorNotificationMarkReadAPIView,
 )
 
 
@@ -93,5 +95,15 @@ urlpatterns = [
     path(
         "admin/transactions/",
         AdminTransactionsAPIView.as_view(),
+    ),
+    path(
+        "notifications/",
+        OperatorNotificationListAPIView.as_view(),
+        name="operator-notifications",
+    ),
+    path(
+        "notifications/<int:notification_id>/read/",
+        OperatorNotificationMarkReadAPIView.as_view(),
+        name="operator-notification-mark-read",
     ),
 ]

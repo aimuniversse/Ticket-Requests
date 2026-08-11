@@ -15,6 +15,7 @@ const typeIcons = {
   accepted: FaCheckCircle,
   rejected: FaTimesCircle,
   wallet: FaWallet,
+  credit: FaWallet,
   expired: FaClock,
 };
 

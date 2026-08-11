@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import API from "../api/axios";
 import "../styles/OperatorRegister.css";
 import tickMyBusLogo from "../assets/logoc.png";
 
 const OperatorRegister = () => {
-  const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -28,6 +26,7 @@ const OperatorRegister = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -140,13 +139,11 @@ const OperatorRegister = () => {
       // Registration is public; do not attach a stale operator/admin token.
       const response = await API.post("auth/register/", payload, { skipAuth: true });
 
-      if (response.data?.message) {
-        alert(response.data.message);
-      } else {
-        alert("Registration successful");
-      }
-         
-      navigate("/operator-login");
+      setSuccessMessage(
+        response.data?.message ||
+          "Registration successful! Our admin team will contact you shortly. Please wait for approval."
+      );
+      return;
     } catch (error) {
       const status = error.response?.status;
       const apiError = error.response?.data;
@@ -239,6 +236,16 @@ const OperatorRegister = () => {
         <div className="register-right">
 
           <div className="register-card">
+
+            {successMessage ? (
+              <div className="register-success">
+                <div className="register-success-icon">✓</div>
+                <h2>Registration Submitted</h2>
+                <p>{successMessage}</p>
+                <Link to="/operator-login" className="register-btn register-btn--link">Go to Login</Link>
+              </div>
+            ) : (
+              <>
 
             <h2>Create Operator Account</h2>
 
@@ -414,6 +421,9 @@ const OperatorRegister = () => {
               </Link>
 
             </div>
+
+              </>
+            )}
 
           </div>
 

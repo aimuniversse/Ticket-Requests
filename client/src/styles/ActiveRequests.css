@@ -14,8 +14,8 @@
 
 .request-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .request-table{width:100%;min-width:960px;border-collapse:collapse;text-align:left}
-.request-table th{padding:12px 8px;background:#f8fafc;color:#64748b;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.request-table td{padding:13px 8px;border-top:1px solid #eef1f5;color:#475569;font-size:.83rem;vertical-align:middle}
+.request-table th{padding:13px 8px;background:#17223b;color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;border-bottom:2px solid #33415e}
+.request-table td{padding:13px 8px;border-top:1px solid #eef1f5;color:#475569;font-size:.83rem;vertical-align:middle;text-align:left}
 .request-table tbody tr{transition:background .18s ease}
 .request-table tbody tr:hover{background:#fffafb}
 .request-row--active{background:#ffffff}
@@ -70,7 +70,7 @@
 
 /* ── Narrow desktop: tighten cell spacing so the full table fits without right-side clipping ── */
 @media(max-width:1440px){
-  .request-table th{padding:12px 6px}
+  .request-table th{padding:13px 6px}
   .request-table td{padding:13px 6px}
   .table-action{padding:7px 10px}
   .type-pill,.status-pill{padding:3px 8px}
@@ -78,7 +78,7 @@
 }
 
 @media(max-width:1300px){
-  .request-table th{padding:11px 4px;font-size:.64rem}
+  .request-table th{padding:12px 4px;font-size:.64rem}
   .request-table td{padding:12px 4px;font-size:.78rem}
   .table-action{padding:6px 8px;font-size:.74rem}
   .type-pill,.status-pill{padding:2px 6px;font-size:.68rem}

@@ -303,6 +303,7 @@ function Admin() {
   const [walletOperators, setWalletOperators] = useState([]);
   const [creditForm, setCreditForm] = useState({ operator_id: "", credits: "", description: "Admin Request credit" });
   const [crediting, setCrediting] = useState(false);
+  const [creditSuccess, setCreditSuccess] = useState("");
   const [historySearch, setHistorySearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [operatorSearch, setOperatorSearch] = useState("");
@@ -382,6 +383,26 @@ function Admin() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!selectedUser) return;
+    const refreshDetails = async () => {
+      try {
+        const res =
+          selectedUser.role === "Operator"
+            ? await API.get(`auth/admin/operators/${selectedUser.id}/transactions/`)
+            : await API.get(`customer/admin/customers/${selectedUser.mobile}/requests/`);
+        setDetailsData(res.data);
+      } catch (err) {
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          localStorage.clear();
+          navigate("/operator-login", { replace: true });
+        }
+      }
+    };
+    const timer = window.setInterval(refreshDetails, 15000);
+    return () => window.clearInterval(timer);
+  }, [selectedUser, navigate]);
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -446,15 +467,19 @@ function Admin() {
     event.preventDefault();
     if (!creditForm.operator_id || !creditForm.credits) { setError("Select an operator and enter wallet points."); return; }
     setCrediting(true);
+    setError("");
+    setCreditSuccess("");
     try {
-      await API.post("auth/wallet/add-credit/", {
+      const res = await API.post("auth/wallet/add-credit/", {
         operator_ids: [Number(creditForm.operator_id)],
         credits: Number(creditForm.credits),
         description: creditForm.description,
       });
       setCreditForm({ operator_id: "", credits: "", description: "Admin wallet credit" });
-      setError("");
+      setOperatorSearch("");
+      setCreditSuccess(res?.data?.message || "Credit sent successfully.");
     } catch (err) {
+      setCreditSuccess("");
       setError(err.response?.data?.detail || err.response?.data?.credits?.[0] || "Unable to add wallet points.");
     } finally {
       setCrediting(false);
@@ -806,6 +831,7 @@ function Admin() {
                   <p className="section-subtitle">Only administrators can add points. Operators spend one point when accepting a request.</p>
                 </div>
               </div>
+              {creditSuccess && <p className="status-success">{creditSuccess}</p>}
               <form className="wallet-credit-form" onSubmit={addCredit}>
                 <label className="operator-autocomplete-label">
                   Operator

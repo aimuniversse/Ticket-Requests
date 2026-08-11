@@ -480,7 +480,7 @@ const TicketRequestForm = () => {
               <input
                 type="number"
                 name="expected_price"
-                min="1"
+                min="300"
                 step="any"
                 value={formData.expected_price}
                 onChange={handleChange}

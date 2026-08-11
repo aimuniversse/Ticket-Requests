@@ -139,17 +139,54 @@
 /* ── Responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .pagination-bar {
+    align-items: center;
     justify-content: center;
+    width: 100%;
     padding: 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .pagination-controls {
+    justify-content: center;
+    width: 100%;
+    gap: 3px;
+  }
+
+  .pg-btn {
+    min-width: 28px;
+    height: 30px;
+    padding: 0 6px;
+    font-size: 0.8rem;
+  }
+
+  .pg-btn--edge {
+    min-width: 24px;
+  }
+
+  .pg-btn--num {
+    min-width: 28px;
+  }
+
+  .pg-ellipsis {
+    line-height: 30px;
+  }
+
+  .pagination-jump {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pagination-jump__input {
+    width: 44px;
+    height: 30px;
+  }
+
+  .pagination-jump__btn {
+    min-width: 36px;
   }
 
   .pagination-info {
     width: 100%;
     text-align: center;
-  }
-
-  .pagination-jump {
-    display: none;
-    /* hide jump on very small screens */
   }
 }

@@ -108,7 +108,10 @@ const OperatorDashboardNew = () => {
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("access");
+        localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userRole");
         localStorage.removeItem("user");
         navigate("/operator-login", { replace: true });
         return;
@@ -263,7 +266,10 @@ const OperatorDashboardNew = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("access");
+    localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userRole");
     localStorage.removeItem("user");
     navigate("/operator-login", { replace: true });
   };

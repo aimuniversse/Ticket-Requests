@@ -305,19 +305,6 @@ const ActiveRequests = ({ initialFilter }) => {
         ) : sortedRequests.length === 0 ? (
           <div className="requests-empty"><FaClock className="requests-empty__icon" /><h2>No requests</h2><p>New customer requests will appear here automatically.</p></div>
         ) : (
-<<<<<<< HEAD
-          <ActiveRequestsTablePaginated
-            sortedRequests={sortedRequests}
-            acceptingId={acceptingId}
-            walletLoading={walletLoading}
-            walletBalance={walletBalance}
-            handleAccept={handleAccept}
-            isAccepted={isAccepted}
-            getRowClass={getRowClass}
-            getStatusPillClass={getStatusPillClass}
-            getStatusLabel={getStatusLabel}
-          />
-=======
           <>
             <div className="request-table-wrap">
               <table className="request-table">
@@ -348,14 +335,14 @@ const ActiveRequests = ({ initialFilter }) => {
                       <td data-label="Seats">{item.total_tickets}</td>
                       <td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "\u2014"}</span></td>
                       <td data-label="Requested price"><strong>&#8377;{item.expected_price}</strong></td>
-                       <td data-label="Customer">
+                      <td data-label="Customer">
                         {(item.contact_unlocked || isAccepted(item)) ? (
                           <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
                         ) : (
                           <span className="time-cell"><FaUser /> {item.name || "\u2014"}</span>
                         )}
-                      </td>                  
-                      
+                      </td>
+
                       <td data-label="Gender">{item.gender || "\u2014"}</td>
                       <td data-label="Phone">
                         {(item.contact_unlocked || isAccepted(item)) && item.phone_number ? (
@@ -427,14 +414,13 @@ const ActiveRequests = ({ initialFilter }) => {
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Seats</strong>{item.total_tickets}</span>
                       <span className="request-card-mobile__detail request-card-mobile__detail--num"><strong>Price</strong>&#8377;{item.expected_price}</span>
                       <span className="request-card-mobile__detail"><strong>Date:</strong> {formatDate(item.journey_date)}</span>
-           
+
                     </div>
                   </div>
                 </article>
               ))}
             </div>
           </>
->>>>>>> cf0ad59e639d830635d6e8386c3a3dba6e0fc6f8
         )}
       </div>
     </section>
@@ -478,7 +464,7 @@ function ActiveRequestsTablePaginated({
                 <td data-label="Seats">{item.total_tickets}</td>
                 <td data-label="Bus type"><span className="type-pill">{item.bus_type?.replaceAll("_", " ") || "\u2014"}</span></td>
                 <td data-label="Requested price"><strong>&#8377;{item.expected_price}</strong></td>
-                 <td data-label="Customer">
+                <td data-label="Customer">
                   {(item.contact_unlocked || isAccepted(item)) ? (
                     <span className="customer-unlocked"><FaUser /> {item.name || "\u2014"}</span>
                   ) : (

@@ -74,7 +74,7 @@ function Footer() {
           <ul className="footer-links">
             {serviceLinks.map((link) => (
               <li key={link.label}>
-                <a href={link.href}>{link.label}</a>
+                <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
               </li>
             ))}
             <li>

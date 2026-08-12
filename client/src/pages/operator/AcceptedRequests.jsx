@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaCheck, FaCheckCircle, FaClock, FaPhone, FaSearch, FaSyncAlt, FaTimes, FaUser } from "react-icons/fa";
+import { FaCheck, FaCheckCircle, FaClock, FaPhone, FaSyncAlt, FaTimes, FaUser } from "react-icons/fa";
 import API from "../../api/axios";
 import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
-import { useUrlState } from "../../hooks/useUrlState";
 import { useCache } from "../../hooks/useCache";
 import { scopedKey } from "../../api/auth";
 import "../../styles/AcceptedRequests.css";
@@ -50,13 +49,11 @@ const getRowClass = (status) => {
   }
 };
 
-const AcceptedRequests = ({ onCountChange, initialFilter }) => {
+const AcceptedRequests = ({ onCountChange }) => {
   const cache = useCache();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [query, setQuery] = useUrlState("q", "");
-  const [statusFilter, setStatusFilter] = useUrlState("status", initialFilter || "ALL");
 
   const loadRequests = async (showLoader = false) => {
     if (showLoader) setLoading(true);
@@ -85,10 +82,6 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
     return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    if (initialFilter) setStatusFilter(initialFilter);
-  }, [initialFilter]);
-
   const statusCounts = useMemo(() => {
     const counts = { ALL: requests.length, NEW: 0, PENDING: 0, ACCEPTED: 0, ASSIGNED: 0, EXPIRED: 0, COMPLETED: 0 };
     requests.forEach((item) => {
@@ -102,22 +95,14 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
     if (onCountChange) onCountChange(statusCounts);
   }, [statusCounts, onCountChange]);
 
-  const filteredRequests = useMemo(() => {
-    const search = query.trim().toLowerCase();
+  const sortedRequests = useMemo(() => {
     const statusOrder = { NEW: 0, PENDING: 1, ASSIGNED: 2, ACCEPTED: 3, COMPLETED: 4, EXPIRED: 5, CANCELLED: 6 };
-    const filtered = requests.filter((item) => {
-      const matchesStatus = statusFilter === "ALL" || item.status?.toUpperCase() === statusFilter;
-      if (!search) return matchesStatus;
-      const haystack = [item.request_id, item.from_location, item.to_location, item.name, item.phone_number, item.bus_type]
-        .filter(Boolean).join(" ").toLowerCase();
-      return matchesStatus && haystack.includes(search);
-    });
-    return [...filtered].sort((a, b) => {
+    return [...requests].sort((a, b) => {
       const aOrder = statusOrder[a.status?.toUpperCase()] ?? 5;
       const bOrder = statusOrder[b.status?.toUpperCase()] ?? 5;
       return aOrder - bOrder;
     });
-  }, [requests, query, statusFilter]);
+  }, [requests]);
 
   return (
     <section className="requests-page accepted-requests-page">
@@ -135,29 +120,14 @@ const AcceptedRequests = ({ onCountChange, initialFilter }) => {
       {error && <p className="requests-notice requests-notice--error">{error}</p>}
       <div className="request-table-card">
         <div className="request-table-card__bar">
-          <div><strong>{filteredRequests.length}</strong> matching request{filteredRequests.length === 1 ? "" : "s"}</div>
-          <div className="accepted-filters">
-            <label className="accepted-filter">
-              <FaSearch />
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name, phone, route..." />
-            </label>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-              <option value="ALL">All ({statusCounts.ALL})</option>
-              <option value="NEW">New ({statusCounts.NEW})</option>
-              <option value="PENDING">Pending ({statusCounts.PENDING})</option>
-              <option value="ACCEPTED">Accepted ({statusCounts.ACCEPTED})</option>
-              <option value="ASSIGNED">Assigned ({statusCounts.ASSIGNED})</option>
-              <option value="COMPLETED">Completed ({statusCounts.COMPLETED})</option>
-              <option value="EXPIRED">Already taken ({statusCounts.EXPIRED})</option>
-            </select>
-          </div>
+          <div><strong>{sortedRequests.length}</strong> request{sortedRequests.length === 1 ? "" : "s"}</div>
         </div>
         {loading ? (
           <div className="requests-empty"><FaSyncAlt className="requests-empty__icon requests-empty__icon--spin" /><h2>Loading requests</h2><p>Getting your accepted requests.</p></div>
-        ) : filteredRequests.length === 0 ? (
+        ) : sortedRequests.length === 0 ? (
           <div className="requests-empty"><FaCheckCircle className="requests-empty__icon" /><h2>No accepted requests</h2><p>Requests you accept from the active queue will appear here.</p></div>
         ) : (
-          <AcceptedRequestsTable filteredRequests={filteredRequests} />
+          <AcceptedRequestsTable filteredRequests={sortedRequests} />
         )}
       </div>
     </section>

@@ -837,7 +837,7 @@ input {
 .dashboard-card span {
   display: block;
   min-height: 34px;
-  color: #738097;
+  color: #0d0d0d;
   font-size: 12px;
   font-weight: 600;
   line-height: 1.4
@@ -950,13 +950,13 @@ input {
 .request-item h3,
 .account-info h3 {
   margin: 0;
-  color: #1d2a44;
+  color: #050505;
   font-size: 14px
 }
 
 .muted {
   margin: 4px 0 0;
-  color: #738097;
+  color: #121314;
   font-size: 12px
 }
 
@@ -979,13 +979,13 @@ input {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #64748b;
+  color: #0f0f0f;
   font-size: 13px
 }
 
 .empty-request {
   padding: 34px 10px;
-  color: #738097;
+  color: #09090a;
   text-align: center
 }
 
@@ -1010,7 +1010,7 @@ input {
   padding: 13px;
   border: 1px solid #e8ebf2;
   border-radius: 10px;
-  color: #64748b;
+  color: #090a0a;
   background: #f8fafc;
   font-size: 13px
 }
@@ -1053,7 +1053,7 @@ input {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #64748b;
+  color: #0f1011;
   font-size: 13px
 }
 

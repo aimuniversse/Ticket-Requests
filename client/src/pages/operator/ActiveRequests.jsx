@@ -377,8 +377,9 @@ function ActiveRequestsTablePaginated({
                 <td data-label="Time left"><span className="time-cell"><FaClock /> {formatTimeLeft(item.expires_at, item.status)}</span></td>
                 <td data-label="Status">
                   <div className="status-stack">
-                    <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
-                    {item.status === "EXPIRED" && <span className="expired-badge">Already taken</span>}
+                    {item.status !== "EXPIRED" && (
+                      <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                    )}
                     {isAccepted(item) ? (
                       <span className="accepted-label"><FaCheck /> Booking confirmed</span>
                     ) : (
@@ -409,7 +410,9 @@ function ActiveRequestsTablePaginated({
                 <strong className="route-cell">{item.from_location}<span>&rarr;</span>{item.to_location}</strong>
               </div>
               <div className="request-card-mobile__status">
-                <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                {item.status !== "EXPIRED" && (
+                  <span className={`status-pill ${getStatusPillClass(item.status)}`}>{getStatusLabel(item.status)}</span>
+                )}
                 {isAccepted(item) ? (
                   <span className="accepted-label"><FaCheck /> Booking confirmed</span>
                 ) : (

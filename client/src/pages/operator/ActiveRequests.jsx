@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheck, FaCheckCircle, FaClock, FaPhone, FaSearch, FaSyncAlt, FaUser } from "react-icons/fa";
 import API from "../../api/axios";
+import { getUserRole, scopedKey } from "../../api/auth";
 import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import { useUrlState } from "../../hooks/useUrlState";
@@ -105,7 +106,7 @@ const ActiveRequests = ({ initialFilter }) => {
     if (showLoader) setLoading(true);
     try {
       // Serve cached data immediately
-      const cached = cache.get("active_requests");
+      const cached = cache.get(scopedKey("active_requests"));
       if (cached && showLoader) {
         setRequests(mergeRequests(cached, [], readPersistedRequests()));
         setLoading(false);
@@ -118,7 +119,7 @@ const ActiveRequests = ({ initialFilter }) => {
       const assignedRequests = (assignedRes.data || []).map(normalizeRequest);
       const persistedRequests = readPersistedRequests();
       const merged = mergeRequests(apiRequests, assignedRequests, persistedRequests);
-      cache.set("active_requests", apiRequests, 30_000);
+      cache.set(scopedKey("active_requests"), apiRequests, 30_000);
       setRequests(merged);
       setError("");
     } catch (err) {
@@ -148,7 +149,7 @@ const ActiveRequests = ({ initialFilter }) => {
   };
 
   useEffect(() => {
-    const role = (localStorage.getItem("userRole") || "").toLowerCase();
+    const role = getUserRole();
     if (role === "admin") {
       navigate("/admin/dashboard", { replace: true });
       return;

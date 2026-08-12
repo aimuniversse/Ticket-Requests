@@ -1,4 +1,5 @@
 import axios from "axios";
+import { clearAppCache, clearAuth, getAccessToken, getRefreshToken, storeAuth } from "./auth";
 
 const apiBaseUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -9,35 +10,13 @@ const api = axios.create({
   },
 });
 
-const getStoredToken = () => {
-  if (typeof window === "undefined") return null;
-  return (
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("access") ||
-    localStorage.getItem("token") ||
-    null
-  );
-};
-
-const getStoredRefreshToken = () => {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("refreshToken") || null;
-};
-
-const storeTokens = (access, refresh) => {
-  localStorage.setItem("accessToken", access);
-  localStorage.setItem("access", access);
-  localStorage.setItem("token", access);
-  if (refresh) localStorage.setItem("refreshToken", refresh);
-};
-
 const isOperatorPath = () =>
   typeof window !== "undefined" &&
   (window.location.pathname.startsWith("/operator") ||
     window.location.pathname.startsWith("/admin"));
 
 api.interceptors.request.use((config) => {
-  const token = getStoredToken();
+  const token = getAccessToken();
   if (token && !config.skipAuth) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -69,7 +48,7 @@ api.interceptors.response.use(
       !originalRequest.skipAuth &&
       isOperatorPath()
     ) {
-      const refreshToken = getStoredRefreshToken();
+      const refreshToken = getRefreshToken();
 
       if (refreshToken && !isRefreshing) {
         originalRequest._retry = true;
@@ -82,17 +61,14 @@ api.interceptors.response.use(
           );
           const newAccess = response.data.access;
           const newRefresh = response.data.refresh || refreshToken;
-          storeTokens(newAccess, newRefresh);
+          storeAuth({ access: newAccess, refresh: newRefresh });
           processQueue(null, newAccess);
           originalRequest.headers.Authorization = `Bearer ${newAccess}`;
           return api(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError, null);
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("access");
-          localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("userRole");
+          clearAuth();
+          clearAppCache();
           window.location.replace("/operator-login");
           return Promise.reject(refreshError);
         } finally {
@@ -111,11 +87,8 @@ api.interceptors.response.use(
           .catch((e) => Promise.reject(e));
       }
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("access");
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userRole");
+      clearAuth();
+      clearAppCache();
       window.location.replace("/operator-login");
     }
 

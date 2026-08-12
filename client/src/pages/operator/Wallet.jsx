@@ -4,6 +4,7 @@ import API from "../../api/axios";
 import Pagination from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import { useCache } from "../../hooks/useCache";
+import { scopedKey } from "../../api/auth";
 import "../../styles/Wallet.css";
 
 const Wallet = () => {
@@ -21,9 +22,9 @@ const Wallet = () => {
     setLoading(true);
     try {
       // Serve cached data immediately to avoid a blank flash
-      const cachedWallet = cache.get("operator_wallet");
-      const cachedHistory = cache.get("operator_wallet_history");
-      const cachedPointRequests = cache.get("operator_point_requests");
+      const cachedWallet = cache.get(scopedKey("operator_wallet"));
+      const cachedHistory = cache.get(scopedKey("operator_wallet_history"));
+      const cachedPointRequests = cache.get(scopedKey("operator_point_requests"));
       if (cachedWallet) setWallet(cachedWallet);
       if (cachedHistory) setTransactions(cachedHistory);
       if (cachedPointRequests) setPointRequests(cachedPointRequests);
@@ -35,9 +36,9 @@ const Wallet = () => {
       ]);
       const freshHistory = historyResponse.data || [];
       const freshPointRequests = prResponse.data || [];
-      cache.set("operator_wallet", walletResponse.data, 30_000);
-      cache.set("operator_wallet_history", freshHistory, 30_000);
-      cache.set("operator_point_requests", freshPointRequests, 30_000);
+      cache.set(scopedKey("operator_wallet"), walletResponse.data, 30_000);
+      cache.set(scopedKey("operator_wallet_history"), freshHistory, 30_000);
+      cache.set(scopedKey("operator_point_requests"), freshPointRequests, 30_000);
       setWallet(walletResponse.data);
       setTransactions(freshHistory);
       setPointRequests(freshPointRequests);

@@ -181,6 +181,8 @@ const OperatorLogin = () => {
                     placeholder="Enter your registered phone number"
                     value={formData.phone_number}
                     onChange={handleChange}
+                    inputMode="numeric"
+                    maxLength={10}
                   />
 
                   {errors.phone_number && (

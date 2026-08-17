@@ -4,6 +4,7 @@ import threading
 from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode
 from django.utils.http import urlsafe_base64_encode
 from django.core.mail import send_mail
 from django.conf import settings
@@ -106,11 +107,20 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def save(self):
         token = self.validated_data["token"]
+        uid = self.validated_data["uid"]
 
         try:
             user_pk = signing.loads(token, max_age=getattr(settings, 'PASSWORD_RESET_TIMEOUT', 86400))
         except signing.BadSignature:
             raise serializers.ValidationError({"token": "Invalid or expired reset link"})
+
+        try:
+            uid_pk = int(force_bytes(urlsafe_base64_decode(uid)))
+        except Exception:
+            raise serializers.ValidationError({"uid": "Invalid reset link"})
+
+        if uid_pk != user_pk:
+            raise serializers.ValidationError({"uid": "Invalid reset link"})
 
         try:
             user = User.objects.get(pk=user_pk)

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import {
   FaFacebookF,
   FaInstagram,
@@ -74,11 +73,11 @@ function Footer() {
           <ul className="footer-links">
             {serviceLinks.map((link) => (
               <li key={link.label}>
-                <a href={link.href}>{link.label}</a>
+                <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
               </li>
             ))}
             <li>
-              <Link to={operatorLink.to}>{operatorLink.label}</Link>
+              <a href={operatorLink.to} target="_blank" rel="noopener noreferrer">{operatorLink.label}</a>
             </li>
           </ul>
         </div>

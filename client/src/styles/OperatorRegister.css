@@ -58,7 +58,7 @@
 .register-left p { margin: 0 0 18px; color: rgba(255,255,255,.88); font-size: 11px; line-height: 1.65; }
 .register-features { display: grid; gap: 9px; }
 .register-features div { padding: 8px 9px; border-radius: 7px; background: rgba(255,255,255,.13); font-size: 10px; }
-.register-right { padding: 24px 30px; }
+.register-right { padding: 150px 30px; }
 .register-card { width: min(100%, 520px); margin: auto; }
 .register-card h2 { margin: 0 0 5px; color: #12345d; font-size: 22px; line-height: 1.2; }
 .register-card > p { margin: 0 0 17px; color: #718096; font-size: 11px; }
@@ -82,7 +82,7 @@
 .register-success-icon { width: 52px; height: 52px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #ecfdf5; color: #059669; font-size: 26px; font-weight: 800; border: 2px solid #a7f3d0; }
 .register-success h2 { font-size: 18px; color: #102a43; }
 .register-success p { margin: 10px 0 20px; color: #526070; font-size: 12.5px; line-height: 1.6; }
-.register-btn--link { display: block; width: 100%; height: 39px; padding: 0; text-align: center; line-height: 39px; text-decoration: none; margin-top: 3px; border: 0; border-radius: 7px; background: #146dca; color: #fff; font: inherit; font-size: 12px; font-weight: 600; transition: .2s; }
+.register-btn--link { display: flex; align-items: center; justify-content: center; width: 50%; margin: 10px auto 0; height: 39px; padding: 0; text-align: center; text-decoration: none; border: 0; border-radius: 7px; background: #146dca; color: #fff; font: inherit; font-size: 12px; font-weight: 600; transition: .2s; }
 .register-btn--link:hover { background: #0f5dae; color: #fff; transform: translateY(-1px); }
 
 @media (max-width: 760px) {
@@ -104,3 +104,27 @@
 
 
 .promo-bus { position: relative; width: 240px; height: 180px; overflow: hidden; } /* TICKMYBUS animation */ .tickmybus-text { position: absolute; top: 0; left: 50%; transform: translateX(-50%); color: #dc2525; font-size: 20px; font-weight: 900; letter-spacing: 3px; white-space: nowrap; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 210, 63, 0.8); animation: tickmybusGlow 2s ease-in-out infinite; z-index: 2; } /* Bus moving animation */ .animated-bus { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; display: block; animation: busMove 3s ease-in-out infinite, busBounce 0.35s ease-in-out infinite alternate; } /* Bus moves left → right */ @keyframes busMove { 0% { transform: translateX(-15px); } 50% { transform: translateX(12px); } 100% { transform: translateX(-15px); } } /* Small road-bump effect */ @keyframes busBounce { from { margin-top: 0; } to { margin-top: 3px; } } /* TICKMYBUS glowing effect */ @keyframes tickmybusGlow { 0%, 100% { opacity: 0.75; transform: translateX(-50%) scale(1); text-shadow: 0 0 5px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 210, 63, 0.5); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); text-shadow: 0 0 8px #fff, 0 0 18px #ffd23f, 0 0 30px rgba(255, 210, 63, 0.8); } } /* Rotating wheels */ .bus-wheel { transform-box: fill-box; transform-origin: center; animation: wheelSpin 0.7s linear infinite; } @keyframes wheelSpin { to { transform: rotate(360deg); } } /* Accessibility */ @media (prefers-reduced-motion: reduce) { .animated-bus, .tickmybus-text, .bus-wheel { animation: none; } }
+
+
+
+
+
+.password-checklist {
+  margin-top: 3px;
+  padding: 8px 11px;
+  border: 1px solid #d7e0ea;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  background: #f7fafd;
+}
+
+.password-checklist div {
+  color: #9aa5b1;
+  margin: 3px 0;
+  font-size: 10.5px;
+}
+
+.password-checklist .valid {
+  color: #059669;
+  font-weight: 600;
+}

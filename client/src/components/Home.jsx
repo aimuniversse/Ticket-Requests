@@ -1,6 +1,5 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { Link } from "react-router-dom";
 
 import '../styles/Home.css'
 
@@ -18,9 +17,9 @@ function App() {
               premium experience built for modern travelers.
             </p>
             <div className="hero-actions">
-              <Link className="primary-btn" to="/ticket-request">
+              <a className="primary-btn" href="/ticket-request" target="_blank" rel="noopener noreferrer">
               Book Your Ticket
-              </Link>
+              </a>
             </div>
           </div>
           {/* <a

@@ -4,6 +4,34 @@ import API from "../api/axios";
 import "../styles/OperatorRegister.css";
 import tickMyBusLogo from "../assets/logoc.png";
 
+const PASSWORD_RULES = [
+  { label: "8 characters", test: (value) => value.length >= 8 },
+  { label: "Uppercase letter", test: (value) => /[A-Z]/.test(value) },
+  { label: "Lowercase letter", test: (value) => /[a-z]/.test(value) },
+  { label: "Number", test: (value) => /[0-9]/.test(value) },
+  { label: "Special character", test: (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value) },
+];
+
+const PasswordChecklist = ({ value, match }) => {
+  const rules =
+    match !== undefined
+      ? [...PASSWORD_RULES, { label: "Passwords match", test: () => value === match }]
+      : PASSWORD_RULES;
+
+  return (
+    <div className="password-checklist">
+      {rules.map((rule) => {
+        const ok = rule.test(value);
+        return (
+          <div key={rule.label} className={ok ? "valid" : ""}>
+            {ok ? "✓" : "○"} {rule.label}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const OperatorRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -343,7 +371,6 @@ const OperatorRegister = () => {
                   <label>Password</label>
 
                   <div className="password-box">
-
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
@@ -355,14 +382,15 @@ const OperatorRegister = () => {
                     <button
                       type="button"
                       className="show-btn"
-                      onClick={() =>
-                        setShowPassword(!showPassword)
-                      }
+                      onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? "Hide" : "Show"}
                     </button>
-
                   </div>
+
+                  {formData.password && (
+                    <PasswordChecklist value={formData.password} />
+                  )}
 
                   <span className="error">
                     {errors.password}
@@ -375,29 +403,29 @@ const OperatorRegister = () => {
                   <label>Confirm Password</label>
 
                   <div className="password-box">
-
                     <input
                       type={showConfirm ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       placeholder="Confirm Password"
-                      pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
-                      title="Password must contain at least 8 characters, including uppercase, lowercase, number, and symbol."
-
                     />
 
                     <button
                       type="button"
                       className="show-btn"
-                      onClick={() =>
-                        setShowConfirm(!showConfirm)
-                      }
+                      onClick={() => setShowConfirm(!showConfirm)}
                     >
                       {showConfirm ? "Hide" : "Show"}
                     </button>
-
                   </div>
+
+                  {formData.confirmPassword && (
+                    <PasswordChecklist
+                      value={formData.confirmPassword}
+                      match={formData.password}
+                    />
+                  )}
 
                   <span className="error">
                     {errors.confirmPassword}
